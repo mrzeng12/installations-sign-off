@@ -41,39 +41,9 @@
 		B24AB41816FF5DAB0017B00E /* speedtest.png in Resources */ = {isa = PBXBuildFile; fileRef = B24AB41716FF5DAB0017B00E /* speedtest.png */; };
 		B2677D851709B99500C4156C /* NewActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B2677D841709B99500C4156C /* NewActivityCell.m */; };
 		B2677D871709B9C200C4156C /* NewActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2677D861709B9C200C4156C /* NewActivityCell.xib */; };
-		B284F0AD16973DEB0048C62E /* TEQUI-CQ61631-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A116973DEB0048C62E /* TEQUI-CQ61631-2.pdf */; };
-		B284F0AE16973DEB0048C62E /* TEQUI-CQ66341-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A216973DEB0048C62E /* TEQUI-CQ66341-1.pdf */; };
-		B284F0AF16973DEB0048C62E /* TEQUI-CQ72545-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A316973DEB0048C62E /* TEQUI-CQ72545-2.pdf */; };
-		B284F0B016973DEB0048C62E /* TEQUI-CQ72728-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A416973DEB0048C62E /* TEQUI-CQ72728-1.pdf */; };
-		B284F0B116973DEB0048C62E /* TEQUI-CQ75335-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A516973DEB0048C62E /* TEQUI-CQ75335-2.pdf */; };
-		B284F0B216973DEB0048C62E /* TEQUI-CQ75522-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A616973DEB0048C62E /* TEQUI-CQ75522-2.pdf */; };
-		B284F0B316973DEB0048C62E /* TEQUI-CQ75711-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A716973DEB0048C62E /* TEQUI-CQ75711-1.pdf */; };
-		B284F0B416973DEB0048C62E /* TEQUI-CQ77298-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A816973DEB0048C62E /* TEQUI-CQ77298-1.pdf */; };
-		B284F0B516973DEB0048C62E /* TEQUI-CQ80851-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0A916973DEB0048C62E /* TEQUI-CQ80851-1.pdf */; };
-		B284F0B616973DEB0048C62E /* TEQUI-CQ81160-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0AA16973DEB0048C62E /* TEQUI-CQ81160-1.pdf */; };
-		B284F0B716973DEB0048C62E /* TEQUI-CQ81530-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0AB16973DEB0048C62E /* TEQUI-CQ81530-1.pdf */; };
-		B284F0B816973DEB0048C62E /* TEQUI-CQ81936-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0AC16973DEB0048C62E /* TEQUI-CQ81936-2.pdf */; };
-		B284F0C4169761690048C62E /* TEQUI-CQ74702-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BA169761690048C62E /* TEQUI-CQ74702-2.pdf */; };
-		B284F0C5169761690048C62E /* TEQUI-CQ77470-3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BB169761690048C62E /* TEQUI-CQ77470-3.pdf */; };
-		B284F0C6169761690048C62E /* TEQUI-CQ77470-4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BC169761690048C62E /* TEQUI-CQ77470-4.pdf */; };
-		B284F0C7169761690048C62E /* TEQUI-CQ79016-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BD169761690048C62E /* TEQUI-CQ79016-1.pdf */; };
-		B284F0C8169761690048C62E /* TEQUI-CQ79127-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BE169761690048C62E /* TEQUI-CQ79127-1.pdf */; };
-		B284F0C9169761690048C62E /* TEQUI-CQ79187-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0BF169761690048C62E /* TEQUI-CQ79187-1.pdf */; };
-		B284F0CA169761690048C62E /* TEQUI-CQ79187-5.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0C0169761690048C62E /* TEQUI-CQ79187-5.pdf */; };
-		B284F0CB169761690048C62E /* TEQUI-CQ79419-1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0C1169761690048C62E /* TEQUI-CQ79419-1.pdf */; };
-		B284F0CC169761690048C62E /* TEQUI-CQ79705-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0C2169761690048C62E /* TEQUI-CQ79705-2.pdf */; };
-		B284F0CD169761690048C62E /* TEQUI-CQ82340-2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B284F0C3169761690048C62E /* TEQUI-CQ82340-2.pdf */; };
 		B28F583C16DC0AF500FCF620 /* SavedActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */; };
 		B28F583E16DC0B2000FCF620 /* SavedActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */; };
 		B2C22F2616E8F62900D73320 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = B2C22F2516E8F62900D73320 /* error.png */; };
-		B2D57270160763480039FD7C /* TYTTSR3FW36.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D57268160763480039FD7C /* TYTTSR3FW36.jpg */; };
-		B2D57271160763480039FD7C /* TYTTSR3FW211.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D57269160763480039FD7C /* TYTTSR3FW211.jpg */; };
-		B2D57273160763480039FD7C /* TYTTSR3FW291.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D5726B160763480039FD7C /* TYTTSR3FW291.jpg */; };
-		B2D57274160763480039FD7C /* TYTTSR3FW331.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D5726C160763480039FD7C /* TYTTSR3FW331.jpg */; };
-		B2D572831608ABCE0039FD7C /* TYTTSR3W50.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D5727F1608ABCE0039FD7C /* TYTTSR3W50.jpg */; };
-		B2D572841608ABCE0039FD7C /* TYTTSR3FW251.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D572801608ABCE0039FD7C /* TYTTSR3FW251.jpg */; };
-		B2D572851608ABCE0039FD7C /* TYTTSR3FW14.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D572811608ABCE0039FD7C /* TYTTSR3FW14.jpg */; };
-		B2D572861608ABCE0039FD7C /* TYTTSR3FW-8A.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D572821608ABCE0039FD7C /* TYTTSR3FW-8A.jpg */; };
 		B2DC705D16358C9B0040AA5F /* ButtonR.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DC705C16358C9B0040AA5F /* ButtonR.png */; };
 		B2DC706016358D580040AA5F /* gobtn.gif in Resources */ = {isa = PBXBuildFile; fileRef = B2DC705F16358D580040AA5F /* gobtn.gif */; };
 		B2E392801639719500CF818E /* none-button-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E3927E1639719500CF818E /* none-button-blue.png */; };
@@ -244,40 +214,10 @@
 		B2677D831709B99500C4156C /* NewActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewActivityCell.h; sourceTree = "<group>"; };
 		B2677D841709B99500C4156C /* NewActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewActivityCell.m; sourceTree = "<group>"; };
 		B2677D861709B9C200C4156C /* NewActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewActivityCell.xib; sourceTree = "<group>"; };
-		B284F0A116973DEB0048C62E /* TEQUI-CQ61631-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ61631-2.pdf"; sourceTree = "<group>"; };
-		B284F0A216973DEB0048C62E /* TEQUI-CQ66341-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ66341-1.pdf"; sourceTree = "<group>"; };
-		B284F0A316973DEB0048C62E /* TEQUI-CQ72545-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ72545-2.pdf"; sourceTree = "<group>"; };
-		B284F0A416973DEB0048C62E /* TEQUI-CQ72728-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ72728-1.pdf"; sourceTree = "<group>"; };
-		B284F0A516973DEB0048C62E /* TEQUI-CQ75335-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ75335-2.pdf"; sourceTree = "<group>"; };
-		B284F0A616973DEB0048C62E /* TEQUI-CQ75522-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ75522-2.pdf"; sourceTree = "<group>"; };
-		B284F0A716973DEB0048C62E /* TEQUI-CQ75711-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ75711-1.pdf"; sourceTree = "<group>"; };
-		B284F0A816973DEB0048C62E /* TEQUI-CQ77298-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ77298-1.pdf"; sourceTree = "<group>"; };
-		B284F0A916973DEB0048C62E /* TEQUI-CQ80851-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ80851-1.pdf"; sourceTree = "<group>"; };
-		B284F0AA16973DEB0048C62E /* TEQUI-CQ81160-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ81160-1.pdf"; sourceTree = "<group>"; };
-		B284F0AB16973DEB0048C62E /* TEQUI-CQ81530-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ81530-1.pdf"; sourceTree = "<group>"; };
-		B284F0AC16973DEB0048C62E /* TEQUI-CQ81936-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ81936-2.pdf"; sourceTree = "<group>"; };
-		B284F0BA169761690048C62E /* TEQUI-CQ74702-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ74702-2.pdf"; sourceTree = "<group>"; };
-		B284F0BB169761690048C62E /* TEQUI-CQ77470-3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ77470-3.pdf"; sourceTree = "<group>"; };
-		B284F0BC169761690048C62E /* TEQUI-CQ77470-4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ77470-4.pdf"; sourceTree = "<group>"; };
-		B284F0BD169761690048C62E /* TEQUI-CQ79016-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79016-1.pdf"; sourceTree = "<group>"; };
-		B284F0BE169761690048C62E /* TEQUI-CQ79127-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79127-1.pdf"; sourceTree = "<group>"; };
-		B284F0BF169761690048C62E /* TEQUI-CQ79187-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79187-1.pdf"; sourceTree = "<group>"; };
-		B284F0C0169761690048C62E /* TEQUI-CQ79187-5.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79187-5.pdf"; sourceTree = "<group>"; };
-		B284F0C1169761690048C62E /* TEQUI-CQ79419-1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79419-1.pdf"; sourceTree = "<group>"; };
-		B284F0C2169761690048C62E /* TEQUI-CQ79705-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ79705-2.pdf"; sourceTree = "<group>"; };
-		B284F0C3169761690048C62E /* TEQUI-CQ82340-2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "TEQUI-CQ82340-2.pdf"; sourceTree = "<group>"; };
 		B28F583A16DC0AF400FCF620 /* SavedActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedActivityCell.h; sourceTree = "<group>"; };
 		B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedActivityCell.m; sourceTree = "<group>"; };
 		B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SavedActivityCell.xib; sourceTree = "<group>"; };
 		B2C22F2516E8F62900D73320 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
-		B2D57268160763480039FD7C /* TYTTSR3FW36.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW36.jpg; sourceTree = "<group>"; };
-		B2D57269160763480039FD7C /* TYTTSR3FW211.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW211.jpg; sourceTree = "<group>"; };
-		B2D5726B160763480039FD7C /* TYTTSR3FW291.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW291.jpg; sourceTree = "<group>"; };
-		B2D5726C160763480039FD7C /* TYTTSR3FW331.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW331.jpg; sourceTree = "<group>"; };
-		B2D5727F1608ABCE0039FD7C /* TYTTSR3W50.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3W50.jpg; sourceTree = "<group>"; };
-		B2D572801608ABCE0039FD7C /* TYTTSR3FW251.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW251.jpg; sourceTree = "<group>"; };
-		B2D572811608ABCE0039FD7C /* TYTTSR3FW14.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TYTTSR3FW14.jpg; sourceTree = "<group>"; };
-		B2D572821608ABCE0039FD7C /* TYTTSR3FW-8A.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "TYTTSR3FW-8A.jpg"; sourceTree = "<group>"; };
 		B2DC705C16358C9B0040AA5F /* ButtonR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonR.png; sourceTree = "<group>"; };
 		B2DC705F16358D580040AA5F /* gobtn.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gobtn.gif; sourceTree = "<group>"; };
 		B2E3927E1639719500CF818E /* none-button-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "none-button-blue.png"; sourceTree = "<group>"; };
@@ -505,28 +445,6 @@
 			isa = PBXGroup;
 			children = (
 				B24AB41716FF5DAB0017B00E /* speedtest.png */,
-				B284F0A116973DEB0048C62E /* TEQUI-CQ61631-2.pdf */,
-				B284F0A216973DEB0048C62E /* TEQUI-CQ66341-1.pdf */,
-				B284F0A316973DEB0048C62E /* TEQUI-CQ72545-2.pdf */,
-				B284F0A416973DEB0048C62E /* TEQUI-CQ72728-1.pdf */,
-				B284F0A516973DEB0048C62E /* TEQUI-CQ75335-2.pdf */,
-				B284F0A616973DEB0048C62E /* TEQUI-CQ75522-2.pdf */,
-				B284F0A716973DEB0048C62E /* TEQUI-CQ75711-1.pdf */,
-				B284F0A816973DEB0048C62E /* TEQUI-CQ77298-1.pdf */,
-				B284F0A916973DEB0048C62E /* TEQUI-CQ80851-1.pdf */,
-				B284F0AA16973DEB0048C62E /* TEQUI-CQ81160-1.pdf */,
-				B284F0AB16973DEB0048C62E /* TEQUI-CQ81530-1.pdf */,
-				B284F0AC16973DEB0048C62E /* TEQUI-CQ81936-2.pdf */,
-				B284F0BA169761690048C62E /* TEQUI-CQ74702-2.pdf */,
-				B284F0BB169761690048C62E /* TEQUI-CQ77470-3.pdf */,
-				B284F0BC169761690048C62E /* TEQUI-CQ77470-4.pdf */,
-				B284F0BD169761690048C62E /* TEQUI-CQ79016-1.pdf */,
-				B284F0BE169761690048C62E /* TEQUI-CQ79127-1.pdf */,
-				B284F0BF169761690048C62E /* TEQUI-CQ79187-1.pdf */,
-				B284F0C0169761690048C62E /* TEQUI-CQ79187-5.pdf */,
-				B284F0C1169761690048C62E /* TEQUI-CQ79419-1.pdf */,
-				B284F0C2169761690048C62E /* TEQUI-CQ79705-2.pdf */,
-				B284F0C3169761690048C62E /* TEQUI-CQ82340-2.pdf */,
 				B233889E1680B68300B21BFD /* warning.png */,
 				B2EEDC6C169605B80097452D /* checkmark.gif */,
 				B233889B1680B51D00B21BFD /* checkmark.jpg */,
@@ -536,14 +454,6 @@
 				B2DC705C16358C9B0040AA5F /* ButtonR.png */,
 				B2DC705F16358D580040AA5F /* gobtn.gif */,
 				B2C22F2516E8F62900D73320 /* error.png */,
-				B2D5727F1608ABCE0039FD7C /* TYTTSR3W50.jpg */,
-				B2D572801608ABCE0039FD7C /* TYTTSR3FW251.jpg */,
-				B2D572811608ABCE0039FD7C /* TYTTSR3FW14.jpg */,
-				B2D572821608ABCE0039FD7C /* TYTTSR3FW-8A.jpg */,
-				B2D57268160763480039FD7C /* TYTTSR3FW36.jpg */,
-				B2D57269160763480039FD7C /* TYTTSR3FW211.jpg */,
-				B2D5726B160763480039FD7C /* TYTTSR3FW291.jpg */,
-				B2D5726C160763480039FD7C /* TYTTSR3FW331.jpg */,
 				B217A560160A0D9E00207EAF /* black-line.png */,
 				C0783E9415F7E59B00078883 /* site-survey-blank-page.jpg */,
 				C0783E9515F7E59B00078883 /* site-survey-cover-page.jpg */,
@@ -915,14 +825,6 @@
 				C0783E9615F7E59B00078883 /* site-survey-blank-page.jpg in Resources */,
 				C0783E9715F7E59B00078883 /* site-survey-cover-page.jpg in Resources */,
 				C0783E9B15F8F60400078883 /* site-survey-customer-report.jpg in Resources */,
-				B2D57270160763480039FD7C /* TYTTSR3FW36.jpg in Resources */,
-				B2D57271160763480039FD7C /* TYTTSR3FW211.jpg in Resources */,
-				B2D57273160763480039FD7C /* TYTTSR3FW291.jpg in Resources */,
-				B2D57274160763480039FD7C /* TYTTSR3FW331.jpg in Resources */,
-				B2D572831608ABCE0039FD7C /* TYTTSR3W50.jpg in Resources */,
-				B2D572841608ABCE0039FD7C /* TYTTSR3FW251.jpg in Resources */,
-				B2D572851608ABCE0039FD7C /* TYTTSR3FW14.jpg in Resources */,
-				B2D572861608ABCE0039FD7C /* TYTTSR3FW-8A.jpg in Resources */,
 				B217A561160A0D9E00207EAF /* black-line.png in Resources */,
 				B2DC705D16358C9B0040AA5F /* ButtonR.png in Resources */,
 				B2DC706016358D580040AA5F /* gobtn.gif in Resources */,
@@ -935,28 +837,6 @@
 				B233889C1680B51D00B21BFD /* checkmark.jpg in Resources */,
 				B233889F1680B68300B21BFD /* warning.png in Resources */,
 				B2EEDC6D169605B80097452D /* checkmark.gif in Resources */,
-				B284F0AD16973DEB0048C62E /* TEQUI-CQ61631-2.pdf in Resources */,
-				B284F0AE16973DEB0048C62E /* TEQUI-CQ66341-1.pdf in Resources */,
-				B284F0AF16973DEB0048C62E /* TEQUI-CQ72545-2.pdf in Resources */,
-				B284F0B016973DEB0048C62E /* TEQUI-CQ72728-1.pdf in Resources */,
-				B284F0B116973DEB0048C62E /* TEQUI-CQ75335-2.pdf in Resources */,
-				B284F0B216973DEB0048C62E /* TEQUI-CQ75522-2.pdf in Resources */,
-				B284F0B316973DEB0048C62E /* TEQUI-CQ75711-1.pdf in Resources */,
-				B284F0B416973DEB0048C62E /* TEQUI-CQ77298-1.pdf in Resources */,
-				B284F0B516973DEB0048C62E /* TEQUI-CQ80851-1.pdf in Resources */,
-				B284F0B616973DEB0048C62E /* TEQUI-CQ81160-1.pdf in Resources */,
-				B284F0B716973DEB0048C62E /* TEQUI-CQ81530-1.pdf in Resources */,
-				B284F0B816973DEB0048C62E /* TEQUI-CQ81936-2.pdf in Resources */,
-				B284F0C4169761690048C62E /* TEQUI-CQ74702-2.pdf in Resources */,
-				B284F0C5169761690048C62E /* TEQUI-CQ77470-3.pdf in Resources */,
-				B284F0C6169761690048C62E /* TEQUI-CQ77470-4.pdf in Resources */,
-				B284F0C7169761690048C62E /* TEQUI-CQ79016-1.pdf in Resources */,
-				B284F0C8169761690048C62E /* TEQUI-CQ79127-1.pdf in Resources */,
-				B284F0C9169761690048C62E /* TEQUI-CQ79187-1.pdf in Resources */,
-				B284F0CA169761690048C62E /* TEQUI-CQ79187-5.pdf in Resources */,
-				B284F0CB169761690048C62E /* TEQUI-CQ79419-1.pdf in Resources */,
-				B284F0CC169761690048C62E /* TEQUI-CQ79705-2.pdf in Resources */,
-				B284F0CD169761690048C62E /* TEQUI-CQ82340-2.pdf in Resources */,
 				B200712C16B98A2700A98A9B /* SPK-1.png in Resources */,
 				B200712D16B98A2700A98A9B /* SPK-2.png in Resources */,
 				B200713016B98A3900A98A9B /* CNO-1.png in Resources */,

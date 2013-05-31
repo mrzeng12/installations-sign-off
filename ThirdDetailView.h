@@ -10,7 +10,11 @@
 
 
 
-@interface ThirdDetailView : UIViewController<UITextFieldDelegate, UIGestureRecognizerDelegate>
+@interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>{
+    float lastInputY;
+    int addBtnCount;
+    NSMutableArray *addBtnArray;
+}
 
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
@@ -26,6 +30,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *commentsTag;
 @property (strong, nonatomic) IBOutlet UITextView *commentsOutlet;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollview;
+- (IBAction)addSerial:(id)sender;
 
 @end
 
