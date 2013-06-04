@@ -96,9 +96,6 @@
 
 - (IBAction)refreshBtnTouched:(id)sender;
 
-- (IBAction)createEmptyButtonTouched;
-
-
 @property (strong, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 
 - (IBAction)segmentControlValueChanged:(id)sender;

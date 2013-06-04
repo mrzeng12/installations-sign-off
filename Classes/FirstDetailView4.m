@@ -22,14 +22,11 @@
 
 @implementation FirstDetailView4
 @synthesize printNameTextField_1;
-@synthesize printNameTextField_2;
 @synthesize printNameTextField_3;
-@synthesize primaryContactLabel;
 @synthesize primaryContactSign;
 @synthesize scrollView;
 @synthesize popoverController;
 @synthesize teqReqSign;
-@synthesize custodialSign;
 
 @synthesize lastLocation;
 @synthesize lastDate;
@@ -48,7 +45,6 @@
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecognizer.cancelsTouchesInView = NO;
     [self.primaryContactSign addGestureRecognizer:gestureRecognizer];
-    [self.custodialSign addGestureRecognizer:gestureRecognizer];
     [self.teqReqSign addGestureRecognizer:gestureRecognizer];
     [self.view addGestureRecognizer:gestureRecognizer];
     
@@ -68,9 +64,14 @@
     [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 748) animated:YES];
     
     self.printNameTextField_1.delegate = self;
-    self.printNameTextField_2.delegate = self;
     self.printNameTextField_3.delegate = self;
     
+    self.customerNotes.layer.borderWidth = 1;
+    self.customerNotes.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.customerNotes.layer.cornerRadius = 7.0f;    
+    self.customerNotes.text = @"Please type customer notes here...";
+    self.customerNotes.textColor = [UIColor lightGrayColor];
+    self.customerNotes.delegate = self;
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
@@ -79,12 +80,9 @@
 {
     [self setScrollView:nil];
     [self setTeqReqSign:nil];
-    [self setCustodialSign:nil];
     [self setPrimaryContactSign:nil];
     [self setPrintNameTextField_1:nil];
-    [self setPrintNameTextField_2:nil];
     [self setPrintNameTextField_3:nil];
-    [self setPrimaryContactLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -109,19 +107,7 @@
     else {
         self.printNameTextField_1.text = database.current_print_name_1;
     }
-    
-    if (database.current_print_name_2 == nil) {
-        self.printNameTextField_2.text = database.current_engineer_contact;
-        database.current_print_name_2 = printNameTextField_2.text;
-    }
-    else if ([database.current_print_name_2 length] == 0) {
-        self.printNameTextField_2.text = database.current_engineer_contact;
-        database.current_print_name_2 = printNameTextField_2.text;
-    }
-    else {
-        self.printNameTextField_2.text = database.current_print_name_2;
-    }
-    
+        
     if (database.current_print_name_3 == nil) {
         self.printNameTextField_3.text = database.current_teq_rep;
         database.current_print_name_3 = printNameTextField_3.text;
@@ -133,19 +119,7 @@
     else {
         self.printNameTextField_3.text = database.current_print_name_3;
     }
-    
-    if (database.current_title_of_signature_1 == nil) {
-        primaryContactLabel.text = @"Primary Contact:";
-        database.current_title_of_signature_1 = @"Primary Contact";
-    }
-    else if ([database.current_title_of_signature_1 length] == 0) {
-        primaryContactLabel.text = @"Primary Contact:";
-        database.current_title_of_signature_1 = @"Primary Contact";
-    }
-    else {
-        primaryContactLabel.text = database.current_title_of_signature_1;
-    }
-    
+        
     //}
     
     /************* set button background images, wrap it inside round rect box ************/
@@ -158,21 +132,7 @@
     [primaryContactSign.layer setMasksToBounds:YES];
     [primaryContactSign.layer setBorderWidth:1.0f];
     [primaryContactSign.layer setBorderColor:[UIColor grayColor].CGColor];
-    
-    
-    
-    NSString *imageString2 = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature2", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
-    imageString2 = [database sanitizeFile:imageString2];
-    UIImage *backgroundImage2 = [self loadImage: imageString2 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-    
-    [custodialSign setImage:backgroundImage2 forState:UIControlStateNormal];
-    [custodialSign.layer setCornerRadius:10.0f];
-    [custodialSign.layer setMasksToBounds:YES];
-    [custodialSign.layer setBorderWidth:1.0f];
-    [custodialSign.layer setBorderColor:[UIColor grayColor].CGColor];
-    
-    
-    
+            
     NSString *imageString3 = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature3", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
     imageString3 = [database sanitizeFile:imageString3];
     UIImage *backgroundImage3 = [self loadImage: imageString3 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
@@ -279,6 +239,37 @@
     [UIView commitAnimations];
 }
 
+- (BOOL) textViewShouldBeginEditing: (UITextView *)textView
+{   
+    if ([textView.text isEqualToString: @"Please type customer notes here..."]) {
+        textView.text = @"";
+    }
+    textView.textColor = [UIColor blackColor];
+    
+    [scrollView scrollRectToVisible:CGRectMake(0, 213, 703, 748) animated:YES];
+    
+    return YES;
+}
+
+-(void) textViewDidEndEditing:(UITextView *)textView
+{
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 748) animated:YES];
+    if (textView.text.length == 0) {
+        textView.textColor = [UIColor lightGrayColor];
+        textView.text = @"Please type customer notes here...";
+        [textView resignFirstResponder];
+    }
+    
+}
+
+-(void) textViewDidChange:(UITextView *)textView
+{
+    //isql *database = [isql initialize];
+    if (![textView.text isEqualToString: @"Please type customer notes here..."]) {
+        //database.current_special_instructions = textView.text;
+    }
+}
+
 - (IBAction)triggerPopover:(id)sender {
     
     Signature *movies = 
@@ -288,7 +279,7 @@
     
     popoverController = 
     [[UIPopoverController alloc] initWithContentViewController:movies];     
-    
+    popoverController.delegate = self;
     isql *database = [isql initialize];
     UIButton *button = sender;
     
@@ -296,10 +287,6 @@
         case 1:
             database.signature_filename = @"Primary_Contact";
             [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 748) animated:YES];
-            break;
-        case 2:
-            database.signature_filename = @"Custodial_Engineer";
-            [scrollView scrollRectToVisible:CGRectMake(0, 213, 703, 748) animated:YES];
             break;
         case 3:
             database.signature_filename = @"Teq_Representative";
@@ -322,65 +309,10 @@
     
 }
 
-- (IBAction)changePrimaryContact {
-    
-    UIAlertView *message = [[UIAlertView alloc] initWithTitle:nil message:nil delegate:self
-                                            cancelButtonTitle:@"Other" otherButtonTitles: @"Teacher", @"Principal", @"Administrator", @"Superintendent",  @"Primary Contact", nil];    
-    [message setTag: 1];
-    [message setDelegate:self];
-    //[message setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [message show];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    isql *database = [isql initialize];
-    if ([alertView tag] == 1) {
-        switch (buttonIndex) {
-            case 0:
-            {
-                UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Please enter your title" message:nil delegate:self
-                                                        cancelButtonTitle:nil otherButtonTitles:@"OK", nil];    
-                [message setTag: 2];
-                [message setDelegate:self];
-                [message setAlertViewStyle:UIAlertViewStylePlainTextInput];
-                [message show];
-                break;
-            }
-            case 1:
-                primaryContactLabel.text = @"Teacher:";
-                database.current_title_of_signature_1 = @"Teacher";
-                break;
-            case 2:
-                primaryContactLabel.text = @"Principal:";
-                database.current_title_of_signature_1 = @"Principal";
-                break;
-            case 3:
-                primaryContactLabel.text = @"Administrator:";
-                database.current_title_of_signature_1 = @"Administrator";
-                break;
-            case 4:
-                primaryContactLabel.text = @"Superintendent:";
-                database.current_title_of_signature_1 = @"Superintendent";
-                break;
-            case 5:
-                primaryContactLabel.text = @"Primary Contact:";
-                database.current_title_of_signature_1 = @"Primary Contact";
-                break;
-            default:
-                break;
-        }
-    }
-    else {
-        primaryContactLabel.text = [NSString stringWithFormat:@"%@:", [alertView textFieldAtIndex:0].text];
-        database.current_title_of_signature_1 = [alertView textFieldAtIndex:0].text;
-    }
-}
-
 //---called when the user clicks outside the popover view---
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
     
-    //NSLog(@"popover about to be dismissed");
+    NSLog(@"popover about to be dismissed");
     return NO;
 }
 
@@ -411,18 +343,7 @@
         [primaryContactSign.layer setBorderWidth:1.0f];
         [primaryContactSign.layer setBorderColor:[UIColor grayColor].CGColor];
     }
-    if ([database.signature_filename isEqualToString:@"Custodial_Engineer"]) {
-        
-        NSString *imageString = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature2", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
-        imageString = [database sanitizeFile:imageString];
-        UIImage *backgroundImage = [self loadImage: imageString ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-        
-        [custodialSign setImage:backgroundImage forState:UIControlStateNormal];
-        [custodialSign.layer setCornerRadius:10.0f];
-        [custodialSign.layer setMasksToBounds:YES];
-        [custodialSign.layer setBorderWidth:1.0f];
-        [custodialSign.layer setBorderColor:[UIColor grayColor].CGColor];
-    }
+    
     if ([database.signature_filename isEqualToString:@"Teq_Representative"]) {
         
         NSString *imageString = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature3", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
@@ -455,11 +376,6 @@
 - (IBAction)printName_1 {
     isql *database = [isql initialize];
     database.current_print_name_1 = printNameTextField_1.text;
-}
-
-- (IBAction)printName_2 {
-    isql *database = [isql initialize];
-    database.current_print_name_2 = printNameTextField_2.text;
 }
 
 - (IBAction)printName_3 {
@@ -529,25 +445,7 @@
 }
 
 - (IBAction)viewUpdatedReport:(id)sender {
-    /*
-    UpdatedPDFModal *temp = [[UpdatedPDFModal alloc] initWithNibName:@"UpdatedPDFModal" bundle:[NSBundle mainBundle]];
     
-    temp.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    // ANIMATED TRANSITION WILL RESULT IN ERROR
-    //[super.splitViewController presentModalViewController:temp animated: YES];
-    [super.splitViewController presentViewController:temp animated:YES completion:nil];
-     */
-    /*
-    LGViewHUD *hud = [LGViewHUD defaultHUD];
-    
-    hud.activityIndicatorOn = YES;
-    
-    hud.topText = @"Loading";
-    
-    hud.bottomText = @"Please wait...";
-    
-    [hud showInView:super.splitViewController.view];
-    */
     isql *database = [isql initialize];
     
     [NSThread detachNewThreadSelector:@selector(myThreadMethodAfterExit:) toTarget:self withObject:nil];

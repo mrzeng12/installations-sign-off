@@ -10,7 +10,7 @@
 
 
 
-@interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>{
+@interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>{
     float lastInputY;
     int addBtnCount;
     NSMutableArray *addBtnArray;
@@ -18,8 +18,8 @@
 
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
-- (IBAction)testChanged:(id)sender;
-@property (strong, nonatomic) IBOutlet UITextField *testContent;
+- (IBAction)installersChanged:(id)sender;
+@property (strong, nonatomic) IBOutlet UITextField *installers;
 @property (strong, nonatomic) IBOutlet UIButton *statusComplete;
 @property (strong, nonatomic) IBOutlet UIButton *statusIncomplete;
 @property (strong, nonatomic) IBOutlet UITextField *SerialSB;

@@ -67,11 +67,7 @@
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(autoLoadCurrentActivity:)
      name:@"autoLoadCurrentActivity" object:nil];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self selector:@selector(continueToCreateEmptySurvey:)
-     name:@"continueToCreateEmptySurvey" object:nil];
-    
+        
     [refreshBtn setImage:[[UIImage alloc] initWithContentsOfFile: [[NSBundle mainBundle] pathForResource: @"refresh_btn" ofType:@"png" ]] forState:UIControlStateNormal];
     [refreshBtn setContentMode:UIViewContentModeCenter];
     
@@ -226,39 +222,6 @@
     database.current_location = database.selected_location;
     database.current_activity_no = database.selected_activity_no;
     
-    [self loadDate];
-    [self loadActivities:@""];
-    [self loadSavedRecord];
-    
-    self.firstDetailView3.title = @"Cover Sheet";
-    [self.navigationController pushViewController:self.firstDetailView3 animated:YES];
-}
-
--(void)continueToCreateEmptySurvey:(NSNotification *)notifications
-{
-    isql *database = [isql initialize];
-    NSDate *today = [NSDate date];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
-    database.current_date = [formatter stringFromDate: today];
-    
-    database.customDate = database.current_date;
-    database.customLocation = database.current_location;
-    database.customOnthefly = @"Yes";
-    
-    //set up these values after creating, because the new activity may not be in local_dest, therefore not be able to set in loadSavedRecord
-    self.savedActivity = database.current_activity_no;
-    self.savedSQ = @"";
-    self.savedSO = @"";
-    self.firstSectionHeight = cellFullHeight;
-    
-    [tableviews setHidden:YES];
-    [tableviews2 setHidden:YES];
-    [createButton setHidden:YES];
-    [loadButton setHidden:NO];
-    [tableviews3 setHidden:NO];
-    
-    segmentControl.selectedSegmentIndex = 1;
     [self loadDate];
     [self loadActivities:@""];
     [self loadSavedRecord];

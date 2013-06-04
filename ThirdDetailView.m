@@ -48,6 +48,7 @@
     self.gestureRecognizer.cancelsTouchesInView = NO;
     self.gestureRecognizer.delegate = self;
     [self.view addGestureRecognizer:self.gestureRecognizer];
+    self.installers.delegate = self;
     self.SerialSB.delegate = self;
     self.SerialPJ.delegate = self;
     self.SerialSK.delegate = self;
@@ -72,7 +73,7 @@
 -(void)checkComplete
 {
     isql *database = [isql initialize];
-    if ([self.testContent.text length] > 0 ) {
+    if ([self.installers.text length] > 0 ) {
         NSMutableDictionary *myDict = [[NSMutableDictionary alloc] init];
               
         [database.menu_complete replaceObjectAtIndex:2 withObject:@"Complete"];
@@ -89,7 +90,7 @@
     }
 }
 
-- (IBAction)testChanged:(id)sender {
+- (IBAction)installersChanged:(id)sender {
     [self checkComplete];
 }
 
@@ -161,16 +162,46 @@
 }
 
 - (IBAction)addSerial:(id)sender {
-    [self createButton];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: @"SMARTBoard", @"Projector", @"Speaker", @"Other", nil];
+    [actionSheet setTag:1];
+    [actionSheet showFromRect:self.addBtn.frame inView:self.scrollview animated:YES];   
+    
 }
 
-- (void)createButton {
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == -1) {
+        return;
+    }
+    if (actionSheet.tag == 1) {
+        NSString *text;
+        switch (buttonIndex) {
+            case 0:
+                text = @"(SB)";
+                break;
+            case 1:
+                text = @"(PJ)";
+                break;
+            case 2:
+                text = @"(SK)";
+                break;
+            case 3:
+                text = @"(Other)";
+                break;
+            default:
+                break;
+        }
+        [self createButton: text];
+    }
+}
+
+- (void)createButton: (NSString *) text  {    
     
     UITextField *textFieldRounded = [[UITextField alloc] initWithFrame:CGRectMake(168, lastInputY + 65, 383, 30)];
     textFieldRounded.borderStyle = UITextBorderStyleRoundedRect;
     textFieldRounded.textColor = [UIColor blackColor];
     textFieldRounded.font = [UIFont systemFontOfSize:17.0];
-    textFieldRounded.placeholder = @"PJ"; 
+    textFieldRounded.placeholder = text;
     textFieldRounded.backgroundColor = [UIColor whiteColor];
     textFieldRounded.autocorrectionType = UITextAutocorrectionTypeNo;
     textFieldRounded.keyboardType = UIKeyboardTypeDefault;
@@ -182,13 +213,15 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(576, lastInputY + 69, 50, 21)];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:17.0];
-    label.text = @"(PJ)";
+    label.text = text;
+    label.adjustsFontSizeToFitWidth = YES;
+    
     [self.scrollview addSubview:label];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTag:addBtnCount];
     [button addTarget:self
-               action:@selector(removeButton:)
+               action:@selector(removeButtonClicked:)
      forControlEvents:UIControlEventTouchDown];    
     button.frame = CGRectMake(629, lastInputY + 67, 26, 25);
     [button setImage:[UIImage imageNamed:@"onebit_33.png"] forState:UIControlStateNormal];    
@@ -211,8 +244,21 @@
     lastInputY += 65;
 }
 
--(void)removeButton:(UIButton *)sender {
-    int index = sender.tag;
+- (void)removeButtonClicked:(UIButton *)sender {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Do you want to remove the item?" message:nil   delegate:self cancelButtonTitle:@"No" otherButtonTitles: @"Yes", nil];
+    [alert setTag: sender.tag];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        [self removeButton: alertView.tag];
+    }
+}
+
+-(void)removeButton:(int)index {
+    
     NSMutableDictionary *dict = [addBtnArray objectAtIndex:index];
     [[dict objectForKey:@"textFieldRounded"] removeFromSuperview];
     [[dict objectForKey:@"label"] removeFromSuperview];
@@ -232,11 +278,11 @@
         [[dict objectForKey:@"button"] setFrame: CGRectMake(629, y - 65, 26, 25)];
         
         [[dict objectForKey:@"button"] removeTarget:self
-                                             action:@selector(removeButton:)
+                                             action:@selector(removeButtonClicked:)
                                    forControlEvents:UIControlEventTouchDown];
         [[dict objectForKey:@"button"] setTag:i];
         [[dict objectForKey:@"button"] addTarget:self
-                                          action:@selector(removeButton:)
+                                          action:@selector(removeButtonClicked:)
                                 forControlEvents:UIControlEventTouchDown];
     }
     

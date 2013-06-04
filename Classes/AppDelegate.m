@@ -4,6 +4,7 @@
 #import "RootViewController.h"
 #import "loginModal.h"
 #import "isql.h"
+#import "TestFlight.h"
 
 //#import <Crashlytics/Crashlytics.h>
 
@@ -32,7 +33,7 @@
     
     //[TestFlight takeOff:@"a7cf1f951223c1a232afedace04054d8_MTQ0NTA1MjAxMi0xMC0xNyAxMjowNjo0MC4yMjIxMzM"];
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
-    [TestFlight takeOff:@"ef919c90-9cac-4a2f-935c-0fe54c714144"];
+    [TestFlight takeOff:@"0d9ec0ec-4db6-4772-9f4f-81e3582a0624"];
     
     return YES;
 }

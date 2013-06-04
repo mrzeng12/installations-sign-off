@@ -46,6 +46,9 @@
      addObserver:self selector:@selector(gotoSignaturePage:)
      name:@"gotoSignaturePage" object:nil];
     
+    [self.scrollview setFrame:CGRectMake(0, 320, 703, 704)];
+    [self.scrollview setContentSize:CGSizeMake(703, 950)];
+    
     [tableview setBackgroundView:nil];
     [tableview setBackgroundColor:nil];
     tableview.scrollEnabled = NO;
@@ -291,6 +294,17 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return 2;    
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([indexPath row] == 0) {
+        return 544;
+    }
+    else {
+        return 144;
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([indexPath row] == 0) {
         return cell1;
