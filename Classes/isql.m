@@ -19,7 +19,7 @@
 #import "ZipArchive.h"
 #import "objc/runtime.h"
 
-//#define testing
+#define testing
 
 @implementation isql
 
@@ -49,7 +49,7 @@ static SqlClient *client = nil;
     //if(client == nil)
     //{
         //client = [SqlClient clientWithServer: @"http://10.0.14.121/isql/" Instance:@"3YWD8P1" Database:@"sitesurvey" Username:@"sa" Password:@"Z3#gCh@r"];
-        client = [SqlClient clientWithServer: @"http://108.54.230.13/isql/" Instance:@"ARTEMIS" Database:@"sitesurvey" Username:@"tequser" Password:@"Teq058"];
+        client = [SqlClient clientWithServer: @"http://108.54.230.13/isql/" Instance:@"ARTEMIS" Database:@"install" Username:@"tequser" Password:@"Teq058"];
         //NSLog(@"Create a new sql instance");
     //}
     return client;
@@ -101,6 +101,7 @@ static SqlClient *client = nil;
     
 #ifndef testing
     //only work in production environment
+    /*
     isql *database = [isql initialize];
     SqlClient *client =[database databaseConnect];
     //[activityIndicator startAnimating];
@@ -133,6 +134,7 @@ static SqlClient *client = nil;
         }
         
     }];
+     */
 #endif
 }
 
@@ -146,7 +148,7 @@ static SqlClient *client = nil;
     //[activityIndicator startAnimating];
     
     NSMutableString* queryString = [NSMutableString string];
-    [queryString appendString:[NSString stringWithFormat:@"%@", @"select * from [sitesurvey].[dbo].[Ipadview_Phoenix2]"]];
+    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2] from [install].[dbo].[IpadInstall_Phoenix]"]];
     
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
@@ -212,12 +214,12 @@ static SqlClient *client = nil;
                     
                     NSTimeInterval timestampB = [[NSDate date] timeIntervalSince1970];
                     //srcNameArray is the original SQL Server column names in original order
-                    NSArray *srcNameArray = [NSArray arrayWithObjects:@"Activity Number", @"Name", @"AssignedName", @"BP Code", @"BP Name", @"Contact Person", @"Tel", @"Title", @"Email", @"Business Partner 2", @"Contact 2", @"Special Instructions", @"Latitude", @"Longitude", @"POD", @"SalesRep", @"Address", @"SO", @"SQ", @"StartDateTime", @"EndDateTime", @"Details", @"Status", @"User ID", @"BP2 Address", @"BP2 Name", @"BP2 Title", @"BP2 Email", @"BP2 Phone", @"SOJobName", @"SQJobName", @"CntctSbjct", nil];
+                    NSArray *srcNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"Business Partner 2", @"BP2 Name", @"District", @"Contact Person", @"Contact 2", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", nil];
                     //destNameArray is the original SQL Server column names in local_src order
-                    NSArray *destNameArray = [NSArray arrayWithObjects:@"Activity Number", @"Name", @"AssignedName", @"BP Code", @"BP Name", @"Contact Person", @"Tel", @"Title", @"Email", @"Latitude", @"Longitude", @"POD", @"SalesRep", @"Address", @"SO", @"SQ", @"StartDateTime", @"EndDateTime", @"Details", @"Status", @"Special Instructions", @"User ID", @"Business Partner 2", @"Contact 2", @"BP2 Address", @"BP2 Name", @"BP2 Title", @"BP2 Email", @"BP2 Phone", @"Purchasing Agent", @"SQJobName", @"CntctSbjct", nil];
+                    NSArray *destNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"District", @"Contact Person", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", nil];
                     //below is insert statement, which use local_src column names and order
-                    statement = @"INSERT INTO local_src (Activity_Number, Name, Assigned_Name, BP_Code, BP_Name, Contact_Person, Tel, Title, Email, Latitude, Longitude, POD, SalesRep, Address, SO, SQ, StartDateTime, EndDateTime, Details, Status, Special_Instructions, User_ID, Business_Partner_2, Contact_2, BP2_Address, BP2_Name, BP2_Title, BP2_Email, BP2_Phone, Purchasing_Agent, [Reserved 1], [Reserved 2]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                    
+                    statement = @"INSERT INTO local_src(Activity_Number, Assigned_Name, BP_Code, BP_Name, District, Contact_Person, POD, SO, StartDateTime, User_ID, File1, File2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
                     sqlite3_stmt *compiledStatement;
                     
                     if(sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &compiledStatement, NULL) == SQLITE_OK)
@@ -228,49 +230,23 @@ static SqlClient *client = nil;
                             for (int j = 0; j < [srcNameArray count]; j++) {
                                 //StartDateTime, EndDateTime needs to trancate the last part
                                 NSString *tempString = [[srcDBArray objectAtIndex:i] objectAtIndex:j];
-                                if ((j == 19 || j == 20) && [tempString length] > 21) {
+                                if ((j == 11) && [tempString length] > 21) {
                                     tempString = [tempString substringToIndex:19];
-                                }
-                                
-                                [srcDict setObject: tempString forKey:[srcNameArray objectAtIndex: j] ];
-                                
+                                }                                
+                                [srcDict setObject: tempString forKey:[srcNameArray objectAtIndex: j] ];                                
                             }
-                            
-                            [srcDict setObject:[srcDict objectForKey:@"BP Name"] forKey:@"Purchasing Agent"];
-                            
-                            if ([[srcDict objectForKey:@"Business Partner 2"] length] > 0) {
-                                
+                                                        
+                            if ([[srcDict objectForKey:@"Business Partner 2"] length] > 0) {                                
                                 //if bp2 exists, use bp2 info
                                 [srcDict setObject:[srcDict objectForKey:@"Business Partner 2"] forKey:@"BP Code" ];
-                                [srcDict setObject:[srcDict objectForKey:@"BP2 Name"] forKey:@"BP Name" ];
-                                [srcDict setObject:[srcDict objectForKey:@"BP2 Address"] forKey:@"Address" ];
-                                
+                                [srcDict setObject:[srcDict objectForKey:@"BP2 Name"] forKey:@"BP Name" ];                                
                             }
                             
-                            if ([[srcDict objectForKey:@"Business Partner 2"] length] > 0 && [[srcDict objectForKey:@"Contact 2"] length] > 0 ) {
-                                
-                                //if bp2 exists, and contact2 exists, swap contact and contact2
-                                NSString *swap_contact_person = [srcDict objectForKey:@"Contact Person"];
-                                NSString *swap_tel = [srcDict objectForKey:@"Tel"];
-                                NSString *swap_title = [srcDict objectForKey:@"Title"];
-                                NSString *swap_email = [srcDict objectForKey:@"Email"];
-                                
+                            if ([[srcDict objectForKey:@"Business Partner 2"] length] > 0 && [[srcDict objectForKey:@"Contact 2"] length] > 0 ) {                                
+                                //if bp2 exists, and contact2 exists, use contact2
                                 [srcDict setObject:[srcDict objectForKey:@"Contact 2"] forKey: @"Contact Person"];
-                                [srcDict setObject:[srcDict objectForKey:@"BP2 Phone"] forKey: @"Tel"];
-                                [srcDict setObject:[srcDict objectForKey:@"BP2 Title"] forKey: @"Title"];
-                                [srcDict setObject:[srcDict objectForKey:@"BP2 Email"] forKey: @"Email"];
-                                
-                                [srcDict setObject:swap_contact_person forKey: @"Contact 2"];
-                                [srcDict setObject:swap_tel forKey: @"BP2 Phone"];
-                                [srcDict setObject:swap_title forKey: @"BP2 Title"];
-                                [srcDict setObject:swap_email forKey: @"BP2 Email"];
-                            }
-                            
-                            //if sq jobname is null, so jobname is not null, replace sq jobname by so jobname 
-                            if ([[srcDict objectForKey:@"SQJobName"] length] == 0 && [[srcDict objectForKey:@"SOJobName"] length] > 0) {
-                                [srcDict setObject:[srcDict objectForKey:@"SOJobName"] forKey:@"SQJobName"];
-                            }
-                            
+                            }                            
+                                                        
                             for (int j = 0; j < [destNameArray count]; j++) {
                                 sqlite3_bind_text(compiledStatement, j+1, [[srcDict objectForKey: [destNameArray objectAtIndex:j]] UTF8String], -1, SQLITE_TRANSIENT);
                             }

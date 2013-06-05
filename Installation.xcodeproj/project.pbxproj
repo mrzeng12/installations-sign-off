@@ -44,6 +44,7 @@
 		B28F583C16DC0AF500FCF620 /* SavedActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */; };
 		B28F583E16DC0B2000FCF620 /* SavedActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */; };
 		B2B34FFB175E78B0004D5CE6 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */; };
+		B2B34FFD175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B2B34FFC175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png */; };
 		B2C22F2616E8F62900D73320 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = B2C22F2516E8F62900D73320 /* error.png */; };
 		B2DC705D16358C9B0040AA5F /* ButtonR.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DC705C16358C9B0040AA5F /* ButtonR.png */; };
 		B2DC706016358D580040AA5F /* gobtn.gif in Resources */ = {isa = PBXBuildFile; fileRef = B2DC705F16358D580040AA5F /* gobtn.gif */; };
@@ -219,6 +220,7 @@
 		B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SavedActivityCell.xib; sourceTree = "<group>"; };
 		B2B34FF8175E77E7004D5CE6 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		B2B34FFC175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Very-Basic-Clock-icon.png"; sourceTree = "<group>"; };
 		B2C22F2516E8F62900D73320 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
 		B2DC705C16358C9B0040AA5F /* ButtonR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonR.png; sourceTree = "<group>"; };
 		B2DC705F16358D580040AA5F /* gobtn.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gobtn.gif; sourceTree = "<group>"; };
@@ -444,6 +446,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B2B34FFC175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png */,
 				B24AB41716FF5DAB0017B00E /* speedtest.png */,
 				B233889E1680B68300B21BFD /* warning.png */,
 				B2EEDC6C169605B80097452D /* checkmark.gif */,
@@ -845,6 +848,7 @@
 				B2C22F2616E8F62900D73320 /* error.png in Resources */,
 				B24AB41816FF5DAB0017B00E /* speedtest.png in Resources */,
 				B2677D871709B9C200C4156C /* NewActivityCell.xib in Resources */,
+				B2B34FFD175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,14 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "UICustomSwitch.h"
+#import "quickLookModal.h"
+#import <QuickLook/QuickLook.h>
+
 @class CustomerAgreement;
 
 
-@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate> {
+@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, QLPreviewControllerDataSource,QLPreviewControllerDelegate> {
     int found_in_local_dest;
     NSString *customAlertActivity;
-    UITapGestureRecognizer *gestureRecognizer;
 }
+@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
 @property (nonatomic, strong) NSMutableArray *appointmentList;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
@@ -62,5 +65,13 @@
 - (void)initializeActivityDetailsStepTwo;
 
 -(void) clearFields;
+
+- (IBAction)changeTime:(id)sender;
+
+- (IBAction)openPDF:(UIButton *)sender;
+
+@property (strong, nonatomic) IBOutlet UIButton *pdfBtn1;
+
+@property (strong, nonatomic) IBOutlet UIButton *pdfBtn2;
 
 @end

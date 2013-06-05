@@ -415,7 +415,7 @@
         float height = (temp_height > 615)? temp_height: 615;
         
         [createButton setFrame:CGRectMake(41, height + 20, 234, 49)];
-        [scrollview setContentSize:CGSizeMake(703, height+210)];
+        [scrollview setContentSize:CGSizeMake(703, height+90)];
         
     }
     else {
@@ -534,7 +534,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {
             //if exists in local_dest, do not come up in New Survey List
-            NSString *selectSQL = [NSString stringWithFormat:@"select distinct time([StartDateTime]), [StartDateTime], [BP_Name], [Activity_Number], [SQ], [SO] from local_src where date('%@') = date([StartDateTime]) and Assigned_Name like '%%%@%%' and [Activity_Number] not in (select distinct [Activity_no] from local_dest where [Teq_rep] like '%%%@%%' ) order by [StartDateTime], [BP_Name];", oneDay, database.current_teq_rep, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat:@"select distinct time([StartDateTime]), [StartDateTime], [BP_Name], [Activity_Number], '', [SO] from local_src where date('%@') = date([StartDateTime]) and Assigned_Name like '%%%@%%' and [Activity_Number] not in (select distinct [Activity_no] from local_dest where [Teq_rep] like '%%%@%%' ) order by [StartDateTime], [BP_Name];", oneDay, database.current_teq_rep, database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -600,7 +600,7 @@
         
         [createButton setFrame:CGRectMake(41, height + 20, 234, 49)];
         if (segmentControl.selectedSegmentIndex == 0) {
-            [scrollview setContentSize:CGSizeMake(703, height+210)];
+            [scrollview setContentSize:CGSizeMake(703, height+90)];
         }
         
     }  
@@ -1021,7 +1021,7 @@
         
         [createButton setFrame:CGRectMake(41, height + 20, 234, 49)];
         if (segmentControl.selectedSegmentIndex == 0) {
-            [scrollview setContentSize:CGSizeMake(703, height+210)];
+            [scrollview setContentSize:CGSizeMake(703, height+90)];
         }
     }
 

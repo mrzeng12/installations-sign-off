@@ -683,5 +683,8 @@
 
 @property (strong, nonatomic) NSString *current_wall_number;
 
+@property (strong, nonatomic) NSString *current_pdf1;
+
+@property (strong, nonatomic) NSString *current_pdf2;
 
 @end

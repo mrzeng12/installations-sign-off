@@ -757,9 +757,7 @@
    
 }
 
-- (IBAction) debug:(id)sender {
-    [TestFlight openFeedbackView];
-}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     isql *database = [isql initialize];

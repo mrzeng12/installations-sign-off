@@ -14,6 +14,8 @@
 #import "UICustomSwitch.h"
 #import "CompletePDFRenderer.h"
 #import "LGViewHUD.h"
+#import "quickLookModal.h"
+#import <QuickLook/QuickLook.h>
 
 @implementation FirstDetailView3
 
@@ -32,6 +34,7 @@
 @synthesize lastActivity;
 @synthesize customeragreement;
 @synthesize scrollView;
+@synthesize gestureRecognizer;
 
 @synthesize  appointmentList, activityIndicator;
 
@@ -60,6 +63,7 @@
     gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:gestureRecognizer];
+    gestureRecognizer.delegate = self;
     
     [scrollView setFrame:CGRectMake(0, 320, 703, 748)];
     [scrollView setContentSize:CGSizeMake(703, 1065)];
@@ -92,7 +96,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     isql *database = [isql initialize];
     
-    [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 748) animated:YES];
+    [scrollView scrollsToTop];
     
     //if ((![database.current_location isEqualToString: self.lastLocation] || ![database.current_date isEqualToString:self.lastDate]) && database.current_location != nil) {
     if (![database.current_activity_no isEqualToString:self.lastActivity] && database.current_activity_no != nil)
@@ -260,6 +264,115 @@
     database.current_inventory_existing_equip = existingEquipOutlet.text = nil;
     
     database.current_onthefly_activity = nil;
+}
+
+- (IBAction)changeTime:(id)sender {
+        
+    NSString *title = @"\n\n\n\n\n\n\n\n\n\n\n\n" ;
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:[NSString stringWithFormat:@"%@%@", title, NSLocalizedString(@"SelectADateKey", @"")]
+                                  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    [actionSheet showInView:self.view];
+    UIDatePicker *datePicker = [[UIDatePicker alloc] init] ;
+    UIButton *btn = sender;
+    if (btn.tag == 1) {
+        datePicker.tag = 1;
+    }
+    if (btn.tag == 2) {
+        datePicker.tag = 2;
+    }
+    datePicker.datePickerMode = UIDatePickerModeTime;
+    [datePicker addTarget:self  action:@selector(DateChange:)
+         forControlEvents:UIControlEventValueChanged];
+    [actionSheet addSubview:datePicker];
+    
+    //like css, position: relative; right: 22px;
+    CGRect pickerRect = datePicker.bounds;
+    pickerRect.origin.x = 22;
+    datePicker.bounds = pickerRect;
+    
+}
+
+- (IBAction)openPDF:(UIButton *)sender {
+    
+    isql *database = [isql initialize];
+    NSString *stringURL;
+    if (sender.tag == 1) {
+        stringURL = database.current_pdf1;
+    }
+    if (sender.tag == 2) {
+        stringURL = database.current_pdf2;
+    }    
+    NSURL  *url = [NSURL URLWithString:stringURL];
+    NSData *urlData = [NSData dataWithContentsOfURL:url];
+    
+    NSArray       *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString  *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString *filename = [stringURL stringByReplacingOccurrencesOfString:@"http://scheduler.teq.com/downloads/" withString:@""];
+    
+    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"quicklook.pdf"];
+    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+    
+    if ( urlData )
+    {        
+        [urlData writeToFile:filePath atomically:YES];
+    }
+    
+    QLPreviewController *temp = [[QLPreviewController alloc] init];
+    [temp setDelegate:self];
+	[temp setDataSource:self];
+    [temp setCurrentPreviewItemIndex:0];
+    
+    temp.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    temp.modalPresentationStyle = UIModalPresentationFullScreen;
+    [super presentViewController:temp animated:YES completion:nil];
+}
+
+- (NSInteger) numberOfPreviewItemsInPreviewController: (QLPreviewController *) controller
+{
+	return 1;
+}
+
+- (id <QLPreviewItem>)previewController: (QLPreviewController *)controller previewItemAtIndex:(NSInteger)index
+{
+    NSArray  *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString  *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"quicklook.pdf"];
+    
+    return [NSURL fileURLWithPath:filePath];
+}
+
+- (void)previewControllerDidDismiss:(QLPreviewController *)controller {
+    isql *database = [isql initialize];
+    
+    //add justHighLight attribute so that it does not saveVariable each time a button is clicked
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:[NSNumber numberWithInt:database.selectedMenu] forKey:@"index"];
+    [dict setObject:[NSNumber numberWithInt:1] forKey:@"justHighLight"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"moveOnToCertainMenuPage" object:self userInfo:dict];   
+    
+}
+
+- (void)DateChange:(id)sender
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"hh:mm a"];
+    UIDatePicker *picker = sender;
+    if (picker.tag == 1) {
+        arrivalTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
+    }
+    if (picker.tag == 2) {
+        departureTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
+    }    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
 }
 
 - (void)initializeActivityDetails {
@@ -441,7 +554,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number], [StartDateTime], coalesce([SO],''), coalesce([SQ],''), coalesce([Contact_Person],''), coalesce([Tel],''), coalesce([Address],''), coalesce([BP_Code],''), [Latitude], [Longitude], coalesce([Title],''), coalesce([Email],''), coalesce([Contact_2],''), coalesce([BP2_Phone],''), coalesce([BP2_Title],''), coalesce([BP2_Email],''), coalesce([Special_Instructions],''), coalesce([Purchasing_Agent],''), coalesce([Reserved 1],''), coalesce([Reserved 2],''), coalesce([BP_Name],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number],  coalesce([BP_Code],''), coalesce([BP_Name],''), coalesce([District],''), coalesce([Contact_Person],''), coalesce([POD],''), coalesce([SO],''), [StartDateTime], coalesce([File1],''), coalesce([File2],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -458,57 +571,37 @@
                     database.current_activity_no = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 0)]];
                     activityNoOutlet.text = database.current_activity_no;
                     
-                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]];              
-                    dateOutlet.text = [database.current_date substringToIndex:10];
+                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]];
                     
-                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]];  
-                    SOOutlet.text = database.current_so; 
+                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]];
+                    schoolNameOutlet.text = database.current_location;
                     
-                    database.current_sq = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
+                    NSString *district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
+                    districtOutlet.text = district;
                     
-                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];
-                    
+                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];                    
                     primarycontactOutlet.text = database.current_primary_contact;
                     
-                    database.current_walk_through_with = database.current_primary_contact;
+                    NSString *pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
+                    teamOutlet.text = pod;
                     
-                    database.current_primary_contact_phone = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
-                                        
-                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
+                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
+                    SOOutlet.text = database.current_so;
                     
-                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];
+                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];
+                    dateOutlet.text = [database.current_date substringToIndex:10];
                     
-                    database.current_dest_latitude = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
-                    
-                    database.current_dest_longitude = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
-                    
-                    database.current_primary_contact_title = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)]];
-                    
-                    database.current_primary_contact_email = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)]];
-                    
-                    database.current_second_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)]];
-                    
-                    database.current_second_contact_phone = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)]];
-                    
-                    database.current_second_contact_title = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)]];
-                    
-                    database.current_second_contact_email = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)]];
-                    
-                    database.current_special_instructions = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)]];
-                    
-                    database.current_purchasing_agent = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 17)]];
-                    
-                    database.current_job_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)]];
-                    
-                    database.current_inventory_existing_equip = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 19)]];
-                    if([database.current_inventory_existing_equip isEqualToString:@"1188"]){
-                        existingEquipOutlet.text = @"(Inventory of existing equipment)";
-                    }else {
-                        existingEquipOutlet.text = @"";
+                    database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
+                    //schoolNameOutlet.text = pdf1;
+                    if ([database.current_pdf1 length] > 0) {
+                        self.pdfBtn1.hidden = NO;
                     }
                     
-                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 20)]];
-                    schoolNameOutlet.text = database.current_location;
+                    database.current_pdf2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
+                    //schoolNameOutlet.text = database.current_location;
+                    if ([database.current_pdf2 length] > 0) {
+                        self.pdfBtn2.hidden = NO;
+                    }
                     
                 } 
                 
@@ -610,14 +703,9 @@
     }
 }
 
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated
-{
-    
-}
-
 - (void) hideKeyboard {
     [self.view endEditing:YES];
-    gestureRecognizer.cancelsTouchesInView = YES;
+    //gestureRecognizer.cancelsTouchesInView = YES;
     const float movementDuration = 0.3f; // tweak as needed
     
     [UIView beginAnimations: @"anim" context: nil];
@@ -628,4 +716,10 @@
     [scrollView setFrame:CGRectMake(0, 0, 703, 704)];
     [UIView commitAnimations];
 }
+
+- (void)enableSelection:(NSString *)animationID finished:(BOOL)finished context:(void *)context
+{
+    gestureRecognizer.cancelsTouchesInView = NO;
+}
+
 @end
