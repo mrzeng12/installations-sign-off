@@ -369,6 +369,8 @@
         
         NSDate *oneMonthAgo =[[NSDate date] dateByAddingTimeInterval:-30*24*60*60];
         
+        NSDate *oneWeekAgo =[[NSDate date] dateByAddingTimeInterval:-7*24*60*60];
+        
         NSDateFormatter *df=[[NSDateFormatter alloc]init];// = [NSDateFormatter initWithDateFormat:@"yyyy-MM-dd"];
         [df setDateFormat:@"yyyy-MM-dd"];
         
@@ -395,6 +397,17 @@
                 [[NSFileManager defaultManager] removeItemAtPath:[kDOCSFOLDER stringByAppendingPathComponent:file] error:&error];
                 
                 NSLog(@"File removed -- %@ -- modified by: %@", file, modifiedDateString);
+            };
+        }
+        //remove temp PDF file for the cover page from a week ago.
+        if ([modifiedDate compare:oneWeekAgo] == NSOrderedAscending)
+            
+        {
+            if ([[file pathExtension] caseInsensitiveCompare: @"pdf"] == NSOrderedSame && [[file substringToIndex:9] isEqualToString:@"reference"]) {
+                
+                [[NSFileManager defaultManager] removeItemAtPath:[kDOCSFOLDER stringByAppendingPathComponent:file] error:&error];
+                    
+                NSLog(@"File removed -- %@ -- modified by: %@", file, modifiedDateString);                                
             };
         }
     }

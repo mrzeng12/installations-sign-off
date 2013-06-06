@@ -95,9 +95,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     isql *database = [isql initialize];
-    
-    [scrollView scrollsToTop];
-    
+            
     //if ((![database.current_location isEqualToString: self.lastLocation] || ![database.current_date isEqualToString:self.lastDate]) && database.current_location != nil) {
     if (![database.current_activity_no isEqualToString:self.lastActivity] && database.current_activity_no != nil)
     {
@@ -115,11 +113,10 @@
         NSLog(@"reset firstDetialView3");
         /******** call saveVariableToLocalDest at the end of initializeActivityDetails *******/
     }
-        
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 704) animated:YES];
     [self.scrollView flashScrollIndicators];
     [super viewWillAppear:YES];
 }
-
 
 - (void) viewWillDisappear:(BOOL)animated {
     isql *database = [isql initialize];
@@ -128,7 +125,7 @@
     self.lastActivity = database.current_activity_no;
     
     [super viewWillDisappear:YES];
-    [self hideKeyboard];
+    [self.view endEditing:YES]; 
 }
 
 - (void) viewDidDisappear:(BOOL)animated {
@@ -143,6 +140,19 @@
     hud.activityIndicatorOn = YES;
     
     hud.topText = @"Saving";
+    
+    hud.bottomText = @"Please wait...";
+    
+    [hud showInView:super.splitViewController.view];
+}
+
+- (void)myThreadMethodAfterOpen:(id)options
+{
+    LGViewHUD *hud = [LGViewHUD defaultHUD];
+    
+    hud.activityIndicatorOn = YES;
+    
+    hud.topText = @"Downloading";
     
     hud.bottomText = @"Please wait...";
     
@@ -267,14 +277,21 @@
 }
 
 - (IBAction)changeTime:(id)sender {
-        
+    
+    UIButton *btn = sender;
     NSString *title = @"\n\n\n\n\n\n\n\n\n\n\n\n" ;
     UIActionSheet *actionSheet = [[UIActionSheet alloc]
                                   initWithTitle:[NSString stringWithFormat:@"%@%@", title, NSLocalizedString(@"SelectADateKey", @"")]
                                   delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    [actionSheet showInView:self.view];
+    if (btn.tag == 1) {
+        [actionSheet showFromRect:self.arrivalBtn.frame inView:self.scrollView animated:YES];
+    }
+    if (btn.tag == 2) {
+        [actionSheet showFromRect:self.departureBtn.frame inView:self.scrollView animated:YES];
+    }
+    
     UIDatePicker *datePicker = [[UIDatePicker alloc] init] ;
-    UIButton *btn = sender;
+    
     if (btn.tag == 1) {
         datePicker.tag = 1;
     }
@@ -295,6 +312,8 @@
 
 - (IBAction)openPDF:(UIButton *)sender {
     
+    [NSThread detachNewThreadSelector:@selector(myThreadMethodAfterOpen:) toTarget:self withObject:nil];
+    
     isql *database = [isql initialize];
     NSString *stringURL;
     if (sender.tag == 1) {
@@ -310,11 +329,12 @@
     NSString  *documentsDirectory = [paths objectAtIndex:0];
     
     NSString *filename = [stringURL stringByReplacingOccurrencesOfString:@"http://scheduler.teq.com/downloads/" withString:@""];
+    filename = [NSString stringWithFormat:@"reference-%@", filename];
     
-    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"quicklook.pdf"];
+    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory, filename];
     
-    NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+    //NSError *error = nil;
+    //[[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
     
     if ( urlData )
     {        
@@ -325,10 +345,29 @@
     [temp setDelegate:self];
 	[temp setDataSource:self];
     [temp setCurrentPreviewItemIndex:0];
+    [temp setTitle:filename];
     
     temp.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     temp.modalPresentationStyle = UIModalPresentationFullScreen;
     [super presentViewController:temp animated:YES completion:nil];
+    [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
+}
+
+- (IBAction)autoFill:(UIButton *)sender {
+    if (sender.tag == 1) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                      initWithTitle:nil
+                                      delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Installation", @"Uninstall", nil];
+        actionSheet.tag = 1;
+        [actionSheet showFromRect:self.typeofworkBtn.frame inView:self.scrollView animated:YES];
+    }
+    if (sender.tag == 2) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                      initWithTitle:nil
+                                      delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Complete", @"Incomplete", nil];
+        actionSheet.tag = 2;
+        [actionSheet showFromRect:self.jobstatusBtn.frame inView:self.scrollView animated:YES];
+    }
 }
 
 - (NSInteger) numberOfPreviewItemsInPreviewController: (QLPreviewController *) controller
@@ -341,7 +380,7 @@
     NSArray  *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString  *documentsDirectory = [paths objectAtIndex:0];
     
-    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory,@"quicklook.pdf"];
+    NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory, controller.title];
     
     return [NSURL fileURLWithPath:filePath];
 }
@@ -372,7 +411,22 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
+    if (actionSheet.tag == 1) {
+        if (buttonIndex == 0) {
+            self.typeofworkOutlet.text = @"Installation";
+        }
+        if (buttonIndex == 1) {
+            self.typeofworkOutlet.text = @"Uninstall";
+        }
+    }
+    if (actionSheet.tag == 2) {
+        if (buttonIndex == 0) {
+            self.jobStatusOutlet.text = @"Complete";
+        }
+        if (buttonIndex == 1) {
+            self.jobStatusOutlet.text = @"Incomplete";
+        }
+    }
 }
 
 - (void)initializeActivityDetails {
@@ -594,13 +648,15 @@
                     database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
                     //schoolNameOutlet.text = pdf1;
                     if ([database.current_pdf1 length] > 0) {
-                        self.pdfBtn1.hidden = NO;
+                        self.pdfBtn1.userInteractionEnabled = YES;
+                        self.pdfBtn1.alpha = 1.0;
                     }
                     
                     database.current_pdf2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
                     //schoolNameOutlet.text = database.current_location;
                     if ([database.current_pdf2 length] > 0) {
-                        self.pdfBtn2.hidden = NO;
+                        self.pdfBtn2.userInteractionEnabled = YES;
+                        self.pdfBtn2.alpha = 1.0;
                     }
                     
                 } 

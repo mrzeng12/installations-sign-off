@@ -52,9 +52,18 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *departureTimeOutlet;
 
+@property (strong, nonatomic) IBOutlet UITextField *typeofworkOutlet;
 
 
 @property (strong, nonatomic) IBOutlet UITextView *reasonForVisit;
+
+@property (strong, nonatomic) IBOutlet UIButton *typeofworkBtn;
+
+@property (strong, nonatomic) IBOutlet UIButton *jobstatusBtn;
+
+@property (strong, nonatomic) IBOutlet UIButton *arrivalBtn;
+
+@property (strong, nonatomic) IBOutlet UIButton *departureBtn;
 
 - (IBAction)GoToNextPage;
 
@@ -69,6 +78,8 @@
 - (IBAction)changeTime:(id)sender;
 
 - (IBAction)openPDF:(UIButton *)sender;
+
+- (IBAction)autoFill:(UIButton *)sender;
 
 @property (strong, nonatomic) IBOutlet UIButton *pdfBtn1;
 

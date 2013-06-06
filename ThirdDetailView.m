@@ -168,6 +168,12 @@
     
 }
 
+- (IBAction)autoFill:(UIButton *)sender {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: @"Complete", @"Incomplete", nil];
+    [actionSheet setTag:sender.tag];
+    [actionSheet showFromRect:sender.frame inView:self.scrollview animated:YES];
+}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == -1) {
@@ -192,6 +198,14 @@
                 break;
         }
         [self createButton: text];
+    }
+    if (actionSheet.tag == 2) {
+        if (buttonIndex == 0) {
+            self.statusOutlet.text = @"Complete";
+        }
+        if (buttonIndex == 1) {
+            self.statusOutlet.text = @"Incomplete";
+        }
     }
 }
 

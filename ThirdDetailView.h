@@ -20,8 +20,8 @@
 
 - (IBAction)installersChanged:(id)sender;
 @property (strong, nonatomic) IBOutlet UITextField *installers;
-@property (strong, nonatomic) IBOutlet UIButton *statusComplete;
-@property (strong, nonatomic) IBOutlet UIButton *statusIncomplete;
+@property (strong, nonatomic) IBOutlet UIButton *statusBtn;
+@property (strong, nonatomic) IBOutlet UITextField *statusOutlet;
 @property (strong, nonatomic) IBOutlet UITextField *SerialSB;
 @property (strong, nonatomic) IBOutlet UITextField *SerialPJ;
 @property (strong, nonatomic) IBOutlet UITextField *SerialSK;
@@ -31,6 +31,8 @@
 @property (strong, nonatomic) IBOutlet UITextView *commentsOutlet;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollview;
 - (IBAction)addSerial:(id)sender;
+- (IBAction)autoFill:(UIButton *)sender;
+
 
 @end
 
