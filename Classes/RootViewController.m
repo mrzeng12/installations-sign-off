@@ -660,26 +660,18 @@
     database.classroom_index = nil;
     
     database.current_signature_file_directory_1 = nil;
-    
-    database.current_signature_file_directory_2 = nil;
-    
+        
     database.current_signature_file_directory_3 = nil;
     
     database.current_print_name_1 = nil;
     
-    database.current_print_name_2 = nil;
-    
     database.current_print_name_3 = nil;
     
     database.current_classroom_grade = nil;
-    
-    database.current_title_of_signature_1 = nil;
-    
+        
     database.current_agreement_1 = nil;
     
     database.current_agreement_2 = nil;
-    
-    database.current_pdf_file_name = nil;
     
     database.current_comlete_pdf_file_name = nil;
     
@@ -874,53 +866,11 @@
                 database.current_date = nil;
                 
                 database.current_so = nil;
-                
-                database.current_sq = nil;
-                
-                database.current_purchasing_agent = nil;
-                
-                database.current_address = nil;
-                
+                                                                
                 database.current_bp_code = nil;
-                
-                database.current_walk_through_with = nil;
-                
+                                
                 database.current_primary_contact = nil;
-                
-                database.current_primary_contact_title = nil;
-                
-                database.current_primary_contact_phone = nil;
-                
-                database.current_primary_contact_email = nil;
-                
-                database.current_second_contact = nil;
-                
-                database.current_second_contact_title = nil;
-                
-                database.current_second_contact_phone = nil;
-                
-                database.current_second_contact_email = nil;
-                
-                database.current_engineer_contact = nil;
-                
-                database.current_engineer_contact_title = nil;
-                
-                database.current_engineer_contact_phone = nil;
-                
-                database.current_engineer_contact_email = nil;
-                
-                database.current_school_hours = nil;
-                
-                database.current_elevator_available = nil;
-                
-                database.current_loading_available = nil;
-                
-                database.current_special_instructions = nil;
-                
-                database.current_hours_of_install = nil;
-                
-                database.current_installers_needed = nil;
-                
+                                
                 database.classrooms_in_one_location = nil;
                 
                 database.current_classroom_number = nil;
@@ -932,46 +882,27 @@
                 database.classroom_index = nil;
                 
                 database.current_signature_file_directory_1 = nil;
-                
-                database.current_signature_file_directory_2 = nil;
-                
+                           
                 database.current_signature_file_directory_3 = nil;
                 
                 database.current_print_name_1 = nil;
-                
-                database.current_print_name_2 = nil;
-                
+                                
                 database.current_print_name_3 = nil;
                 
                 database.current_classroom_grade = nil;
-                
-                database.current_title_of_signature_1 = nil;
-                
+                                
                 database.current_agreement_1 = nil;
                 
                 database.current_agreement_2 = nil;
-                
-                database.current_pdf_file_name = nil;
+                          
                 
                 database.current_comlete_pdf_file_name = nil;
-                
-                database.current_installation_vans = nil;
-                
-                database.current_dest_latitude = nil;
-                
-                database.current_dest_longitude = nil;
-                
+                                
                 database.src_latitude = nil;
                 
                 database.src_longitude = nil;
-                
-                database.current_job_name = nil;
-                
-                database.current_inventory_existing_equip = nil;
-                
-                database.current_onthefly_activity = nil;
-                
-                //database.current_cat5xt = nil;
+                                
+          
                 
                 loginModal *temp = [[loginModal alloc] initWithNibName:@"loginModal" bundle:[NSBundle mainBundle]];
                 

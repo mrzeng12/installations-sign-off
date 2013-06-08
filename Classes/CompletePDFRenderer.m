@@ -262,7 +262,7 @@
                 sqlite3_finalize(statement);
             }
             else {
-                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
+                NSLog(@"prepare PDF db statement failed: %s", sqlite3_errmsg(db));
                 
             }
         }
@@ -916,6 +916,7 @@
 
 - (void)drawPDF:(NSString*)fileName
 {
+    
     //[self testFonts];
     isql *database = [isql initialize];
     
@@ -946,7 +947,7 @@
         UIFont *font = [UIFont fontWithName:boldFont
      size:48.0f *factor];
         [[NSString stringWithFormat:@"%@, %@",database.current_location, database.current_date ] drawAtPoint:CGPointMake(468 *factor, 259 *factor) withFont: font];
-        [database.current_address drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
+        //[database.current_address drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
                         
         //draw white fonts for titles
         CGContextSetFillColorWithColor(pdfContext, [UIColor whiteColor].CGColor);
@@ -973,49 +974,49 @@
         font = [UIFont fontWithName:normalFont
      size:42.0f *factor];
         [database.current_activity_no drawAtPoint:CGPointMake(170 *factor, 565 *factor) withFont: font];
-        [database.current_sq drawAtPoint:CGPointMake(446 *factor, 565 *factor) withFont: font];
+        //[database.current_sq drawAtPoint:CGPointMake(446 *factor, 565 *factor) withFont: font];
         [database.current_so drawAtPoint:CGPointMake(803 *factor, 565 *factor) withFont: font];
-        [database.current_job_name drawAtPoint:CGPointMake(1123 *factor, 565 *factor) withFont: font];
+        //[database.current_job_name drawAtPoint:CGPointMake(1123 *factor, 565 *factor) withFont: font];
         [database.current_teq_rep drawAtPoint:CGPointMake(1469 *factor, 565 *factor) withFont: font];
         [database.current_date drawAtPoint:CGPointMake(1928 *factor, 565 *factor) withFont: font];
-        [database.current_purchasing_agent drawAtPoint:CGPointMake(490 *factor, 2110 *factor) withFont:font];
+        //[database.current_purchasing_agent drawAtPoint:CGPointMake(490 *factor, 2110 *factor) withFont:font];
         
         [database.current_primary_contact drawAtPoint:CGPointMake(170 *factor, 857 *factor) withFont: font];
-        [database.current_second_contact drawAtPoint:CGPointMake(918 *factor, 857 *factor) withFont: font];
-        [database.current_engineer_contact drawAtPoint:CGPointMake(1666 *factor, 857 *factor) withFont: font];
+        //[database.current_second_contact drawAtPoint:CGPointMake(918 *factor, 857 *factor) withFont: font];
+        //[database.current_engineer_contact drawAtPoint:CGPointMake(1666 *factor, 857 *factor) withFont: font];
         
-        [database.current_primary_contact_title drawAtPoint:CGPointMake(170 *factor, 923 *factor) withFont: font];
-        [database.current_second_contact_title drawAtPoint:CGPointMake(918 *factor, 923 *factor) withFont: font];
-        [database.current_engineer_contact_title drawAtPoint:CGPointMake(1666 *factor, 923 *factor) withFont: font];
+        //[database.current_primary_contact_title drawAtPoint:CGPointMake(170 *factor, 923 *factor) withFont: font];
+        //[database.current_second_contact_title drawAtPoint:CGPointMake(918 *factor, 923 *factor) withFont: font];
+        //[database.current_engineer_contact_title drawAtPoint:CGPointMake(1666 *factor, 923 *factor) withFont: font];
         
-        [database.current_primary_contact_phone drawAtPoint:CGPointMake(170 *factor, 989 *factor) withFont: font];
-        [database.current_second_contact_phone drawAtPoint:CGPointMake(918 *factor, 989 *factor) withFont: font];
-        [database.current_engineer_contact_phone drawAtPoint:CGPointMake(1666 *factor, 989 *factor) withFont: font];
+        //[database.current_primary_contact_phone drawAtPoint:CGPointMake(170 *factor, 989 *factor) withFont: font];
+        //[database.current_second_contact_phone drawAtPoint:CGPointMake(918 *factor, 989 *factor) withFont: font];
+        //[database.current_engineer_contact_phone drawAtPoint:CGPointMake(1666 *factor, 989 *factor) withFont: font];
         
-        [database.current_primary_contact_email drawAtPoint:CGPointMake(170 *factor, 1055 *factor) withFont: font];
-        [database.current_second_contact_email drawAtPoint:CGPointMake(918 *factor, 1055 *factor) withFont: font];
-        [database.current_engineer_contact_email drawAtPoint:CGPointMake(1666 *factor, 1055 *factor) withFont: font];
+        //[database.current_primary_contact_email drawAtPoint:CGPointMake(170 *factor, 1055 *factor) withFont: font];
+        //[database.current_second_contact_email drawAtPoint:CGPointMake(918 *factor, 1055 *factor) withFont: font];
+        //[database.current_engineer_contact_email drawAtPoint:CGPointMake(1666 *factor, 1055 *factor) withFont: font];
         
-        [database.current_school_hours drawAtPoint:CGPointMake(170 *factor, 1350 *factor) withFont: font];
-        [database.current_elevator_available drawAtPoint:CGPointMake(918 *factor, 1350 *factor) withFont: font];
-        [database.current_loading_available drawAtPoint:CGPointMake(1666 *factor, 1350 *factor) withFont: font];
+        //[database.current_school_hours drawAtPoint:CGPointMake(170 *factor, 1350 *factor) withFont: font];
+        //[database.current_elevator_available drawAtPoint:CGPointMake(918 *factor, 1350 *factor) withFont: font];
+        //[database.current_loading_available drawAtPoint:CGPointMake(1666 *factor, 1350 *factor) withFont: font];
         
         CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
         font = [UIFont fontWithName:normalFont
      size:48.0f *factor];
         [database.current_print_name_1 drawAtPoint:CGPointMake(653 *factor, 2641 *factor) withFont: font];
-        [database.current_print_name_2 drawAtPoint:CGPointMake(653 *factor, 2758 *factor) withFont: font];
+        //[database.current_print_name_2 drawAtPoint:CGPointMake(653 *factor, 2758 *factor) withFont: font];
         [database.current_print_name_3 drawAtPoint:CGPointMake(653 *factor, 2875 *factor) withFont: font];
         
         CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
         font = [UIFont fontWithName:normalFont
      size:48.0f *factor];
         [PDF_room_number drawInRect:CGRectMake(132 *factor, 1650 *factor, 2258 *factor, 544 *factor) withFont:font];
-        NSString *temp_special_instructions = [[database.current_special_instructions componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@"; "];
-        [temp_special_instructions drawInRect:CGRectMake(132 *factor, 1780 *factor, 2258 *factor, 300 *factor) withFont:font];
-        if([database.current_inventory_existing_equip isEqualToString:@"1188"]){
-            [@"(Inventory of existing equipment)"  drawInRect:CGRectMake(700 *factor, 1553 *factor, 2258 *factor, 300 *factor) withFont:font];
-        }
+        //NSString *temp_special_instructions = [[database.current_special_instructions componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@"; "];
+        //[temp_special_instructions drawInRect:CGRectMake(132 *factor, 1780 *factor, 2258 *factor, 300 *factor) withFont:font];
+        //if([database.current_inventory_existing_equip isEqualToString:@"1188"]){
+        //    [@"(Inventory of existing equipment)"  drawInRect:CGRectMake(700 *factor, 1553 *factor, 2258 *factor, 300 *factor) withFont:font];
+        //}
         //NSLog(@"%@", PDF_room_number);
         
         CGContextSetFillColorWithColor(pdfContext, [UIColor darkGrayColor].CGColor);

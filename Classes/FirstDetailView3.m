@@ -26,11 +26,13 @@
 @synthesize primarycontactOutlet;
 @synthesize existingEquipOutlet;
 @synthesize reasonForVisit;
+@synthesize jobSummary;
 @synthesize teamOutlet;
 @synthesize districtOutlet;
 @synthesize jobStatusOutlet;
 @synthesize arrivalTimeOutlet;
 @synthesize departureTimeOutlet;
+@synthesize typeofworkOutlet;
 @synthesize lastActivity;
 @synthesize customeragreement;
 @synthesize scrollView;
@@ -65,8 +67,8 @@
     [self.view addGestureRecognizer:gestureRecognizer];
     gestureRecognizer.delegate = self;
     
-    [scrollView setFrame:CGRectMake(0, 320, 703, 748)];
-    [scrollView setContentSize:CGSizeMake(703, 1065)];
+    [scrollView setFrame:CGRectMake(0, 320, 703, 704)];
+    [scrollView setContentSize:CGSizeMake(703, 1300)];
     activityIndicator.hidesWhenStopped = YES;    
     
     schoolNameOutlet.delegate = self;
@@ -80,13 +82,21 @@
     arrivalTimeOutlet.delegate = self;
     departureTimeOutlet.delegate = self;
     reasonForVisit.delegate = self;
+    jobSummary.delegate = self;
     
     reasonForVisit.text = @"Please type the reason for visit...";
-    reasonForVisit.textColor = [UIColor lightGrayColor];    
+    reasonForVisit.textColor = [UIColor lightGrayColor];
     reasonForVisit.layer.borderWidth = 1;
     reasonForVisit.layer.borderColor = [[UIColor grayColor] CGColor];
     reasonForVisit.layer.cornerRadius = 7.0f;
     reasonForVisit.delegate = self;
+    
+    jobSummary.text = @"Please type job summary here...";
+    jobSummary.textColor = [UIColor lightGrayColor];
+    jobSummary.layer.borderWidth = 1;
+    jobSummary.layer.borderColor = [[UIColor grayColor] CGColor];
+    jobSummary.layer.cornerRadius = 7.0f;
+    jobSummary.delegate = self;
                 
     [super viewDidLoad];
     
@@ -125,12 +135,7 @@
     self.lastActivity = database.current_activity_no;
     
     [super viewWillDisappear:YES];
-    [self.view endEditing:YES]; 
-}
-
-- (void) viewDidDisappear:(BOOL)animated {
-        
-     [super viewDidDisappear:YES];
+    [self hideKeyboard];
 }
 
 - (void)myThreadMethodAfterExit:(id)options
@@ -191,66 +196,36 @@
 - (IBAction)saveCurrentField:(id)sender
 {
     isql *database = [isql initialize];
-        
+    
+    if (sender == typeofworkOutlet) {
+        database.current_type_of_work = typeofworkOutlet.text;
+    }
     if (sender == schoolNameOutlet) {
         database.current_location = schoolNameOutlet.text;
+    }
+    if (sender == teamOutlet) {
+        database.current_pod = teamOutlet.text;
+    }
+    if (sender == districtOutlet) {
+        database.current_district = districtOutlet.text;
     }
     if (sender == SOOutlet) {
         database.current_so =  SOOutlet.text;
     }
-    if (sender == dateOutlet) {
-        database.current_date =  dateOutlet.text;
-    }
-    if (sender == activityNoOutlet) {
-        database.current_activity_no =  activityNoOutlet.text;
-    }
     if (sender == primarycontactOutlet) {
         database.current_primary_contact =  primarycontactOutlet.text;
     }
-}
-
--(void)updateCustomActivityCustomLocation {
-    sqlite3 *db;
-    sqlite3_stmt    *statement;
-    
-    isql *database = [isql initialize];
-    
-    //save date time
-    NSDate *today = [NSDate date];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
-    
-    NSString *queryString = [NSString stringWithFormat:@"UPDATE local_dest SET [Activity_no] = '%@', [Location] = '%@', [Save_time] = '%@' WHERE [Date] = '%@' AND [Teq_rep] like '%%%@%%'", database.current_activity_no, database.current_location, [formatter stringFromDate: today], database.current_date, database.current_teq_rep];
-    
-    @try {
-        
-        const char *dbpath = [database.dbpathString UTF8String];
-        
-        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {
-            const char *insert_stmt = [queryString UTF8String];
-            
-            if ( sqlite3_prepare_v2(db, insert_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                
-                if (sqlite3_step(statement) == SQLITE_DONE)
-                {
-                    NSLog(@"updateCustomActivityCustomLocation success");
-                } else {
-                    NSLog(@"update failed: %s", sqlite3_errmsg(db));
-                    
-                }
-                sqlite3_finalize(statement);
-            }
-            else {
-                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-            }
-        }
+    if (sender == jobStatusOutlet) {
+        database.current_job_status = jobStatusOutlet.text;
     }
-    @catch (NSException *exception) {
-        
+    if (sender == dateOutlet) {
+        database.current_date =  dateOutlet.text;
     }
-    @finally {
-        sqlite3_close(db);
+    if (sender == arrivalTimeOutlet) {
+        database.current_arrival_time = arrivalTimeOutlet.text;
+    }
+    if (sender == departureTimeOutlet) {
+        database.current_departure_time = departureTimeOutlet.text;
     }
 }
 
@@ -259,21 +234,35 @@
     
     isql *database = [isql initialize];
     
+    database.current_type_of_work = typeofworkOutlet.text = nil;
+    
     database.current_location = schoolNameOutlet.text = nil;
+    
+    database.current_pod = teamOutlet.text = nil;
+    
+    database.current_district = districtOutlet.text = nil;
         
     database.current_so =  SOOutlet.text = nil;
-          
-    database.current_date = dateOutlet.text = nil;
     
     activityNoOutlet.text = nil;  //database.current_activity_no don't reset to nil
     
     database.current_primary_contact =  primarycontactOutlet.text = nil;
-               
-    database.current_special_instructions =  nil;
-        
-    database.current_inventory_existing_equip = existingEquipOutlet.text = nil;
     
-    database.current_onthefly_activity = nil;
+    database.current_job_status = jobStatusOutlet.text = nil;
+    
+    database.current_date = dateOutlet.text = nil;
+    
+    database.current_arrival_time = arrivalTimeOutlet.text = nil;
+    
+    database.current_departure_time = departureTimeOutlet.text = nil;
+    
+    database.current_reason_for_visit = reasonForVisit.text = nil;
+    
+    self.pdfBtn1.userInteractionEnabled = NO;
+    self.pdfBtn1.alpha = 0.5;
+    
+    self.pdfBtn2.userInteractionEnabled = NO;
+    self.pdfBtn2.alpha = 0.5;
 }
 
 - (IBAction)changeTime:(id)sender {
@@ -399,32 +388,34 @@
 
 - (void)DateChange:(id)sender
 {
+    isql *database = [isql initialize];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"hh:mm a"];
     UIDatePicker *picker = sender;
     if (picker.tag == 1) {
-        arrivalTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
+        database.current_arrival_time = arrivalTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
     }
     if (picker.tag == 2) {
-        departureTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
+        database.current_departure_time = departureTimeOutlet.text = [dateFormatter stringFromDate:[sender date]];
     }    
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    isql *database = [isql initialize];
     if (actionSheet.tag == 1) {
         if (buttonIndex == 0) {
-            self.typeofworkOutlet.text = @"Installation";
+            database.current_type_of_work = self.typeofworkOutlet.text = @"Installation";
         }
         if (buttonIndex == 1) {
-            self.typeofworkOutlet.text = @"Uninstall";
+            database.current_type_of_work = self.typeofworkOutlet.text = @"Uninstall";
         }
     }
     if (actionSheet.tag == 2) {
         if (buttonIndex == 0) {
-            self.jobStatusOutlet.text = @"Complete";
+            database.current_job_status = self.jobStatusOutlet.text = @"Complete";
         }
         if (buttonIndex == 1) {
-            self.jobStatusOutlet.text = @"Incomplete";
+            database.current_job_status = self.jobStatusOutlet.text = @"Incomplete";
         }
     }
 }
@@ -447,7 +438,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_no], [Bp_code], [Address], [Sales_Order], [Sales_Quote], [Walk_through_with], [Primary_contact], [Primary_contact_title], [Primary_contact_phone], [Primary_contact_email], [Second_contact], [Second_contact_title], [Second_contact_phone], [Second_contact_email], [Engineer_contact], [Engineer_contact_title], [Engineer_contact_phone], [Engineer_contact_email], [School_hours], [Elevator_available], [Loading_available], [Special_instructions], [Hours_of_install], [Installers_needed], [Signature_file_directory_1], [Signature_file_directory_2], [Signature_file_directory_3],  [Print_name_1], [Print_name_2], [Print_name_3],  [Title_of_signature_1], [Agreement_1], [Agreement_2], [PDF_file_name], [Comlete_PDF_file_name], [Installation_vans], [Latitude], [Longitude], [Reserved 1], [Reserved 2], [Reserved 3], [Date], [Location], [Reserved 4] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Job_status], [Arrival_time], [Departure_time], [Reason_for_visit], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -459,112 +450,89 @@
                 while (sqlite3_step(statement) == SQLITE_ROW)
                 {                     
                     found_in_local_dest = 1;
-                    //NSLog(@"sql ok");
-                    //schoolNameOutlet.text = database.current_location;
-                                        
-                    database.current_activity_no = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 0)]];
+                    
                     activityNoOutlet.text = database.current_activity_no;
+                                        
+                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 0)]];
                     
-                    //database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]];              
-                    //dateOutlet.text = database.current_date;
-                    
-                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]]; 
-                    
-                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]]; 
-                    
-                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];  
-                    SOOutlet.text = database.current_so; 
-                    
-                    database.current_sq = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];
-                    
-                    database.current_walk_through_with = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
-                    
-                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
-                    primarycontactOutlet.text = database.current_primary_contact;
-                    
-                    database.current_primary_contact_title = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];                    
-                    
-                    database.current_primary_contact_phone = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
-                    
-                    database.current_primary_contact_email = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
-                    
-                    database.current_second_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)]];
-                    
-                    database.current_second_contact_title = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)]];                    
-                    
-                    database.current_second_contact_phone = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)]];
-                    
-                    database.current_second_contact_email = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)]];
-                    
-                    database.current_engineer_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)]];
-                    
-                    database.current_engineer_contact_title = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)]];                    
-                    
-                    database.current_engineer_contact_phone = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)]];
-                    
-                    database.current_engineer_contact_email = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 17)]];
-                    
-                    database.current_school_hours = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)]];
-                    
-                    database.current_elevator_available = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 19)]];                    
-                    
-                    database.current_loading_available = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 20)]];                    
-                    
-                    database.current_special_instructions = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 21)]]; 
-                    
-                    database.current_hours_of_install = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 22)]]; 
-                    
-                    database.current_installers_needed = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 23)]]; 
-                    
-                    database.current_signature_file_directory_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 24)]];
-                    
-                    database.current_signature_file_directory_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 25)]];
-                    
-                    database.current_signature_file_directory_3 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 26)]];
-                    
-                    database.current_print_name_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 27)]];
-                    //installersneededOutlet.text = database.current_installers_needed;
-                    
-                    database.current_print_name_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 28)]];
-                    
-                    database.current_print_name_3 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 29)]];
-                    
-                    database.current_title_of_signature_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 30)]];
-                    //database.current_agreement_1 = @"haha";
-                    
-                    database.current_agreement_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 31)]];
-                    
-                    database.current_agreement_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 32)]];
-                    
-                    database.current_pdf_file_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 33)]];
-                    
-                    database.current_comlete_pdf_file_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 34)]];
-                    
-                    database.current_installation_vans = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 35)]];
-                    
-                    database.current_dest_latitude = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 36)]];
-                    
-                    database.current_dest_longitude = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 37)]];
-                    
-                    database.current_purchasing_agent = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 38)]];
-                    
-                    database.current_job_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 39)]];
-                                      
-                    database.current_inventory_existing_equip = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 40)]];
-                    if([database.current_inventory_existing_equip isEqualToString:@"1188"]){
-                        existingEquipOutlet.text = @"(Inventory of existing equipment)";
-                    }else {
-                        existingEquipOutlet.text = @"";
-                    }
-                    
-                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 41)]];
-                    dateOutlet.text = [database.current_date substringToIndex:10];
-                    
-                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 42)]];
+                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]];
                     schoolNameOutlet.text = database.current_location;
                     
-                    database.current_onthefly_activity = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 43)]];
+                    database.current_district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]];
+                    districtOutlet.text = database.current_district;
                     
+                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
+                    primarycontactOutlet.text = database.current_primary_contact;
+                    
+                    database.current_pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];
+                    teamOutlet.text = database.current_pod;
+                    
+                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
+                    SOOutlet.text = database.current_so; 
+                                        
+                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
+                    dateOutlet.text = database.current_date;
+                    
+                    database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];
+                    if ([database.current_pdf1 length] > 0) {
+                        self.pdfBtn1.userInteractionEnabled = YES;
+                        self.pdfBtn1.alpha = 1.0;
+                    }
+
+                    database.current_pdf2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
+                    if ([database.current_pdf2 length] > 0) {
+                        self.pdfBtn2.userInteractionEnabled = YES;
+                        self.pdfBtn2.alpha = 1.0;
+                    }
+                    
+                    database.current_type_of_work = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
+                    typeofworkOutlet.text = database.current_type_of_work;
+                    
+                    database.current_job_status = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)]];
+                    jobStatusOutlet.text = database.current_job_status;
+                    
+                    database.current_arrival_time = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 11)]];
+                    arrivalTimeOutlet.text = database.current_arrival_time;
+                    
+                    database.current_departure_time = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)]];
+                    departureTimeOutlet.text = database.current_departure_time;
+                    
+                    database.current_reason_for_visit = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)]];
+                    reasonForVisit.text = database.current_reason_for_visit;
+                    
+                    if (reasonForVisit.text.length == 0) {
+                        reasonForVisit.textColor = [UIColor lightGrayColor];
+                        reasonForVisit.text = @"Please type the reason for visit...";
+                    }
+                    else {
+                        reasonForVisit.textColor = [UIColor blackColor];
+                    }
+                    
+                    database.current_agreement_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)]];
+                    
+                    database.current_agreement_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)]];
+                    
+                    database.current_print_name_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 16)]];
+                    
+                    database.current_print_name_3 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 17)]];
+                    
+                    database.current_signature_file_directory_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 18)]];
+                                        
+                    database.current_signature_file_directory_3 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 19)]];
+                    
+                    database.current_comlete_pdf_file_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 20)]];
+                    
+                    database.current_job_summary = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 21)]];
+                    jobSummary.text = database.current_job_summary;
+                    
+                    if (jobSummary.text.length == 0) {
+                        jobSummary.textColor = [UIColor lightGrayColor];
+                        jobSummary.text = @"Please type job summary here...";
+                    }
+                    else {
+                        jobSummary.textColor = [UIColor blackColor];
+                    }
+                                        
                 } 
                 
                 sqlite3_finalize(statement);
@@ -630,20 +598,20 @@
                     database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]];
                     schoolNameOutlet.text = database.current_location;
                     
-                    NSString *district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
-                    districtOutlet.text = district;
+                    database.current_district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
+                    districtOutlet.text = database.current_district;
                     
                     database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];                    
                     primarycontactOutlet.text = database.current_primary_contact;
                     
-                    NSString *pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
-                    teamOutlet.text = pod;
+                    database.current_pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
+                    teamOutlet.text = database.current_pod;
                     
                     database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
                     SOOutlet.text = database.current_so;
                     
                     database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];
-                    dateOutlet.text = [database.current_date substringToIndex:10];
+                    dateOutlet.text = database.current_date = [database.current_date substringToIndex:10];
                     
                     database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
                     //schoolNameOutlet.text = pdf1;
@@ -657,8 +625,12 @@
                     if ([database.current_pdf2 length] > 0) {
                         self.pdfBtn2.userInteractionEnabled = YES;
                         self.pdfBtn2.alpha = 1.0;
-                    }
+                    }                    
+                    reasonForVisit.textColor = [UIColor lightGrayColor];
+                    reasonForVisit.text = @"Please type the reason for visit...";
                     
+                    jobSummary.textColor = [UIColor lightGrayColor];
+                    jobSummary.text = @"Please type job summary here...";
                 } 
                 
                 sqlite3_finalize(statement);
@@ -695,9 +667,7 @@
     activityNoOutlet.text = database.current_activity_no;
         
     dateOutlet.text = database.current_date = database.customDate;
-    
-    database.current_onthefly_activity = database.customOnthefly;
-    
+       
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -713,6 +683,7 @@
     [UIView commitAnimations];
     int movementDistance = [textField.superview.superview convertPoint:textField.frame.origin toView:self.view].y - 150;
     [scrollView scrollRectToVisible:CGRectMake(0, movementDistance, 703, 356) animated:YES];
+
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
@@ -726,6 +697,9 @@
     if ([textView.text isEqualToString: @"Please type the reason for visit..."]) {
         textView.text = @"";
     }
+    if ([textView.text isEqualToString: @"Please type job summary here..."]) {
+        textView.text = @"";
+    }    
     textView.textColor = [UIColor blackColor];
     
     gestureRecognizer.cancelsTouchesInView = YES;
@@ -740,22 +714,37 @@
     int movementDistance = [textView.superview.superview convertPoint:textView.frame.origin toView:self.view].y - 150;
     [scrollView scrollRectToVisible:CGRectMake(0, movementDistance, 703, 356) animated:YES];
     
-    return  YES;
+    return YES;
 }
 
 -(void) textViewDidEndEditing:(UITextView *)textView
 {
-    if (textView.text.length == 0) {
-        textView.textColor = [UIColor lightGrayColor];
-        textView.text = @"Please type the reason for visit...";
+    if (textView.tag == 1) {
+        if (textView.text.length == 0) {
+            textView.textColor = [UIColor lightGrayColor];
+            textView.text = @"Please type the reason for visit...";
+        }
+    }
+    if (textView.tag == 2) {
+        if (textView.text.length == 0) {
+            textView.textColor = [UIColor lightGrayColor];
+            textView.text = @"Please type job summary here...";
+        }
     }
 }
 
 -(void) textViewDidChange:(UITextView *)textView
 {
     isql *database = [isql initialize];
-    if (![textView.text isEqualToString: @"Please type the reason for visit..."]) {
-        database.current_special_instructions = textView.text;
+    if (textView.tag == 1) {
+        if (![textView.text isEqualToString: @"Please type the reason for visit..."]) {
+            database.current_reason_for_visit = textView.text;
+        }
+    }
+    if (textView.tag == 2) {
+        if (![textView.text isEqualToString: @"Please type job summary here..."]) {
+            database.current_job_summary = textView.text;
+        }
     }
 }
 

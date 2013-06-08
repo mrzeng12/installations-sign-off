@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/isql.m"
-         timestampString = "392146511.285889"
+         timestampString = "392396470.817396"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "3675"
-         endingLineNumber = "3675"
+         startingLineNumber = "3328"
+         endingLineNumber = "3328"
          landmarkName = "-addNumberToAppIcon"
          landmarkType = "5">
       </FileBreakpoint>
@@ -66,19 +66,6 @@
          startingLineNumber = "360"
          endingLineNumber = "360"
          landmarkName = "-tableView:cellForRowAtIndexPath:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Classes/FirstDetailView3.m"
-         timestampString = "392222782.021708"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "594"
-         endingLineNumber = "594"
-         landmarkName = "-initializeActivityDetailsStepTwo"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -125,11 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/isql.m"
-         timestampString = "392146511.285889"
+         timestampString = "392322977.009229"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1937"
-         endingLineNumber = "1937"
+         startingLineNumber = "1938"
+         endingLineNumber = "1938"
          landmarkName = "-uploadSpeedTestFile"
          landmarkType = "5">
       </FileBreakpoint>
@@ -138,25 +125,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/isql.m"
-         timestampString = "392146511.285889"
+         timestampString = "392322977.009229"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "2297"
-         endingLineNumber = "2297"
+         startingLineNumber = "2298"
+         endingLineNumber = "2298"
          landmarkName = "-uploadImageFromFailList:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Classes/isql.m"
-         timestampString = "392146511.285889"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "3263"
-         endingLineNumber = "3263"
-         landmarkName = "-resetVariables"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

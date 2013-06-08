@@ -73,11 +73,7 @@
         teqRepOutlet.text = database.current_teq_rep;
         activityNoOutlet.text = database.current_activity_no;
         dateOutlet.text = database.current_date;
-    if([database.current_inventory_existing_equip isEqualToString:@"1188"]){
-        existingEquipOutlet.text = @"(Inventory of existing equipment)";
-    }else {
-        existingEquipOutlet.text = @"";
-    }
+    
         [self loadRoomFromDB];
     //}
 }

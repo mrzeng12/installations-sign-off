@@ -18,6 +18,7 @@
 #import "LGViewHUD.h"
 #import "ZipArchive.h"
 #import "objc/runtime.h"
+#import "TestFlight.h"
 
 #define testing
 
@@ -2833,17 +2834,6 @@ static SqlClient *client = nil;
             database.current_photo_file_directory_7 = @"";
             database.current_photo_file_directory_8 = @"";
             
-            database.current_diagram_file_directory = @"";
-            
-            if ([database.duplicate_drawing isEqualToString:@"No"]) {
-                //database.current_diagram_file_directory = @"";
-                database.current_serialized_drawing = @"";
-            }
-            if ([database.duplicate_notes isEqualToString:@"No"]) {
-                database.current_general_notes = @"";
-                database.current_internal_notes = @"";
-            }
-            
             [database saveVariableToLocalDest];
             [database addNumberToAppIcon];
         }
@@ -3006,169 +2996,101 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@' ,[Address]='%@' ,[Sales_Order]='%@' ,[Sales_Quote]='%@' ,[Walk_through_with]='%@' ,[Primary_contact]='%@' ,[Primary_contact_title]='%@' ,[Primary_contact_phone]='%@' ,[Primary_contact_email]='%@' ,[Second_contact]='%@' ,[Second_contact_title]='%@' ,[Second_contact_phone]='%@' ,[Second_contact_email]='%@' ,[Engineer_contact]='%@' ,[Engineer_contact_title]='%@' ,[Engineer_contact_phone]='%@' ,[Engineer_contact_email]='%@' ,[School_hours]='%@' ,[Elevator_available]='%@' ,[Loading_available]='%@' ,[Special_instructions]='%@' ,[Hours_of_install]='%@' ,[Installers_needed]='%@' ,[Save_time]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_2]='%@', [Signature_file_directory_3]='%@',  [Print_name_1]='%@', [Print_name_2]='%@', [Print_name_3]='%@',  [Title_of_signature_1]='%@', [Agreement_1] ='%@', [Agreement_2] ='%@', [PDF_file_name] ='%@', [Comlete_PDF_file_name] ='%@', [Installation_vans] ='%@', [Latitude] ='%@', [Longitude] ='%@', [Reserved 1] ='%@', [Reserved 2] ='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Address] <>'%@' or [Sales_Order] <>'%@' or [Sales_Quote] <>'%@' or [Walk_through_with] <>'%@' or [Primary_contact] <>'%@' or [Primary_contact_title] <>'%@' or [Primary_contact_phone] <>'%@' or [Primary_contact_email] <>'%@' or [Second_contact] <>'%@' or [Second_contact_title] <>'%@' or [Second_contact_phone] <>'%@' or [Second_contact_email] <>'%@' or [Engineer_contact] <>'%@' or [Engineer_contact_title] <>'%@' or [Engineer_contact_phone] <>'%@' or [Engineer_contact_email] <>'%@' or [School_hours] <>'%@' or [Elevator_available] <>'%@' or [Loading_available] <>'%@' or [Special_instructions] <>'%@' or [Hours_of_install] <>'%@' or [Installers_needed] <>'%@' or [Signature_file_directory_1] <>'%@'or  [Signature_file_directory_2] <>'%@' or [Signature_file_directory_3] <>'%@' or [Print_name_1] <>'%@' or [Print_name_2] <>'%@' or [Print_name_3] <>'%@'or [Title_of_signature_1] <>'%@' or [Agreement_1] <>'%@'or [Agreement_2] <>'%@'or [PDF_file_name] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Installation_vans] <>'%@' or [Latitude] <>'%@' or [Longitude] <>'%@' or [Reserved 1] <>'%@' or [Reserved 2] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_address==nil)?@"":[database.current_address stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_location==nil)?@"":[database.current_location stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_so==nil)?@"":[database.current_so stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_sq==nil)?@"":[database.current_sq stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_walk_through_with==nil)?@"":[database.current_walk_through_with stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_district==nil)?@"":[database.current_district stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_primary_contact==nil)?@"":[database.current_primary_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_primary_contact_title==nil)?@"":[database.current_primary_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_pod==nil)?@"":[database.current_pod stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+          
+     (database.current_so==nil)?@"":[database.current_so stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_primary_contact_phone==nil)?@"":[database.current_primary_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_date==nil)?@"":[database.current_date stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_primary_contact_email==nil)?@"":[database.current_primary_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_pdf1==nil)?@"":[database.current_pdf1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_second_contact==nil)?@"":[database.current_second_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_pdf2==nil)?@"":[database.current_pdf2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_second_contact_title==nil)?@"":[database.current_second_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_type_of_work==nil)?@"":[database.current_type_of_work stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_second_contact_phone==nil)?@"":[database.current_second_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_job_status==nil)?@"":[database.current_job_status stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_second_contact_email==nil)?@"":[database.current_second_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_arrival_time==nil)?@"":[database.current_arrival_time stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_departure_time==nil)?@"":[database.current_departure_time stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_engineer_contact==nil)?@"":[database.current_engineer_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_engineer_contact_title==nil)?@"":[database.current_engineer_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_engineer_contact_phone==nil)?@"":[database.current_engineer_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_engineer_contact_email==nil)?@"":[database.current_engineer_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_school_hours==nil)?@"":[database.current_school_hours stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_elevator_available==nil)?@"":[database.current_elevator_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_loading_available==nil)?@"":[database.current_loading_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_special_instructions==nil)?@"":[database.current_special_instructions stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_hours_of_install==nil)?@"":[database.current_hours_of_install stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_installers_needed==nil)?@"":[database.current_installers_needed stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     [formatter stringFromDate: today],
-     
-     (database.current_signature_file_directory_1==nil)?@"":[database.current_signature_file_directory_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_signature_file_directory_2==nil)?@"":[database.current_signature_file_directory_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_signature_file_directory_3==nil)?@"":[database.current_signature_file_directory_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_print_name_1==nil)?@"":[database.current_print_name_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_print_name_2==nil)?@"":[database.current_print_name_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_print_name_3==nil)?@"":[database.current_print_name_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_title_of_signature_1==nil)?@"":[database.current_title_of_signature_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_reason_for_visit==nil)?@"":[database.current_reason_for_visit stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_agreement_1==nil)?@"":[database.current_agreement_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_agreement_2==nil)?@"":[database.current_agreement_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_pdf_file_name==nil)?@"":[database.current_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_print_name_1==nil)?@"":[database.current_print_name_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
+     (database.current_print_name_3==nil)?@"":[database.current_print_name_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_signature_file_directory_1==nil)?@"":[database.current_signature_file_directory_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+          
+     (database.current_signature_file_directory_3==nil)?@"":[database.current_signature_file_directory_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+          
      (database.current_comlete_pdf_file_name==nil)?@"":[database.current_comlete_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_installation_vans==nil)?@"":[database.current_installation_vans stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_job_summary==nil)?@"":[database.current_job_summary stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_dest_latitude==nil)?@"":[database.current_dest_latitude stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_dest_longitude==nil)?@"":[database.current_dest_longitude stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_purchasing_agent==nil)?@"":[database.current_purchasing_agent stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_job_name==nil)?@"":[database.current_job_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
+     [formatter stringFromDate: today],
+          
      (database.current_activity_no==nil)?@"":[database.current_activity_no stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_teq_rep==nil)?@"":[database.current_teq_rep stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_address==nil)?@"":[database.current_address stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_so==nil)?@"":[database.current_so stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_sq==nil)?@"":[database.current_sq stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_walk_through_with==nil)?@"":[database.current_walk_through_with stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_primary_contact==nil)?@"":[database.current_primary_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_primary_contact_title==nil)?@"":[database.current_primary_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_primary_contact_phone==nil)?@"":[database.current_primary_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_primary_contact_email==nil)?@"":[database.current_primary_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_second_contact==nil)?@"":[database.current_second_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_second_contact_title==nil)?@"":[database.current_second_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_second_contact_phone==nil)?@"":[database.current_second_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_second_contact_email==nil)?@"":[database.current_second_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_engineer_contact==nil)?@"":[database.current_engineer_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_engineer_contact_title==nil)?@"":[database.current_engineer_contact_title stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_engineer_contact_phone==nil)?@"":[database.current_engineer_contact_phone stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_engineer_contact_email==nil)?@"":[database.current_engineer_contact_email stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_school_hours==nil)?@"":[database.current_school_hours stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_elevator_available==nil)?@"":[database.current_elevator_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_loading_available==nil)?@"":[database.current_loading_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_special_instructions==nil)?@"":[database.current_special_instructions stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_hours_of_install==nil)?@"":[database.current_hours_of_install stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_installers_needed==nil)?@"":[database.current_installers_needed stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_signature_file_directory_1==nil)?@"":[database.current_signature_file_directory_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_signature_file_directory_2==nil)?@"":[database.current_signature_file_directory_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_signature_file_directory_3==nil)?@"":[database.current_signature_file_directory_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_print_name_1==nil)?@"":[database.current_print_name_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_print_name_2==nil)?@"":[database.current_print_name_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_print_name_3==nil)?@"":[database.current_print_name_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_title_of_signature_1==nil)?@"":[database.current_title_of_signature_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_agreement_1==nil)?@"":[database.current_agreement_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_agreement_2==nil)?@"":[database.current_agreement_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_pdf_file_name==nil)?@"":[database.current_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-    
-    (database.current_comlete_pdf_file_name==nil)?@"":[database.current_comlete_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+
+     //--------again-------
      
-    (database.current_installation_vans==nil)?@"":[database.current_installation_vans stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-    (database.current_dest_latitude==nil)?@"":[database.current_dest_latitude stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_location==nil)?@"":[database.current_location stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-    (database.current_dest_longitude==nil)?@"":[database.current_dest_longitude stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_district==nil)?@"":[database.current_district stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-    (database.current_purchasing_agent==nil)?@"":[database.current_purchasing_agent stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_primary_contact==nil)?@"":[database.current_primary_contact stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-    (database.current_job_name==nil)?@"":[database.current_job_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_pod==nil)?@"":[database.current_pod stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_so==nil)?@"":[database.current_so stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_date==nil)?@"":[database.current_date stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_pdf1==nil)?@"":[database.current_pdf1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_pdf2==nil)?@"":[database.current_pdf2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_type_of_work==nil)?@"":[database.current_type_of_work stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_job_status==nil)?@"":[database.current_job_status stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_arrival_time==nil)?@"":[database.current_arrival_time stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     (database.current_departure_time==nil)?@"":[database.current_departure_time stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_reason_for_visit==nil)?@"":[database.current_reason_for_visit stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_agreement_1==nil)?@"":[database.current_agreement_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_agreement_2==nil)?@"":[database.current_agreement_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_print_name_1==nil)?@"":[database.current_print_name_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_print_name_3==nil)?@"":[database.current_print_name_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_signature_file_directory_1==nil)?@"":[database.current_signature_file_directory_1 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_signature_file_directory_3==nil)?@"":[database.current_signature_file_directory_3 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_comlete_pdf_file_name==nil)?@"":[database.current_comlete_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_job_summary==nil)?@"":[database.current_job_summary stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      
      ];
     
@@ -3209,7 +3131,7 @@ static SqlClient *client = nil;
     @finally {        
         sqlite3_close(db);
     }  
-
+     
 }
 
 
@@ -3218,90 +3140,7 @@ static SqlClient *client = nil;
     
     isql *database = [isql initialize];
     
-    database.current_projection_availability = nil;
-    
-    database.current_new_projection_type = nil;
-    
-    database.current_existing_projection_type = nil;
-    
-    database.current_no_projection_type = nil;
-    
-    database.current_projector_type = nil;
-    
-    database.current_projector = nil;
-    
-    database.current_projector_notes = nil;
-    
-    database.current_existing_board_notes = nil;
-    
-    database.current_existing_projector_notes = nil;
-    
-    database.current_existing_CMP_notes = nil;
-    
-    database.current_projectors_include_mounts = nil;
-    
-    database.current_smartboard = nil;
-    
-    database.current_smartboard_other = nil;
-    
-    database.current_mounting = nil;
-    
-    database.current_CMP_mounting_location = nil;
-    
-    database.current_CMP_mounting = nil;
-    
-    database.current_CMP_poleLength = nil;
-    
-    database.current_CMP_poleLength_notes = nil;
-    
-    database.current_mounting_notes = nil;
-    
-    database.current_CMP_mouting_notes = nil;
-    
-    database.current_audios = nil;
-    
-    database.current_audio_notes = nil;
-    
-    database.current_audio_ceilingSpeakers = nil;
-    
-    database.current_audio_wallMountedSpeakers = nil;
-    
-    database.current_audio_includeReceiver = nil;
-    
-    database.current_peripherals = nil;
-    
-    database.current_peripherals_others = nil;
-    
-    database.current_height_of_smartboard = nil;
-    
-    database.current_height_of_smartboard_classroom_type = nil;
-    
-    database.current_height_of_smartboard_notes = nil;
-    
-    database.current_ceiling_height = nil;
-    
-    database.current_ceiling_structure = nil;
-    
-    database.current_ceiling_structure_other = nil;
-    
-    database.current_wall_structure = nil;
-    
-    database.current_wall_structure_notes = nil;
-    
-    database.current_wall_structure_board = nil;
-    
-    database.current_wall_structure_board_notes = nil;
-    
-    database.current_board = nil;
-    
-    database.current_client_agrees_to_remove = nil;
-    
-    database.current_client_agrees_to_remove_other = nil;
-    
-    database.current_client_will_provide_power = nil;
-    
-    database.current_client_will_provide_power_notes = nil;
-    
+        
     database.draw_button_index = 0;
     
     database.editingNSUrl = nil;
@@ -3316,61 +3155,7 @@ static SqlClient *client = nil;
      
      database.src_longitude = nil;
      */
-    
-    database.current_cable_type = nil;
-    
-    database.current_cable_type_notes = nil;
-    
-    database.current_cable_ports = nil;
-    
-    database.current_usb_length = nil;
-    
-    database.current_usb_quantity = nil;
-    
-    database.current_35mm_audio_length = nil;
-    
-    database.current_35mm_audio_quantity = nil;
-    
-    database.current_rca_video_length = nil;
-    
-    database.current_rca_video_quantity = nil;
-    
-    database.current_rca_audio_length = nil;
-    
-    database.current_rca_audio_quantity = nil;
-    
-    database.current_cat5e_length = nil;
-    
-    database.current_cat5e_quantity = nil;
-    
-    database.current_add_hdmi = nil;
-    
-    database.current_hdmi_length = nil;
-    
-    database.current_hdmi_quantity = nil;
-    
-    database.current_35mm_to_rca_length = nil;
-    
-    database.current_35mm_to_rca_quantity = nil;
-    
-    database.current_182_shield_cable_length = nil;
-    
-    database.current_182_shield_cable_quantity = nil;
-    
-    database.current_vga_splitter = nil;
-    
-    database.current_vga_length = nil;
-    
-    database.current_vga_quantity = nil;
-    
-    database.current_rcac_length = nil;
-    
-    database.current_rcac_quantity = nil;
-    
-    database.current_cabling_other = nil;
-    
-    database.current_diagram_file_directory = nil;
-    
+        
     database.current_photo_file_directory_1 = nil;
     
     database.current_photo_file_directory_2 = nil;
@@ -3386,150 +3171,18 @@ static SqlClient *client = nil;
     database.current_photo_file_directory_7 = nil;
     
     database.current_photo_file_directory_8 = nil;
-    
-    database.current_serialized_drawing = nil;
-    
-    database.current_power_within_three_feet = nil;
-    
-    database.current_existing_cmp_serial = nil;
-    
-    database.current_existing_cmp_throw_distance = nil;
-    
-    database.current_existing_cmp_remount = nil;
-    
-    database.current_audio_ceiling_sensor = nil;
-    
-    database.current_audio_wall_sensor = nil;
-    
-    database.current_raceway_part_1 = nil;
-    
-    database.current_raceway_part_2 = nil;
-    
-    database.current_raceway_part_3 = nil;
-    
-    database.current_raceway_part_4 = nil;
-    
-    database.current_raceway_part_5 = nil;
-    
-    database.current_raceway_part_6 = nil;
-    
-    database.current_raceway_part_7 = nil;
-    
-    database.current_raceway_part_8 = nil;
-    
+        
     database.current_raceway_part_9 = nil;
     
     database.current_raceway_part_10 = nil;
     
-    database.current_equipment_location_notes = nil;
-    database.current_CMP_mounting_other = nil;
-    database.current_skip_raceway = nil;
-    database.current_skip_ceiling_structure = nil;
-    database.current_vgamm6 = nil;
-    database.current_vgamm15 = nil;
-    database.current_vgamm25 = nil;
-    database.current_vgamm35 = nil;
-    database.current_vgamm50 = nil;
-    database.current_vgamm75 = nil;
-    database.current_hdmi10 = nil;
-    database.current_hdmi15 = nil;
-    database.current_hdmi25 = nil;
-    database.current_hdmi50 = nil;
-    database.current_hdmi75 = nil;
-    database.current_rca_comp12 = nil;
-    database.current_rca_comp25 = nil;
-    database.current_rca_comp50 = nil;
-    database.current_rca_comp75 = nil;
-    database.current_rca_audio12 = nil;
-    database.current_rca_audio25 = nil;
-    database.current_rca_audio50 = nil;
-    database.current_rca_audio75 = nil;
-    database.current_35audiomm15 = nil;
-    database.current_35audiomm25 = nil;
-    database.current_35audiomm50 = nil;
-    database.current_35audiomm75 = nil;
-    database.current_usbab9 = nil;
-    database.current_usbab15 = nil;
-    database.current_cat5xt25 = nil;
-    database.current_cat5xt50 = nil;
-    database.current_cat5xt75 = nil;
-    database.current_cat5xt25for800s = nil;
-    database.current_cat5xt50for800s = nil;
-    database.current_cat5xt75for800s = nil;
-    database.current_vga_splitter_2port = nil;
-    database.current_vga_splitter_2portwaudio = nil;
-    database.current_vga_splitter_4port = nil;
-    database.current_vga_splitter_4portwaudio = nil;
-    database.current_patch_vga6 = nil;
-    database.current_patch_vga12 = nil;
-    database.current_patch_usbab6 = nil;
-    database.current_patch_usbab9 = nil;
-    database.current_patch_hdmi6 = nil;
-    database.current_patch_hdmi10 = nil;
-    database.current_patch_35audiomm6 = nil;
-    database.current_patch_35audiomm15 = nil;
-    database.current_patch_cat5e5 = nil;
-    database.current_patch_cat5e7 = nil;
-    database.current_patch_cat5e10 = nil;
-    database.current_add_rca_video12 = nil;
-    database.current_add_rca_video25 = nil;
-    database.current_add_rca_video50 = nil;
-    database.current_add_rca_video75 = nil;
-    database.current_add_35rcaaudio12 = nil;
-    database.current_add_35rcaaudio25 = nil;
-    database.current_add_35rcaaudio50 = nil;
-    database.current_add_35rcaaudio75 = nil;
-    database.current_add_182speakerwire_length = nil;
-    database.current_add_182speakerwire = nil;
-    database.current_add_cat5e25 = nil;
-    database.current_add_cat5e50 = nil;
-    database.current_add_cat5e75 = nil;
-    database.current_add_cat5e100 = nil;
-    database.current_add_vgamf6 = nil;
-    database.current_add_vgamf15 = nil;
-    database.current_add_vgamf25 = nil;
-    database.current_add_vgamf35 = nil;
-    database.current_add_vgamf50 = nil;
-    database.current_add_vgamf75 = nil;
-    database.current_add_hdmisplitter_2port = nil;
-    database.current_add_usbxt16 = nil;
-    database.current_add_cat5xt25 = nil;
-    database.current_add_cat5xt50 = nil;
-    database.current_add_cat5xt75 = nil;
-    database.current_plenum_rating_required = nil;
-    database.current_nyc_cable_bundle = nil;
     
     database.cable_rca_video = nil;
     database.cable_rca_audio = nil;
     database.cable_cat5e = nil;
     database.cable_vgamf = nil;
     database.cable_hdmisplitter = nil;
-    database.cable_usbxt = nil;
-    
-    database.current_custom_build_rail = nil;
-    database.current_existing_board_other = nil;
-    database.current_vgamm_plenum = nil;
-    database.current_hdmi_plenum = nil;
-    database.current_rca_comp_plenum = nil;
-    database.current_35audiomm_plenum = nil;
-    database.current_cat5xt_plenum = nil;
-    database.current_cat5xt_sbx800_plenum = nil;
-    database.current_add_cat5e_plenum = nil;
-    database.current_add_vgamf_plenum = nil;
-    
-    database.current_speaker = nil;
-    database.current_audio_package = nil;
-    database.current_audio_accessories = nil;
-    database.current_internal_notes = nil;
-    database.current_port_desc = nil;
-    
-    database.current_flat_panel = nil;
-    database.current_cork_penetrated = nil;
-    database.current_audio_accessories_other = nil;
-    database.current_flat_panel_other = nil;
-    
-    database.current_existing_projector_serial = nil;
-    database.current_wall_number = nil;
+    database.cable_usbxt = nil;    
 }
 
 - (void) copyDatabaseIfNeeded {

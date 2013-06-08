@@ -57,6 +57,8 @@
 
 @property (strong, nonatomic) IBOutlet UITextView *reasonForVisit;
 
+@property (strong, nonatomic) IBOutlet UITextView *jobSummary;
+
 @property (strong, nonatomic) IBOutlet UIButton *typeofworkBtn;
 
 @property (strong, nonatomic) IBOutlet UIButton *jobstatusBtn;

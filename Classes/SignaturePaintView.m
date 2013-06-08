@@ -120,11 +120,7 @@
         imageString = [database sanitizeFile:imageString];
         database.current_signature_file_directory_1 = imageString;
     }
-    if ([database.signature_filename isEqualToString:@"Custodial_Engineer"]) {
-        imageString = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature2", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
-        imageString = [database sanitizeFile:imageString];
-        database.current_signature_file_directory_2 = imageString;
-    }
+    
     if ([database.signature_filename isEqualToString:@"Teq_Representative"]) {
         imageString = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature3", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
         imageString = [database sanitizeFile:imageString];

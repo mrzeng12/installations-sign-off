@@ -634,7 +634,7 @@
         
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {
-            NSString *selectSQL = [NSString stringWithFormat:@"select count(*), [Date], [Location], [Activity_no], [Sales_Quote], [Sales_Order] from local_dest where [Teq_rep] like '%%%@%%' group by [Activity_no] order by [Date] desc, [Location] desc", database.current_teq_rep];            
+            NSString *selectSQL = [NSString stringWithFormat:@"select count(*), [Date], [Location], [Activity_no], '', [Sales_Order] from local_dest where [Teq_rep] like '%%%@%%' group by [Activity_no] order by [Date] desc, [Location] desc", database.current_teq_rep];            
             
             const char *select_stmt = [selectSQL UTF8String];
             
