@@ -56,8 +56,9 @@
     [self.scrollview setFrame:CGRectMake(0, 44, 703, 704)];
     [self.scrollview setContentSize:CGSizeMake(703, 705)];
     UITapGestureRecognizer *tapGesture =
-    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)] ;
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
+    [self checkComplete];
 }
 - (void)viewDidUnload
 {
@@ -70,10 +71,51 @@
     return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    isql *database = [isql initialize];
+    NSData *data = [database.current_serial_no dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *e = nil;
+    NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
+    
+    for (NSMutableDictionary *dict in dictArray) {
+                
+        if ([[dict objectForKey:@"type"] isEqualToString:@"SB"]) {
+            if ([self.SerialSB.text length] == 0) {
+                self.SerialSB.text = [dict objectForKey:@"serial"];
+            }
+            else {
+                [self createButton:@"(SB)" andAutoFill:[dict objectForKey:@"serial"]];
+            }
+        }
+        if ([[dict objectForKey:@"type"] isEqualToString:@"PJ"]) {
+            if ([self.SerialPJ.text length] == 0) {
+                self.SerialPJ.text = [dict objectForKey:@"serial"];
+            }
+            else {
+                [self createButton:@"(PJ)" andAutoFill:[dict objectForKey:@"serial"]];
+            }
+        }
+        if ([[dict objectForKey:@"type"] isEqualToString:@"SK"]) {
+            if ([self.SerialSK.text length] == 0) {
+                self.SerialSK.text = [dict objectForKey:@"serial"];
+            }
+            else {
+                [self createButton:@"(SK)" andAutoFill:[dict objectForKey:@"serial"]];
+            }
+        }
+        if ([[dict objectForKey:@"type"] isEqualToString:@"Other"]) {
+            [self createButton:@"(Other)" andAutoFill:[dict objectForKey:@"serial"]];
+        }
+    }
+     
+    [self checkComplete];
+}
+
 -(void)checkComplete
 {
     isql *database = [isql initialize];
-    if ([self.installers.text length] > 0 ) {
+    if ([self.installers.text length] > 0 && [self.statusOutlet.text length]> 0 ) {
         NSMutableDictionary *myDict = [[NSMutableDictionary alloc] init];
               
         [database.menu_complete replaceObjectAtIndex:2 withObject:@"Complete"];
@@ -91,7 +133,67 @@
 }
 
 - (IBAction)installersChanged:(id)sender {
+    isql *database = [isql initialize];
+    database.current_installer = self.installers.text;
     [self checkComplete];
+}
+
+- (IBAction)statusChanged:(id)sender {
+    isql *database = [isql initialize];
+    database.current_status = self.statusOutlet.text;
+    [self checkComplete];
+}
+
+- (IBAction)serialNoChanged:(id)sender {
+    [self saveSerialNumber];
+}
+
+- (void)saveSerialNumber {
+    isql *database = [isql initialize];
+    NSMutableArray *temp_serial_no = [NSMutableArray array];
+    if ([self.SerialSB.text length] > 0) {
+        NSMutableDictionary *output = [NSMutableDictionary dictionary];
+        [output setObject:@"SB" forKey:@"type"];
+        [output setObject:self.SerialSB.text forKey:@"serial"];
+        [temp_serial_no addObject:output];
+    }
+    if ([self.SerialPJ.text length] > 0) {
+        NSMutableDictionary *output = [NSMutableDictionary dictionary];
+        [output setObject:@"PJ" forKey:@"type"];
+        [output setObject:self.SerialPJ.text forKey:@"serial"];
+        [temp_serial_no addObject:output];
+    }
+    if ([self.SerialSK.text length] > 0) {
+        NSMutableDictionary *output = [NSMutableDictionary dictionary];
+        [output setObject:@"SK" forKey:@"type"];
+        [output setObject:self.SerialSK.text forKey:@"serial"];
+        [temp_serial_no addObject:output];
+    }
+    for (NSMutableDictionary *dict in addBtnArray) {
+        UITextField *textField = [dict objectForKey:@"textFieldRounded"];
+        if ([textField.text length] > 0) {
+            NSString *type;
+            if ([textField.placeholder isEqualToString:@"(SB)"]) {
+                type = @"SB";
+            }
+            if ([textField.placeholder isEqualToString:@"(PJ)"]) {
+                type = @"PJ";
+            }
+            if ([textField.placeholder isEqualToString:@"(SK)"]) {
+                type = @"SK";
+            }
+            if ([textField.placeholder isEqualToString:@"(Other)"]) {
+                type = @"Other";
+            }
+            NSMutableDictionary *output = [NSMutableDictionary dictionary];
+            [output setObject:type forKey:@"type"];
+            [output setObject:textField.text forKey:@"serial"];
+            [temp_serial_no addObject:output];
+        }
+    }
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:temp_serial_no options:NSJSONWritingPrettyPrinted error:&error];
+    database.current_serial_no = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -138,7 +240,9 @@
 
 -(void) textViewDidChange:(UITextView *)textView
 {
-    
+    isql *database = [isql initialize];
+    database.current_general_notes = self.commentsOutlet.text;
+    [self checkComplete];
 }
 
 - (void) hideKeyboard {
@@ -197,7 +301,7 @@
             default:
                 break;
         }
-        [self createButton: text];
+        [self createButton:text andAutoFill:@""];
     }
     if (actionSheet.tag == 2) {
         if (buttonIndex == 0) {
@@ -206,10 +310,13 @@
         if (buttonIndex == 1) {
             self.statusOutlet.text = @"Incomplete";
         }
+        isql *database = [isql initialize];
+        database.current_status = self.statusOutlet.text;
+        [self checkComplete];
     }
 }
 
-- (void)createButton: (NSString *) text  {    
+- (void)createButton: (NSString *) text andAutoFill: (NSString *) serial {
     
     UITextField *textFieldRounded = [[UITextField alloc] initWithFrame:CGRectMake(168, lastInputY + 65, 383, 30)];
     textFieldRounded.borderStyle = UITextBorderStyleRoundedRect;
@@ -220,7 +327,9 @@
     textFieldRounded.autocorrectionType = UITextAutocorrectionTypeNo;
     textFieldRounded.keyboardType = UIKeyboardTypeDefault;
     textFieldRounded.returnKeyType = UIReturnKeyDone;    
-    textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;    
+    textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;
+    textFieldRounded.text = serial;
+    [textFieldRounded addTarget:self action:@selector(serialNoChanged:) forControlEvents:UIControlEventEditingChanged];
     [self.scrollview addSubview:textFieldRounded];
     textFieldRounded.delegate = self;
     
@@ -268,6 +377,7 @@
 {
     if (buttonIndex == 1) {
         [self removeButton: alertView.tag];
+        [self saveSerialNumber];
     }
 }
 

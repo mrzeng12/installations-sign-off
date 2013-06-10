@@ -119,7 +119,16 @@
     else {
         self.printNameTextField_3.text = database.current_print_name_3;
     }
-        
+    
+    self.customerNotes.text = database.current_customer_notes;
+    if (self.customerNotes.text.length == 0) {
+        self.customerNotes.textColor = [UIColor lightGrayColor];
+        self.customerNotes.text = @"Please type customer notes here...";
+    }
+    else {
+        self.customerNotes.textColor = [UIColor blackColor];
+    }
+    
     //}
     
     /************* set button background images, wrap it inside round rect box ************/
@@ -264,9 +273,9 @@
 
 -(void) textViewDidChange:(UITextView *)textView
 {
-    //isql *database = [isql initialize];
+    isql *database = [isql initialize];
     if (![textView.text isEqualToString: @"Please type customer notes here..."]) {
-        //database.current_special_instructions = textView.text;
+        database.current_customer_notes = textView.text;
     }
 }
 

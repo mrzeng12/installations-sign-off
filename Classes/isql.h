@@ -155,8 +155,6 @@
 
 @property (strong, nonatomic) NSString *selected_room_index;
 
-@property (nonatomic) int draw_button_index;
-
 @property (nonatomic,strong) NSMutableDictionary *objectName;
 
 @property (nonatomic,strong) NSMutableDictionary *objectFullName;

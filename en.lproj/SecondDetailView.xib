@@ -530,6 +530,7 @@
 								<string key="NSFrame">{{477, 623}, {20, 20}}</string>
 								<reference key="NSSuperview" ref="841112829"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<bool key="IBUIHidesWhenStopped">NO</bool>

@@ -438,7 +438,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Job_status], [Arrival_time], [Departure_time], [Reason_for_visit], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Job_status], [Arrival_time], [Departure_time], [Reason_for_visit], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -532,6 +532,8 @@
                     else {
                         jobSummary.textColor = [UIColor blackColor];
                     }
+                    
+                    database.current_customer_notes = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 22)]];
                                         
                 } 
                 

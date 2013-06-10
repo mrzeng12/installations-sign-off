@@ -321,6 +321,9 @@ static SqlClient *client = nil;
 - (void) checkifMenuTableExist
 
 {
+    NSLog(@"remoteMenuToLocalMenu skip");
+    [self remoteUserToLocalUser];
+    /*
     sqlite3 *db;
     sqlite3_stmt    *statement;
     
@@ -395,10 +398,11 @@ static SqlClient *client = nil;
             
         }];
     }
+     */
 }
 
 - (void) remoteMenuToLocalMenu {
-    
+    /*
     [self copyDatabaseIfNeeded];
     
     isql *database = [isql initialize];
@@ -558,7 +562,7 @@ static SqlClient *client = nil;
              postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
         }
     }];
-    
+    */
 }
 
 - (void) remoteUserToLocalUser {
@@ -2996,7 +3000,7 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
@@ -3040,6 +3044,8 @@ static SqlClient *client = nil;
      (database.current_comlete_pdf_file_name==nil)?@"":[database.current_comlete_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_job_summary==nil)?@"":[database.current_job_summary stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_customer_notes==nil)?@"":[database.current_customer_notes stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      [formatter stringFromDate: today],
           
@@ -3090,7 +3096,9 @@ static SqlClient *client = nil;
      
      (database.current_comlete_pdf_file_name==nil)?@"":[database.current_comlete_pdf_file_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_job_summary==nil)?@"":[database.current_job_summary stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_job_summary==nil)?@"":[database.current_job_summary stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_customer_notes==nil)?@"":[database.current_customer_notes stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      
      ];
     
@@ -3140,22 +3148,16 @@ static SqlClient *client = nil;
     
     isql *database = [isql initialize];
     
-        
-    database.draw_button_index = 0;
-    
     database.editingNSUrl = nil;
     
+    database.current_installer = nil;
+    
+    database.current_status = nil;
+    
+    database.current_serial_no = nil;
+    
     database.current_general_notes = nil;
-    /*
-     database.current_dest_latitude = nil;
-     
-     database.current_dest_longitude = nil;
-     
-     database.src_latitude = nil;
-     
-     database.src_longitude = nil;
-     */
-        
+            
     database.current_photo_file_directory_1 = nil;
     
     database.current_photo_file_directory_2 = nil;
@@ -3176,13 +3178,6 @@ static SqlClient *client = nil;
     
     database.current_raceway_part_10 = nil;
     
-    
-    database.cable_rca_video = nil;
-    database.cable_rca_audio = nil;
-    database.cable_cat5e = nil;
-    database.cable_vgamf = nil;
-    database.cable_hdmisplitter = nil;
-    database.cable_usbxt = nil;    
 }
 
 - (void) copyDatabaseIfNeeded {

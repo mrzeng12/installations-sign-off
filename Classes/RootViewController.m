@@ -118,7 +118,7 @@
     [toolbar setItems:items animated:NO];
     [self.navigationController.view addSubview:toolbar];
     
-    saveTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(20,729,320, 44)];
+    saveTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10,620,320, 44)];
     [saveTimeLabel setText:@""];
     [saveTimeLabel setTextColor:[UIColor darkGrayColor]];
     [saveTimeLabel setBackgroundColor:[UIColor clearColor]];
@@ -657,6 +657,8 @@
     
     database.current_classroom_notes = nil;
     
+    database.current_classroom_grade = nil;
+    
     database.classroom_index = nil;
     
     database.current_signature_file_directory_1 = nil;
@@ -667,11 +669,11 @@
     
     database.current_print_name_3 = nil;
     
-    database.current_classroom_grade = nil;
-        
     database.current_agreement_1 = nil;
     
     database.current_agreement_2 = nil;
+    
+    database.current_customer_notes = nil;
     
     database.current_comlete_pdf_file_name = nil;
     
@@ -868,6 +870,26 @@
                 database.current_so = nil;
                                                                 
                 database.current_bp_code = nil;
+                
+                database.current_district = nil;
+                
+                database.current_pod = nil;
+                
+                database.current_pdf1 = nil;
+                
+                database.current_pdf2 = nil;
+                
+                database.current_type_of_work = nil;
+                
+                database.current_job_status = nil;
+                
+                database.current_arrival_time = nil;
+                
+                database.current_departure_time = nil;
+                
+                database.current_reason_for_visit = nil;
+                
+                database.current_job_summary = nil;
                                 
                 database.current_primary_contact = nil;
                                 
@@ -879,6 +901,8 @@
                 
                 database.current_classroom_notes = nil;
                 
+                database.current_classroom_grade = nil;
+                
                 database.classroom_index = nil;
                 
                 database.current_signature_file_directory_1 = nil;
@@ -889,13 +913,12 @@
                                 
                 database.current_print_name_3 = nil;
                 
-                database.current_classroom_grade = nil;
-                                
+                database.current_customer_notes = nil;
+
                 database.current_agreement_1 = nil;
                 
                 database.current_agreement_2 = nil;
-                          
-                
+                                          
                 database.current_comlete_pdf_file_name = nil;
                                 
                 database.src_latitude = nil;
@@ -1185,6 +1208,25 @@
                               nil];
     
     [database greyoutMenu:myDict andHightlight:2];
+    
+    {
+        /******** Peripherals ********/
+        ThirdDetailView *tempDetailViewController = [[ThirdDetailView alloc] initWithNibName:@"ThirdDetailView" bundle:nil];
+        tempDetailViewController.title = @"Room Installation Data";
+        
+        UIViewController *detailViewController = tempDetailViewController;
+        
+        UINavigationController *DetailNav = [[UINavigationController alloc]initWithRootViewController:detailViewController];
+        thirdViewControllers = [[NSArray alloc] initWithObjects:self.navigationController, DetailNav, nil];
+        
+        /******* access the property will load the view controller ********/
+        [tempDetailViewController view];
+        
+        tempDetailViewController.installers.text = database.current_installer;
+        tempDetailViewController.statusOutlet.text = database.current_status;
+        tempDetailViewController.commentsOutlet.text = database.current_general_notes;        
+        
+    }
     
     {
         /******** Take Picture ********/

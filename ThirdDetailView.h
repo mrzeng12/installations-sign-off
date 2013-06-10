@@ -19,6 +19,10 @@
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
 - (IBAction)installersChanged:(id)sender;
+- (IBAction)statusChanged:(id)sender;
+- (IBAction)serialNoChanged:(id)sender;
+
+
 @property (strong, nonatomic) IBOutlet UITextField *installers;
 @property (strong, nonatomic) IBOutlet UIButton *statusBtn;
 @property (strong, nonatomic) IBOutlet UITextField *statusOutlet;
@@ -32,7 +36,7 @@
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollview;
 - (IBAction)addSerial:(id)sender;
 - (IBAction)autoFill:(UIButton *)sender;
-
+-(void)checkComplete;
 
 @end
 
