@@ -124,8 +124,7 @@
     [saveTimeLabel setBackgroundColor:[UIColor clearColor]];
     [saveTimeLabel setFont:[UIFont fontWithName: @"Trebuchet MS" size: 12.0f]];
     [self.tableView addSubview:saveTimeLabel];
-    
-    
+        
     unsigned int outCount, i;
     
     objc_property_t *properties = class_copyPropertyList([database class], &outCount);
@@ -601,6 +600,8 @@
 -(void)resetAllTabsWhenExitingRoom {
     
     /******** Call this function when it exiting a room *******/
+    [saveTimeLabel setText: @""];
+    
     thirdViewControllers = nil;
     fifteenthViewControllers = nil;
     

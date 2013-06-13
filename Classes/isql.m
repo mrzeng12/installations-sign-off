@@ -12,9 +12,6 @@
 #import "SqlClientQuery.h"
 #import <sqlite3.h>
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/ALAssetRepresentation.h>
-#import <AssetsLibrary/ALAsset.h>
-#import <AssetsLibrary/ALAssetsLibrary.h>
 #import "LGViewHUD.h"
 #import "ZipArchive.h"
 #import "objc/runtime.h"
@@ -96,47 +93,6 @@ static SqlClient *client = nil;
     //[resultLabel sizeToFit];
     
     
-}
-
-- (void) checkLatestVersion {
-    
-#ifndef testing
-    //only work in production environment
-    /*
-    isql *database = [isql initialize];
-    SqlClient *client =[database databaseConnect];
-    //[activityIndicator startAnimating];
-    
-    NSString* queryString = @"select [Version] from [sitesurvey].[dbo].[ipadSiteSurveyVersion] order by [ReleaseDate] desc";
-    
-    [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
-        
-        NSString *latestVersion = nil;
-        if(query.succeeded){
-            
-            SqlResultSet *resultSet = [query.resultSets objectAtIndex:0];
-            
-            while([resultSet moveNext]) {
-                latestVersion = [NSString stringWithFormat:@"%@", [resultSet getData:0]];
-            }
-            
-        }else{
-            NSLog(@"%@", query.errorText);
-        }
-        NSString *currentVersion = [NSString stringWithFormat:@"%@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
-        if ([currentVersion length] > 0 && [latestVersion length] > 0) {
-            int currentVersionNumber = [[currentVersion stringByReplacingOccurrencesOfString:@"." withString:@""] intValue];
-            int latestVersionNumber = [[latestVersion stringByReplacingOccurrencesOfString:@"." withString:@""] intValue];
-            if (currentVersionNumber < latestVersionNumber) {
-                //if you are behind latest version, pops up. if you are latest version of beyond latest version, it is fine.
-                UIAlertView *message = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"There is a new version %@ available. Please update through testFlight as soon as possible.", latestVersion] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [message show];
-            }
-        }
-        
-    }];
-     */
-#endif
 }
 
 - (void) remoteSrcToLocalSrc: (BOOL) upload {
@@ -299,7 +255,7 @@ static SqlClient *client = nil;
                 sqlite3_close(masterDB);
                 NSLog(@"remoteSrcToLocalSrc complete");
                                
-                [self checkifMenuTableExist];
+                [self remoteUserToLocalUser];
             }
             
         }else{
@@ -316,253 +272,6 @@ static SqlClient *client = nil;
         }
     }];
     
-}
-
-- (void) checkifMenuTableExist
-
-{
-    NSLog(@"remoteMenuToLocalMenu skip");
-    [self remoteUserToLocalUser];
-    /*
-    sqlite3 *db;
-    sqlite3_stmt    *statement;
-    
-    isql *database = [isql initialize];
-    
-    [database copyDatabaseIfNeeded];
-    __block NSString *localMenuVersion;
-    
-    @try {
-        
-        const char *dbpath = [self.dbpathString UTF8String];
-        
-        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {   
-            
-            NSString *selectSQL = [NSString stringWithFormat:@"select [name] from local_menu where Xib = 'Version'"];
-            
-            const char *select_stmt = [selectSQL UTF8String];
-            
-            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                
-                while (sqlite3_step(statement) == SQLITE_ROW)
-                {
-                    localMenuVersion = [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, 0)];
-                }
-                sqlite3_finalize(statement);
-            }
-            else {
-                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-                
-            }
-            
-        }
-        
-        
-    }
-    @catch (NSException *exception) {
-        NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-    }
-    @finally {
-        sqlite3_close(db);
-        
-        
-        SqlClient *client =[database databaseConnect];
-        //[activityIndicator startAnimating];
-        
-        NSString* queryString = @"select [name] from [sitesurvey].[dbo].[menu202] where Xib = 'Version'";
-        
-        [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
-            
-            NSString *version = nil;
-            if(query.succeeded){
-                
-                SqlResultSet *resultSet = [query.resultSets objectAtIndex:0];
-                
-                while([resultSet moveNext]) {
-                    version = [NSString stringWithFormat:@"%@", [resultSet getData:0]];
-                }
-                
-            }else{
-                NSLog(@"%@", query.errorText);
-            }
-            
-            if (![localMenuVersion isEqualToString:version]) {
-                [self remoteMenuToLocalMenu];
-            }
-            else {
-                NSLog(@"remoteMenuToLocalMenu skip");
-                [self remoteUserToLocalUser];
-            }
-            
-            
-        }];
-    }
-     */
-}
-
-- (void) remoteMenuToLocalMenu {
-    /*
-    [self copyDatabaseIfNeeded];
-    
-    isql *database = [isql initialize];
-    
-    SqlClient *client =[database databaseConnect];
-    //[activityIndicator startAnimating];
-    
-    NSMutableString* queryString = [NSMutableString string];
-    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Xib], [Name], [SOR], [Session], [Row], [Cat1], [Cat2], [Cat3], [Number], [Form], [Dependency1], [Dependency2], [Dependency3], [Dependency4], [Dependency5], [Dependency6], [Key1], [Value1], [Key2], [Value2], [Key3], [Value3] from [sitesurvey].[dbo].[menu202]"]];
-    
-    [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
-        //[activityIndicator stopAnimating];
-        
-        if(query.succeeded){
-            
-            srcDBArray = [NSMutableArray arrayWithObjects: nil];
-            SqlResultSet *resultSet = [query.resultSets objectAtIndex:0];
-            int row_number = 0;
-            while([resultSet moveNext]) {
-                NSMutableArray *srcDBRow = [NSMutableArray arrayWithObjects: nil];
-                for(int i=0; i<resultSet.fieldCount; i++){
-                    [srcDBRow addObject: [resultSet getData:i]];
-                }
-                [srcDBArray addObject: srcDBRow];
-                row_number++;
-            }
-            
-            //sqlite3 *db;
-            //sqlite3_stmt    *statement;
-            sqlite3 *masterDB;
-            
-            @try {
-                
-                
-                sqlite3_stmt *init_statement = nil;
-                const char *dbpath = [self.dbpathString UTF8String];
-                
-                if (sqlite3_open(dbpath, &masterDB) == SQLITE_OK)
-                
-                {
-                    NSString* statement;
-                    
-                    statement = @"BEGIN EXCLUSIVE TRANSACTION";
-                    
-                    if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &init_statement, NULL) != SQLITE_OK) {
-                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                        [NSException raise:@"init_statement wrong" format:@"init_statement wrong"];
-                        //return NO;
-                    }
-                    
-                    if (sqlite3_step(init_statement) != SQLITE_DONE) {
-                        sqlite3_finalize(init_statement);
-                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                        [NSException raise:@"init_statement wrong" format:@"init_statement wrong"];
-                        //return NO;
-                    }
-                    
-                    statement = @"delete from local_menu";
-                    sqlite3_stmt *delete_statement;
-                    
-                    if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &delete_statement, NULL) != SQLITE_OK) {
-                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                        [NSException raise:@"delete_statement wrong" format:@"delete_statement wrong"];
-                        //return NO;
-                    }
-                    if (sqlite3_step(delete_statement) != SQLITE_DONE) {
-                        sqlite3_finalize(delete_statement);
-                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                        [NSException raise:@"delete_statement wrong" format:@"delete_statement wrong"];
-                        //return NO;
-                    }
-                    
-                    NSTimeInterval timestampB = [[NSDate date] timeIntervalSince1970];
-                    
-                    //statement = @"insert into table(id, name) values(?,?)";
-                    statement = @"INSERT INTO local_menu ([Xib], [Name], [SOR], [Session], [Row], [Cat1], [Cat2], [Cat3], [Number], [Form], [Dependency1], [Dependency2], [Dependency3], [Dependency4], [Dependency5], [Dependency6], [Key1], [Value1], [Key2], [Value2], Key3, Value3) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                    sqlite3_stmt *compiledStatement;
-                    
-                    if(sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &compiledStatement, NULL) == SQLITE_OK)
-                    {
-                        for(int i = 0; i < [srcDBArray count]; i++){
-                            NSMutableArray *stringArray = [NSMutableArray array];
-                            
-                            for (int j = 0; j < 22; j++) {
-                                NSString *tempString = [NSString stringWithFormat:@"%@", [[srcDBArray objectAtIndex:i] objectAtIndex:j] ] ;
-                                tempString = [tempString stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-                                [stringArray addObject: tempString];
-                                
-                            }
-                            for (int j = 0; j < 22; j++) {
-                                NSString *tempString = ([[srcDBArray objectAtIndex:i] objectAtIndex:j] != [NSNull null])?[stringArray objectAtIndex:j]:@"";
-                                sqlite3_bind_text(compiledStatement, j+1, [tempString UTF8String], -1, SQLITE_TRANSIENT);
-                            }
-                            //sqlite3_bind_int(compiledStatement, 1, i );
-                            //sqlite3_bind_text(compiledStatement, 2, [objName UTF8String], -1, SQLITE_TRANSIENT);
-                            while(YES){
-                                NSInteger result = sqlite3_step(compiledStatement);
-                                if(result == SQLITE_DONE){
-                                    break;
-                                }
-                                else if(result != SQLITE_BUSY){
-                                    printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                                    break;
-                                }
-                            }
-                            sqlite3_reset(compiledStatement);
-                            
-                        }
-                        timestampB = [[NSDate date] timeIntervalSince1970] - timestampB;
-                        NSLog(@"Menu Insert Time Taken: %f",timestampB);
-                        
-                        // COMMIT
-                        statement = @"COMMIT TRANSACTION";
-                        sqlite3_stmt *commitStatement;
-                        if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &commitStatement, NULL) != SQLITE_OK) {
-                            printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                            [NSException raise:@"commitStatement wrong" format:@"commitStatement wrong"];
-                            //return NO;
-                        }
-                        if (sqlite3_step(commitStatement) != SQLITE_DONE) {
-                            printf("db error: %s\n", sqlite3_errmsg(masterDB));
-                            [NSException raise:@"commitStatement wrong" format:@"commitStatement wrong"];
-                            //return NO;
-                        }
-                        
-                        //     sqlite3_finalize(beginStatement);
-                        sqlite3_finalize(compiledStatement);
-                        sqlite3_finalize(commitStatement);
-                        //return YES;
-                    }
-                    
-                    //return YES;
-                }
-                
-            }
-            @catch (NSException *exception) {
-                NSLog(@"%@", exception);
-            }
-            @finally {
-                sqlite3_close(masterDB);
-                NSLog(@"remoteMenuToLocalMenu complete");
-                                
-                [self remoteUserToLocalUser];
-            }
-            
-            
-        }else{
-            NSLog(@"no network -- remoteMenuToLocalMenu fail");
-            
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:nil message:@"Could not connect to the server. Working offline" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [message show];
-            
-            NSLog(@"%@", query.errorText);
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"EnableLogin" object:self userInfo:nil];
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
-        }
-    }];
-    */
 }
 
 - (void) remoteUserToLocalUser {
@@ -765,526 +474,76 @@ static SqlClient *client = nil;
     isql *database = [isql initialize];
     
     SqlClient *client =[database databaseConnect];
-    //[activityIndicator startAnimating];
+    
     NSMutableArray *items = [NSMutableArray array];
     NSMutableString* queryString = [NSMutableString string];
-    
-    //NSMutableDictionary *item = [NSMutableDictionary dictionary];    
-    
+        
     NSMutableDictionary *Rowofdict = [tempArrayDict objectAtIndex:index];
-    NSString *string;
-    NSMutableDictionary *dictFromString;
-    NSString *stringData;
-    NSData *data;
-    NSError *e;
     
-    string = [Rowofdict objectForKey:@"Projection_availability"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Projection_availability" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"New_projection_type"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"New_projection_type" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Existing_projection_type"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_projection_type" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"No_projection_type"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"No_projection_type" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Projection_type"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Projection_type" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
+    NSString *installString = [Rowofdict objectForKey:@"Installer"];
+    NSString *statusString = [Rowofdict objectForKey:@"Status"];
+    NSString *serialNoString = [Rowofdict objectForKey:@"Serial_no"];
+    NSString *notesString = [Rowofdict objectForKey:@"General_notes"];
     
-    string = [Rowofdict objectForKey:@"Projector"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Projection" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Projector_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Projection_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
+    NSData *data = [serialNoString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *e = nil;
+    NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
     
-    string = [Rowofdict objectForKey:@"Flat_panel"];
-    if ([string length] > 0) {
+    for (NSMutableDictionary *dict in dictArray) {
         NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Flat_panel" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
+        [oneItem setObject:installString forKey:@"install"];
+        [oneItem setObject:statusString forKey:@"status"];
+        [oneItem setObject:[dict objectForKey:@"type"] forKey:@"itemtype"];
+        [oneItem setObject:[dict objectForKey:@"serial"] forKey:@"serialnumber"];
+        [oneItem setObject:notesString forKey:@"notes"];
         [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Flat_panel_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Flat_panel_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Smartboard"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Interactive_whiteboard" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Smartboard_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Interactive_whiteboard_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    /*
-    string = [Rowofdict objectForKey:@"Mounting"];  //dict
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Mounting" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-     */
-    stringData = [Rowofdict objectForKey:@"Mounting"];
-    data = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-    e = nil;
-    dictFromString = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
-    for(id key in dictFromString)
-    {
-        if ([[dictFromString objectForKey:key] isEqualToString:@"New"]) {
-            NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-            [oneItem setObject:@"Mounting_equipment" forKey:@"type"];
-            [oneItem setObject:key forKey:@"code"];
-            [oneItem setObject:@"no" forKey:@"notes"];
-            [items addObject:oneItem];
-        }
-    }
-    string = [Rowofdict objectForKey:@"Mounting_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Mounting_equipment_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Custom_build_rail"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Custom_build_rail" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    /*
-    string = [Rowofdict objectForKey:@"Cmp_mounting"];  //dict
-    if ([string length] > 0) {        
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"CMP_mounting" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-     */
-    string = [Rowofdict objectForKey:@"Cmp_mounting_location"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"CMP_mounting_location" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    stringData = [Rowofdict objectForKey:@"Cmp_mounting"];
-    data = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-    e = nil;
-    dictFromString = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
-    for(id key in dictFromString)
-    {
-        if ([[dictFromString objectForKey:key] isEqualToString:@"New"]) {
-            NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-            [oneItem setObject:@"CMP_mounting" forKey:@"type"];
-            [oneItem setObject:key forKey:@"code"];
-            [oneItem setObject:@"no" forKey:@"notes"];
-            [items addObject:oneItem];
-        }
-    }
-    
-    string = [Rowofdict objectForKey:@"CMP_mouting_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"CMP_mounting_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"CMP_mounting_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"CMP_mounting_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Cmp_poleLength"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"CMP_poleLength" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Cmp_poleLength_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cmp_poleLength_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_board_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_board_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_board_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_board_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_projector_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_projector_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_projector_serial"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_projector_serial_no" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_cmp_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Existing_CMP_model" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_CMP_throw_distance"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Throw_distance_from_existing_projector_to_SB" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Existing_CMP_remount"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Relocate_existing_ceiling_mount" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Equipment_location_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Current_equipment_location" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-        
-    stringData = [Rowofdict objectForKey:@"Speaker"];
-    data = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-    e = nil;
-    dictFromString = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
-    for(id key in dictFromString)
-    {
-        if ([[dictFromString objectForKey:key] isEqualToString:@"New"]) {
-            NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-            [oneItem setObject:@"Speaker" forKey:@"type"];
-            [oneItem setObject:key forKey:@"code"];
-            [oneItem setObject:@"no" forKey:@"notes"];
-            [items addObject:oneItem];
-        }
-    }
-    string = [Rowofdict objectForKey:@"Audio_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Speaker_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Audio"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Audio" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Audio_package"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Audio_package" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Audio_accessories"];
-    if ([string length] > 0) {
-        NSMutableArray *array = [[string componentsSeparatedByString:@", "] mutableCopy];
-        for (NSString *obj in array) {
-            NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-            [oneItem setObject:@"Audio_accessories" forKey:@"type"];
-            [oneItem setObject:obj forKey:@"code"];
-            [oneItem setObject:@"no" forKey:@"notes"];
-            [items addObject:oneItem];
-        }
-    }
-    string = [Rowofdict objectForKey:@"Audio_accessories_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Audio_accessories_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Peripherals"];
-    if ([string length] > 0) {
-        NSMutableArray *array = [[string componentsSeparatedByString:@", "] mutableCopy];
-        for (NSString *obj in array) {
-            NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-            [oneItem setObject:@"Peripherals" forKey:@"type"];
-            [oneItem setObject:obj forKey:@"code"];
-            [oneItem setObject:@"no" forKey:@"notes"];
-            [items addObject:oneItem];
-        }
-    }
-    string = [Rowofdict objectForKey:@"Peripherals_others"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Peripherals_others" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Audio_accessories_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Audio_accessories_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Raceway_part_2"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Pieces_of_8_foot_raceway" forKey:@"type"];
-        [oneItem setObject:@"TYTTSR2FW-8A" forKey:@"code"];
-        [oneItem setObject:string forKey:@"quantity"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"General_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"General_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Internal_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Internal_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    
-    string = [Rowofdict objectForKey:@"Cable_type"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cable_type" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Cable_type_notes"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cable_type_notes" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Cable_ports"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cable_ports" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Port_desc"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cable_ports_description" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Nyc_cable_bundle"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Nyc_cable_bundle" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-        
-        oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Mounting_equipment" forKey:@"type"];
-        [oneItem setObject:@"Teq-SBMount" forKey:@"code"];
-        [oneItem setObject:@"no" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    string = [Rowofdict objectForKey:@"Cables_other"];
-    if ([string length] > 0) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:@"Cables_other" forKey:@"type"];
-        [oneItem setObject:string forKey:@"code"];
-        [oneItem setObject:@"yes" forKey:@"notes"];
-        [items addObject:oneItem];
-    }
-    //use the output function to convert raw cable data to part number and volumes
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    dict = [self outputCableDictFromRawData:Rowofdict];
-    
+    }    
+      
     NSDate *today = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
     NSString *todayString = [formatter stringFromDate: today];
-    
-    NSArray *tempRow = [tempArray objectAtIndex:index];
-    
-    NSString *thisTeqRep = [[tempRow objectAtIndex:8] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-    NSString *thisActivityNumber = [[tempRow objectAtIndex:1] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-    NSString *thisRoomNumber = [[tempRow objectAtIndex:2] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+        
+    NSString *thisTeqRep = [[Rowofdict objectForKey:@"Teq_rep"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+    NSString *thisActivityNumber = [[Rowofdict objectForKey:@"Activity_no"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+    NSString *thisRoomNumber = [[Rowofdict objectForKey:@"Room_Number"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     
     //insert all items except cables
     [queryString appendString:@"BEGIN TRANSACTION;"];
+    NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallSummary] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+    [queryString appendString: deleteQuery];
+    
     for (NSMutableDictionary *oneItem in items) {
-        NSString *item_type = [oneItem objectForKey:@"type"];
-        NSString *item_code = [oneItem objectForKey:@"code"];
-        NSString *is_notes = [oneItem objectForKey:@"notes"];
-        NSString *item_quantity = [oneItem objectForKey:@"quantity"];
-        if (item_quantity == nil) {
-            item_quantity = @"1";
-        }
-        item_type = [item_type stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-        item_code = [item_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
+        NSString *installCol = [oneItem objectForKey:@"install"];
+        NSString *statusCol = [oneItem objectForKey:@"status"];
+        NSString *itemtypeCol = [oneItem objectForKey:@"itemtype"];
+        NSString *serialnumberCol = [oneItem objectForKey:@"serialnumber"];
+        NSString *notesCol = [oneItem objectForKey:@"notes"];
         
+        installCol = [self escapeString:installCol];
+        statusCol = [self escapeString:statusCol];
+        itemtypeCol = [self escapeString:itemtypeCol];
+        serialnumberCol = [self escapeString:serialnumberCol];
+        notesCol = [self escapeString:notesCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey2].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, item_type, item_code, item_quantity, is_notes, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, item_type, item_code, item_quantity, is_notes, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #endif
        
     }
-    //insert cables
-    for (id key in dict) {
-        NSString *item_quantity = [dict objectForKey:key];
-        NSString *key_string = [key stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-        item_quantity = [item_quantity stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
         
-        if ([item_quantity intValue] > 0) {
-            
-#ifdef testing
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey2].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, @"Cables", key_string, item_quantity, @"no", todayString]];
-#else
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, @"Cables", key_string, item_quantity, @"no", todayString]];
-#endif
-           
-        }
-    }
-    
     //just to make sure it is not sending empty query
     if ([queryString length] == 0) {
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey2].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, @"testing", @"testing", @"1", @"no", todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [sitesurvey].[dbo].[ipadSiteSurveyNew204] VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, thisTeqRep, @"testing", @"testing", @"1", @"no", todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
 #endif
         
     }
     [queryString appendString:@"COMMIT TRANSACTION;"];
-    //NSLog(@"%@", queryString);
-    
+        
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
         
@@ -1325,12 +584,7 @@ static SqlClient *client = nil;
                     }
                 }
                 @catch (NSException *exception) {
-                    /*
-                     NSDictionary *dict = [NSDictionary dictionaryWithObject:@"Something wrong during syncronization, please try later again" forKey:@"index"];
-                     
-                     [[NSNotificationCenter defaultCenter]
-                     postNotificationName:@"alertDBError" object:self userInfo:dict];
-                     */
+                   
                 }
                 @finally {        
                     sqlite3_close(db);
@@ -1351,261 +605,6 @@ static SqlClient *client = nil;
     
 }
 
-- (NSMutableDictionary *) outputCableDictFromRawData : (NSMutableDictionary *) Rowofdict {
-    
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    NSString *string;
-    
-    if (![[Rowofdict objectForKey:@"Vgamm_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM015"] intValue]+[[Rowofdict objectForKey:@"Vgamm15"] intValue]];
-        [dict setObject:string forKey:@"HD15MM015"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM025"] intValue]+[[Rowofdict objectForKey:@"Vgamm25"] intValue]];
-        [dict setObject:string forKey:@"HD15MM025"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM035"] intValue]+[[Rowofdict objectForKey:@"Vgamm35"] intValue]];
-        [dict setObject:string forKey:@"HD15MM035"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM050"] intValue]+[[Rowofdict objectForKey:@"Vgamm50"] intValue]];
-        [dict setObject:string forKey:@"HD15MM050"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM075"] intValue]+[[Rowofdict objectForKey:@"Vgamm75"] intValue]];
-        [dict setObject:string forKey:@"HD15MM075"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM015P"] intValue]+[[Rowofdict objectForKey:@"Vgamm15"] intValue]];
-        [dict setObject:string forKey:@"HD15MM015P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM025P"] intValue]+[[Rowofdict objectForKey:@"Vgamm25"] intValue]];
-        [dict setObject:string forKey:@"HD15MM025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM035P"] intValue]+[[Rowofdict objectForKey:@"Vgamm35"] intValue]];
-        [dict setObject:string forKey:@"HD15MM035P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM050P"] intValue]+[[Rowofdict objectForKey:@"Vgamm50"] intValue]];
-        [dict setObject:string forKey:@"HD15MM050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM075P"] intValue]+[[Rowofdict objectForKey:@"Vgamm75"] intValue]];
-        [dict setObject:string forKey:@"HD15MM075P"];
-    }
-    if (![[Rowofdict objectForKey:@"Hdmi_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI016"] intValue]+[[Rowofdict objectForKey:@"Hdmi15"] intValue]];
-        [dict setObject:string forKey:@"HDMI016"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI025"] intValue]+[[Rowofdict objectForKey:@"Hdmi25"] intValue]];
-        [dict setObject:string forKey:@"HDMI025"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI050"] intValue]+[[Rowofdict objectForKey:@"Hdmi50"] intValue]];
-        [dict setObject:string forKey:@"HDMI050"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI075"] intValue]+[[Rowofdict objectForKey:@"Hdmi75"] intValue]];
-        [dict setObject:string forKey:@"HDMI075"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI015P"] intValue]+[[Rowofdict objectForKey:@"Hdmi15"] intValue]];
-        [dict setObject:string forKey:@"HDMI015P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI025P"] intValue]+[[Rowofdict objectForKey:@"Hdmi25"] intValue]];
-        [dict setObject:string forKey:@"HDMI025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI050P"] intValue]+[[Rowofdict objectForKey:@"Hdmi50"] intValue]];
-        [dict setObject:string forKey:@"HDMI050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI075P"] intValue]+[[Rowofdict objectForKey:@"Hdmi75"] intValue]];
-        [dict setObject:string forKey:@"HDMI075P"];
-    }
-    if (![[Rowofdict objectForKey:@"Rca_comp_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC012"] intValue]+[[Rowofdict objectForKey:@"Rca_comp12"] intValue]];
-        [dict setObject:string forKey:@"RCAC012"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC025"] intValue]+[[Rowofdict objectForKey:@"Rca_comp25"] intValue]];
-        [dict setObject:string forKey:@"RCAC025"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC050"] intValue]+[[Rowofdict objectForKey:@"Rca_comp50"] intValue]];
-        [dict setObject:string forKey:@"RCAC050"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC075"] intValue]+[[Rowofdict objectForKey:@"Rca_comp75"] intValue]];
-        [dict setObject:string forKey:@"RCAC075"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC012P"] intValue]+[[Rowofdict objectForKey:@"Rca_comp12"] intValue]];
-        [dict setObject:string forKey:@"RCAC012P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC025P"] intValue]+[[Rowofdict objectForKey:@"Rca_comp25"] intValue]];
-        [dict setObject:string forKey:@"RCAC025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC050P"] intValue]+[[Rowofdict objectForKey:@"Rca_comp50"] intValue]];
-        [dict setObject:string forKey:@"RCAC050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAC075P"] intValue]+[[Rowofdict objectForKey:@"Rca_comp75"] intValue]];
-        [dict setObject:string forKey:@"RCAC075P"];
-    }
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAA012"] intValue]+[[Rowofdict objectForKey:@"Rca_audio12"] intValue]];
-    [dict setObject:string forKey:@"RCAA012"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAA025"] intValue]+[[Rowofdict objectForKey:@"Rca_audio25"] intValue]];
-    [dict setObject:string forKey:@"RCAA025"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAA050"] intValue]+[[Rowofdict objectForKey:@"Rca_audio50"] intValue]];
-    [dict setObject:string forKey:@"RCAA050"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAA075"] intValue]+[[Rowofdict objectForKey:@"Rca_audio75"] intValue]];
-    [dict setObject:string forKey:@"RCAA075"];
-    
-    if (![[Rowofdict objectForKey:@"Audio35mm_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM015S"] intValue]+[[Rowofdict objectForKey:@"Audio35mm15"] intValue]];
-        [dict setObject:string forKey:@"35MM015S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM025S"] intValue]+[[Rowofdict objectForKey:@"Audio35mm25"] intValue]];
-        [dict setObject:string forKey:@"35MM025S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM050S"] intValue]+[[Rowofdict objectForKey:@"Audio35mm50"] intValue]];
-        [dict setObject:string forKey:@"35MM050S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM075S"] intValue]+[[Rowofdict objectForKey:@"Audio35mm75"] intValue]];
-        [dict setObject:string forKey:@"35MM075S"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM015P"] intValue]+[[Rowofdict objectForKey:@"Audio35mm15"] intValue]];
-        [dict setObject:string forKey:@"35MM015P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM025P"] intValue]+[[Rowofdict objectForKey:@"Audio35mm25"] intValue]];
-        [dict setObject:string forKey:@"35MM025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM050P"] intValue]+[[Rowofdict objectForKey:@"Audio35mm50"] intValue]];
-        [dict setObject:string forKey:@"35MM050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM075P"] intValue]+[[Rowofdict objectForKey:@"Audio35mm75"] intValue]];
-        [dict setObject:string forKey:@"35MM075P"];
-    }
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"USBAB009"] intValue]+[[Rowofdict objectForKey:@"Usbab9"] intValue]];
-    [dict setObject:string forKey:@"USBAB009"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"USBAB015"] intValue]+[[Rowofdict objectForKey:@"Usbab15"] intValue]];
-    [dict setObject:string forKey:@"USBAB015"];
-    
-    if (![[Rowofdict objectForKey:@"Cat5xt_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025S"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25"] intValue]];
-        [dict setObject:string forKey:@"RJ45025S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050S"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50"] intValue]];
-        [dict setObject:string forKey:@"RJ45050S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45075S"] intValue]+[[Rowofdict objectForKey:@"Cat5xt75"] intValue]];
-        [dict setObject:string forKey:@"RJ45075S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt75"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025P"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25"] intValue]];
-        [dict setObject:string forKey:@"RJ45025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050P"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50"] intValue]];
-        [dict setObject:string forKey:@"RJ45050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45075P"] intValue]+[[Rowofdict objectForKey:@"Cat5xt75"] intValue]];
-        [dict setObject:string forKey:@"RJ45075P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"CAT5XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt75"] intValue]];
-        [dict setObject:string forKey:@"CAT5XT"];
-    }
-    
-    if (![[Rowofdict objectForKey:@"Cat5xt_sbx800_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025S"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25For800"] intValue]];
-        [dict setObject:string forKey:@"RJ45025S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"SBX800 CAT5-XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25For800"] intValue]];
-        [dict setObject:string forKey:@"SBX800 CAT5-XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050S"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50For800"] intValue]];
-        [dict setObject:string forKey:@"RJ45050S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"SBX800 CAT5-XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50For800"] intValue]];
-        [dict setObject:string forKey:@"SBX800 CAT5-XT"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025P"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25For800"] intValue]];
-        [dict setObject:string forKey:@"RJ45025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"SBX800 CAT5-XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt25For800"] intValue]];
-        [dict setObject:string forKey:@"SBX800 CAT5-XT"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050P"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50For800"] intValue]];
-        [dict setObject:string forKey:@"RJ45050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"SBX800 CAT5-XT"] intValue]+[[Rowofdict objectForKey:@"Cat5xt50For800"] intValue]];
-        [dict setObject:string forKey:@"SBX800 CAT5-XT"];
-    }
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"VS-2M/F6"] intValue]+[[Rowofdict objectForKey:@"Vga_splitter_2port"] intValue]];
-    [dict setObject:string forKey:@"VS-2M/F6"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"VS-2M/M6"] intValue]+[[Rowofdict objectForKey:@"Vga_splitter_2portwaudio"] intValue]];
-    [dict setObject:string forKey:@"VS-2M/M6"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"VS-4M/F6"] intValue]+[[Rowofdict objectForKey:@"Vga_splitter_4port"] intValue]];
-    [dict setObject:string forKey:@"VS-4M/F6"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"VS-4M/M6"] intValue]+[[Rowofdict objectForKey:@"Vga_splitter_4portwaudio"] intValue]];
-    [dict setObject:string forKey:@"VS-4M/M6"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM006"] intValue]+[[Rowofdict objectForKey:@"Patch_vga6"] intValue]];
-    [dict setObject:string forKey:@"HD15MM006"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MM015"] intValue]+[[Rowofdict objectForKey:@"Patch_vga12"] intValue]];
-    [dict setObject:string forKey:@"HD15MM015"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"USBAB006"] intValue]+[[Rowofdict objectForKey:@"Patch_usbab6"] intValue]];
-    [dict setObject:string forKey:@"USBAB006"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"USBAB009"] intValue]+[[Rowofdict objectForKey:@"Patch_usbab9"] intValue]];
-    [dict setObject:string forKey:@"USBAB009"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI006"] intValue]+[[Rowofdict objectForKey:@"Patch_hdmi6"] intValue]];
-    [dict setObject:string forKey:@"HDMI006"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HDMI009"] intValue]+[[Rowofdict objectForKey:@"Patch_hdmi10"] intValue]];
-    [dict setObject:string forKey:@"HDMI009"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM006"] intValue]+[[Rowofdict objectForKey:@"Patch_audio35mm6"] intValue]];
-    [dict setObject:string forKey:@"35MM006"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35MM015S"] intValue]+[[Rowofdict objectForKey:@"Patch_audio35mm15"] intValue]];
-    [dict setObject:string forKey:@"35MM015S"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45005"] intValue]+[[Rowofdict objectForKey:@"Patch_cat5e5"] intValue]];
-    [dict setObject:string forKey:@"RJ45005"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45007"] intValue]+[[Rowofdict objectForKey:@"Patch_cat5e7"] intValue]];
-    [dict setObject:string forKey:@"RJ45007"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45010"] intValue]+[[Rowofdict objectForKey:@"Patch_cat5e10"] intValue]];
-    [dict setObject:string forKey:@"RJ45010"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAV012"] intValue]+[[Rowofdict objectForKey:@"Add_rca_video12"] intValue]];
-    [dict setObject:string forKey:@"RCAV012"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAV025"] intValue]+[[Rowofdict objectForKey:@"Add_rca_video25"] intValue]];
-    [dict setObject:string forKey:@"RCAV025"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAV050"] intValue]+[[Rowofdict objectForKey:@"Add_rca_video50"] intValue]];
-    [dict setObject:string forKey:@"RCAV050"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RCAV075"] intValue]+[[Rowofdict objectForKey:@"Add_rca_video75"] intValue]];
-    [dict setObject:string forKey:@"RCAV075"];
-    
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35RCAA012"] intValue]+[[Rowofdict objectForKey:@"Add_35rcaaudio12"] intValue]];
-    [dict setObject:string forKey:@"35RCAA012"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35RCAA025"] intValue]+[[Rowofdict objectForKey:@"Add_35rcaaudio25"] intValue]];
-    [dict setObject:string forKey:@"35RCAA025"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35RCAA050V"] intValue]+[[Rowofdict objectForKey:@"Add_35rcaaudio50"] intValue]];
-    [dict setObject:string forKey:@"35RCAA050V"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"35RCAA075V"] intValue]+[[Rowofdict objectForKey:@"Add_35rcaaudio75"] intValue]];
-    [dict setObject:string forKey:@"35RCAA075V"];
-    
-    
-    if (![[Rowofdict objectForKey:@"Add_cat5e_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025S"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e25"] intValue]];
-        [dict setObject:string forKey:@"RJ45025S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050S"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e50"] intValue]];
-        [dict setObject:string forKey:@"RJ45050S"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45075S"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e75"] intValue]];
-        [dict setObject:string forKey:@"RJ45075S"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45025P"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e25"] intValue]];
-        [dict setObject:string forKey:@"RJ45025P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45050P"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e50"] intValue]];
-        [dict setObject:string forKey:@"RJ45050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"RJ45075P"] intValue]+[[Rowofdict objectForKey:@"Add_cat5e75"] intValue]];
-        [dict setObject:string forKey:@"RJ45075P"];
-    }
-    if (![[Rowofdict objectForKey:@"Add_vgamf_plenum"] isEqualToString:@"Yes"]) {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF006"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf6"] intValue]];
-        [dict setObject:string forKey:@"HD15MF006"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF015"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf15"] intValue]];
-        [dict setObject:string forKey:@"HD15MF015"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF025"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf25"] intValue]];
-        [dict setObject:string forKey:@"HD15MF025"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF050"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf50"] intValue]];
-        [dict setObject:string forKey:@"HD15MF050"];
-    }
-    else {
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF015P"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf15"] intValue]];
-        [dict setObject:string forKey:@"HD15MF015P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF030P"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf25"] intValue]];
-        [dict setObject:string forKey:@"HD15MF030P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF050P"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf50"] intValue]];
-        [dict setObject:string forKey:@"HD15MF050P"];
-        string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"HD15MF075P"] intValue]+[[Rowofdict objectForKey:@"Add_vgamf75"] intValue]];
-        [dict setObject:string forKey:@"HD15MF075P"];
-    }
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"VASHDMI2"] intValue]+[[Rowofdict objectForKey:@"Add_hdmisplitter_2port"] intValue]];
-    [dict setObject:string forKey:@"VASHDMI2"];
-    string = [NSString stringWithFormat:@"%d",[[dict objectForKey:@"USB-XT"] intValue]+[[Rowofdict objectForKey:@"Add_usbxt16"] intValue]];
-    [dict setObject:string forKey:@"USB-XT"];
-    
-    return dict;
-
-}
-
 - (void) localDestToRemoteDestRecursive: (NSArray *) tempArray withIndexNumber: (int) index andDict: (NSArray *) tempArrayDict
 {
     
@@ -1614,13 +613,15 @@ static SqlClient *client = nil;
         //[self remoteSrcToLocalSrc];
         return;
     }
-    NSLog(@"uploading .. Room %@, index %d", [[[tempArray objectAtIndex:index] objectAtIndex:2] stringByReplacingOccurrencesOfString:@"'" withString:@"''"], index);
+    NSMutableDictionary *Rowofdict = [tempArrayDict objectAtIndex:index];
+    
+    NSLog(@"uploading .. Room %@, index %d", [[Rowofdict objectForKey:@"Room_Number"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"], index);
     
     isql *database = [isql initialize];
     
     SqlClient *client =[database databaseConnect];
     
-    NSArray *tempRow = [tempArray objectAtIndex:index];
+    NSMutableDictionary *dict = [tempArrayDict objectAtIndex:index];
     
     NSDate *today = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -1628,26 +629,41 @@ static SqlClient *client = nil;
     NSString *todayString = [formatter stringFromDate: today];
     
     NSMutableString* queryString = [NSMutableString string];
-   
+    
+    [queryString appendString:@"BEGIN TRANSACTION;"];
+    NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
+    [queryString appendString:deleteQuery];
 #ifdef testing
-    [queryString appendString:@"INSERT INTO [sitesurvey2].[dbo].[ipadSiteSurvey204] VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[Install  CoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #else
-    [queryString appendString:@"INSERT INTO [sitesurvey].[dbo].[ipadSiteSurvey204] VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    int column_count = [tempRow count];
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
+                      [self escapeString: [dict objectForKey:@"Activity_no"]],
+                      [self escapeString: [dict objectForKey:@"Teq_rep"]],
+                      [self escapeString: [dict objectForKey:@"Bp_code"]],
+                      [self escapeString: [dict objectForKey:@"Location"]],
+                      [self escapeString: [dict objectForKey:@"District"]],
+                      [self escapeString: [dict objectForKey:@"Primary_contact"]],
+                      [self escapeString: [dict objectForKey:@"Pod"]],
+                      [self escapeString: [dict objectForKey:@"Sales_Order"]],
+                      [self escapeString: [dict objectForKey:@"Date"]],
+                      [self escapeString: [dict objectForKey:@"Username"]],
+                      [self escapeString: [dict objectForKey:@"File1"]],
+                      [self escapeString: [dict objectForKey:@"File2"]],
+                      [self escapeString: [dict objectForKey:@"Type_of_work"]],
+                      [self escapeString: [dict objectForKey:@"Job_status"]],
+                      [self escapeString: [dict objectForKey:@"Arrival_time"]],
+                      [self escapeString: [dict objectForKey:@"Departure_time"]],
+                      [self escapeString: [dict objectForKey:@"Reason_for_visit"]],
+                      [self escapeString: [dict objectForKey:@"Reserved 1"]],
+                      [self escapeString: [dict objectForKey:@"Customer_notes"]],
+                      [self escapeString: [dict objectForKey:@"Comlete_PDF_file_name"]],
+                       todayString ];
     
-    for (int i = 0; i < column_count; i++) {
-        if (i != 103) {
-            [queryString appendString: [NSString stringWithFormat:@"'%@',", [[tempRow objectAtIndex:i] stringByReplacingOccurrencesOfString:@"'" withString:@"''"]]];
-        }
-        else {
-            [queryString appendString: [NSString stringWithFormat:@"'%@',", todayString]];
-        }
-        
-    }
-    queryString = [NSMutableString stringWithFormat:@"%@)", [queryString substringToIndex:(queryString.length - 1)]];
-    
+    [queryString appendString:cols];
+    [queryString appendString:@"COMMIT TRANSACTION;"];
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
         
@@ -1671,72 +687,6 @@ static SqlClient *client = nil;
         
     }];
     
-}
-
-- (NSMutableArray *) queryMenu: (NSString *) query {
-    //isql *database = [isql initialize];
-    //database.queryCounter++;
-    //NSLog(@"%d", database.queryCounter);
-    self.menuColumnName = [NSArray arrayWithObjects:@"Xib", @"Name", @"SOR", @"Session", @"Row", @"Cat1", @"Cat2", @"Cat3", @"Number", @"Form", @"Dependency1", @"Dependency2", @"Dependency3", @"Dependency4", @"Dependency5", @"Dependency6", @"Key1", @"Value1", @"Key2", @"Value2", @"Key3", @"Value3", nil];
-    
-    NSMutableArray *returnArray = [NSMutableArray array];
-    
-    //NSMutableArray *tempArray =  [NSMutableArray array];
-    
-    sqlite3 *db;
-    sqlite3_stmt    *statement;
-    
-    @try {
-        
-        const char *dbpath = [self.dbpathString UTF8String];
-        
-        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {
-            
-            //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest order by rowid desc limit 1,1"];
-            NSString *selectSQL = [NSString stringWithFormat:@"%@", query];
-            const char *select_stmt = [selectSQL UTF8String];
-            
-            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                //NSLog(@"%@", selectSQL);
-                
-                while (sqlite3_step(statement) == SQLITE_ROW)
-                {
-                    //NSLog(@"fetch a row");
-                    NSMutableDictionary *tempRow = [[NSMutableDictionary alloc] init];
-                    
-                    for (int i = 0; i< sqlite3_column_count(statement); i++) {
-                        
-                        NSString *tempValue = [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i)];
-                        
-                        //NSString *tempName = [NSString stringWithFormat:@"%@",[[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_name(statement, i)]];
-                        NSString *tempName = [self.menuColumnName objectAtIndex:i];
-                        
-                        [tempRow setObject:tempValue forKey:tempName];
-                        
-                    }                    
-                    
-                    [returnArray addObject:tempRow];
-                }
-                
-                sqlite3_finalize(statement);
-            }
-            else {
-                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-                
-            }
-        }
-        
-        
-    }
-    @catch (NSException *exception) {
-        NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));       
-        
-    }
-    @finally {
-        sqlite3_close(db);
-    }
-    return returnArray;
 }
 
 - (void) localDestToRemoteDest {
@@ -1810,16 +760,7 @@ static SqlClient *client = nil;
          
 }
 
--(UIImage *)imageWithImage:(UIImage *)imageToCompress scaledToSize:(CGSize)newSize {
-    
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-    [imageToCompress drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
-- (void) uploadImages: (NSArray *) tempArray {
+- (void) saveAllPendingUploadPhotoAndPDFToFailList: (NSArray *) tempArray {
     
     for(int index = 0; index< [tempArray count]; index++)
     {
@@ -1827,170 +768,21 @@ static SqlClient *client = nil;
         
         NSString *thisTeqRep = [tempRow objectAtIndex:8] ;
         NSString *thisActivityNumber = [tempRow objectAtIndex:1];
-        
-        for (int i = 104; i <= 115; i++) {
-            
-            if([[tempRow objectAtIndex:i] length] > 10) {
-                
-                NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
-                [self uploadImage:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
-            }
-        }
-        
-        if([[tempRow objectAtIndex:132] length] > 10) {
-            NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:132]];
-            [self uploadPDF:imageString withActivity:thisActivityNumber andTeqRep:thisTeqRep];
-        }
-        
-    }
-    
-    [self selectFailFileList];
-}
-
-- (void) saveAllPendingUploadPhotoAndPDFToFailList: (NSArray *) tempArray {
-        
-    for(int index = 0; index< [tempArray count]; index++)
-    {   
-        NSArray *tempRow = [tempArray objectAtIndex:index];
-      
-        NSString *thisTeqRep = [tempRow objectAtIndex:8] ;
-        NSString *thisActivityNumber = [tempRow objectAtIndex:1];
-       
-        for (int i = 104; i <= 115; i++) {
-            
-            if([[tempRow objectAtIndex:i] length] > 10) {
-                
-                NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
-                [self saveAllPendingUploadPhotoToFailList:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
-            }
-        }
-        
-        if([[tempRow objectAtIndex:132] length] > 10) {
-            NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:132]];
+        /*
+         for (int i = 104; i <= 115; i++) {
+         
+         if([[tempRow objectAtIndex:i] length] > 10) {
+         
+         NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
+         [self saveAllPendingUploadPhotoToFailList:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
+         }
+         }
+         */
+        if([[tempRow objectAtIndex:44] length] > 10) {
+            NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:44]];
             [self saveAllPendingUploadPDFToFailList:imageString withActivity:thisActivityNumber andTeqRep:thisTeqRep];
         }
-                
-    }
-}
-
-- (void) saveAllPendingUploadPhotoToFailList : (NSString *) imageString withType : (NSString *) type andActivity: (NSString *) activity andTeqRep: (NSString *) teqrep{
-    
-    UIImage *drawImage = [self loadImage: imageString ofType: type inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-    
-    NSData *imageData = UIImageJPEGRepresentation(drawImage, 0.75);
-    
-    NSString *imageStringWithType = [NSString stringWithFormat:@"%@.%@", imageString, type];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    NSString *documentsDir = [paths objectAtIndex:0];
-    NSString *imagePath = [documentsDir stringByAppendingPathComponent:imageStringWithType];
-    
-    NSError *error;
-    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:&error];
-    NSDate *fileDate = [dictionary objectForKey:NSFileModificationDate];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
-    NSString *dateString = [dateFormat stringFromDate:fileDate];
-    if ([self checkIfFileUploaded:imageStringWithType withDateTime:dateString]) {
-        //return YES means it found the same file has been uploaded, stop uploading
-        return;
-    }
-    
-    if (imageData == nil) {
-        //no image
-    }
-    else {
-        //use imagePath as main id. If file does not exists, it cannot upload anyway.
-        [self writeToFailedFileUploadRecords:imagePath withDBName:imageStringWithType andFileType:@"image" andActivity:activity andTeqRep:teqrep];
-        NSLog(@"write image to fail log");
-    }
-}
-
-- (void) uploadSpeedTestFile {
-    
-    NSString *speedtestFileName = [[NSBundle mainBundle] pathForResource:@"speedtest" ofType:@"png"];
-    
-    NSData *myData = [NSData dataWithContentsOfFile:speedtestFileName];
-    
-#ifdef testing
-    NSString *urlString = @"http://108.54.230.13/website4/Default.aspx";
-#else
-    NSString *urlString = @"http://108.54.230.13/website3/Default.aspx";
-#endif
-    
-    // setting up the request object now
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:urlString]];
-    [request setHTTPMethod:@"POST"];
-    
-    /*
-     add some header info now
-     we always need a boundary when we post a file
-     also we need to set the content type
-     
-     You might want to generate a random boundary.. this is just the same
-     as my output from wireshark on a valid html post
-     */
-    NSString *boundary = @"---------------------------14737809831466499882746641449";
-    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-    
-    /*
-     now lets create the body of the post
-     */
-    NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", @"speedtest.png"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:myData];
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    // setting the body of the post to the reqeust
-    [request setHTTPBody:body];
-    
-    // now lets make the connection to the web
-    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-    
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    float speed = (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime);
-    TFLog(@"upload speed = %f Kbps", speed);
-    //NSLog(@"time elapse = %f",([NSDate timeIntervalSinceReferenceDate] - startTime));
-    //NSLog(@"upload speed = %f Kbps",  (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime));
-    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-    
-    if ([returnString isEqualToString:@"Success"]) {
-        if (speed > 10) {
-            //fast enough
-            [self localDestToRemoteDest];
-        }
-        else {
-            //alert and give options
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Your internet seems to be slow. Are you sure to sync now?" message: nil delegate:self cancelButtonTitle:@"Sync now" otherButtonTitles: @"Sync later", nil];
-            [message show];
-        }
-    }
-    else {
-        //alert and stop
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Sync error" message: returnString delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [message show];
-        [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    //detect slow internet. buttonIndex = 0 means continue to sync, buttonIndex = 1 means stop.
-    if (buttonIndex == 0) {
-        [self localDestToRemoteDest];
-    }
-    else {
-        [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
+        
     }
 }
 
@@ -2019,93 +811,35 @@ static SqlClient *client = nil;
         [self writeToFailedFileUploadRecords:pdfPath withDBName:pdfString andFileType:@"pdf" andActivity:activity andTeqRep:teqrep];
         NSLog(@"write pdf to fail log %@", pdfString);
     }
-   
+    
 }
 
-- (void) uploadImage : (NSString *) imageString withType : (NSString *) type andActivity: (NSString *) activity andTeqRep: (NSString *) teqrep {
+- (void) uploadImages: (NSArray *) tempArray {
     
-    UIImage *drawImage = [self loadImage: imageString ofType: type inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-    
-    NSData *imageData = UIImageJPEGRepresentation(drawImage, 0.75);
-    
-    NSError *error;
-    NSString *imageStringWithType = [NSString stringWithFormat:@"%@.%@", imageString, type];
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    NSString *documentsDir = [paths objectAtIndex:0];
-    NSString *imagePath = [documentsDir stringByAppendingPathComponent:imageStringWithType];
-    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:&error];
-    //NSLog(@"%@", error);
-    
-    NSDate *fileDate = [dictionary objectForKey:NSFileModificationDate];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
-    NSString *dateString = [dateFormat stringFromDate:fileDate];
-    if ([self checkIfFileUploaded:imageStringWithType withDateTime:dateString]) {
-        //return YES means it found the same file has been uploaded, stop uploading
-        return;
-    }
-    if (imageData == nil) {
-        //NSLog(@"no image");
-    }
-    else {
-        //use imagePath as main id. If file does not exists, it cannot upload anyway.
-        //[self writeToFailedFileUploadRecords:imagePath withDBName:imageStringWithType andFileType:@"image" andActivity:activity andTeqRep:teqrep];
-        //NSLog(@"write image to fail log");
+    for(int index = 0; index< [tempArray count]; index++)
+    {
+        NSArray *tempRow = [tempArray objectAtIndex:index];
         
-        imageString = [NSString stringWithFormat:@"%@.%@", imageString, type];
-        // setting up the URL to post to
-#ifdef testing
-        NSString *urlString = @"http://108.54.230.13/website4/Default.aspx";
-#else
-        NSString *urlString = @"http://108.54.230.13/website3/Default.aspx";
-#endif
-        
-        // setting up the request object now
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:[NSURL URLWithString:urlString]];
-        [request setHTTPMethod:@"POST"];
-        
+        NSString *thisTeqRep = [tempRow objectAtIndex:8] ;
+        NSString *thisActivityNumber = [tempRow objectAtIndex:1];
         /*
-         add some header info now
-         we always need a boundary when we post a file
-         also we need to set the content type
-         
-         You might want to generate a random boundary.. this is just the same 
-         as my output from wireshark on a valid html post
-         */
-        NSString *boundary = @"---------------------------14737809831466499882746641449";
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-        
-        /*
-         now lets create the body of the post
-         */
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];	
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", imageString] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:imageData];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        // setting the body of the post to the reqeust
-        [request setHTTPBody:body];
-        
-        // now lets make the connection to the web
-        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-        NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-        
-        //NSLog(@"%@",returnString);
-        if ([returnString isEqualToString:@"Success"]) {
-            //NSLog(@"file return success");
-            [self removeFromFailedFileUploadRecords:imagePath];
-            NSLog(@"remove image to fail log");
-            [self saveFileUploadRecords:imageStringWithType withDateTime:dateString];
+        for (int i = 104; i <= 115; i++) {
+            
+            if([[tempRow objectAtIndex:i] length] > 10) {
+                
+                NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
+                [self uploadImage:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
+            }
         }
-        else {
-            //NSLog(@"%@", returnString);
-            //[self saveFailedFileUploadRecords:imagePath withDBName:imageString andFileType:@"image"];
-            NSLog(@"%@ fail", imageString);
+        */
+        if([[tempRow objectAtIndex:44] length] > 10) {
+            NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:44]];
+            [self uploadPDF:imageString withActivity:thisActivityNumber andTeqRep:thisTeqRep];
         }
+        
     }
+    
+    [self selectFailFileList];
 }
 
 - (void) uploadPDF : (NSString *) pdfString withActivity: (NSString *) activity andTeqRep: (NSString *) teqrep {
@@ -2161,9 +895,9 @@ static SqlClient *client = nil;
         
         // setting up the URL to post to
 #ifdef testing
-        NSString *urlString = @"http://108.54.230.13/website4/Default.aspx";
+        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #else
-        NSString *urlString = @"http://108.54.230.13/website3/Default.aspx";
+        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #endif
         
         // setting up the request object now
@@ -2197,9 +931,9 @@ static SqlClient *client = nil;
         
         // now lets make the connection to the web
         //NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-       
+        
         NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-       
+        
         //NSLog(@"time elapse = %f",([NSDate timeIntervalSinceReferenceDate] - startTime));
         //NSLog(@"upload speed = %f Kbps",  (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime));
         NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
@@ -2232,12 +966,14 @@ static SqlClient *client = nil;
             [self uploadPDFFromFailList:dict];
         }
     }
-    //upload failed image
-    for (NSMutableDictionary *dict in tempArray) {
-        if ([[dict objectForKey:@"filetype"] isEqualToString:@"image"]) {
-            [self uploadImageFromFailList:dict];
-        }
-    }
+    /*
+     //upload failed image
+     for (NSMutableDictionary *dict in tempArray) {
+     if ([[dict objectForKey:@"filetype"] isEqualToString:@"image"]) {
+     [self uploadImageFromFailList:dict];
+     }
+     }
+     */
     [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
@@ -2245,96 +981,6 @@ static SqlClient *client = nil;
      postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
     
     
-}
-
-- (void) uploadImageFromFailList : (NSDictionary *) dict {
-    
-    UIImage *drawImage = [self loadImage:[dict objectForKey:@"dbname"] inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-    
-    NSData *imageData = UIImageJPEGRepresentation(drawImage, 0.75);
-    
-    NSError *error;
-    //NSString *imageStringWithType = [NSString stringWithFormat:@"%@.%@", imageString, type];
-    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    //NSString *documentsDir = [paths objectAtIndex:0];
-    //NSString *imagePath = [documentsDir stringByAppendingPathComponent:imageStringWithType];
-    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:[dict objectForKey:@"path"] error:&error];
-    //NSLog(@"%@", error);
-    
-    NSDate *fileDate = [dictionary objectForKey:NSFileModificationDate];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
-    NSString *dateString = [dateFormat stringFromDate:fileDate];
-    /*
-    if ([self checkIfFileUploaded:imageStringWithType withDateTime:dateString]) {
-        //return YES means it found the same file has been uploaded, stop uploading
-        return;
-    }
-     */
-    if (imageData == nil) {
-        //NSLog(@"no image");
-    }
-    else {
-        //use imagePath as main id. If file does not exists, it cannot upload anyway.
-        /*
-        [self writeToFailedFileUploadRecords:imagePath withDBName:imageStringWithType andFileType:@"image" andActivity:activity andTeqRep:teqrep];
-        NSLog(@"write image to fail log");
-        
-        imageString = [NSString stringWithFormat:@"%@.%@", imageString, type];
-         */
-        // setting up the URL to post to
-#ifdef testing
-        NSString *urlString = @"http://108.54.230.13/website4/Default.aspx";
-#else
-        NSString *urlString = @"http://108.54.230.13/website3/Default.aspx";
-#endif
-        
-        // setting up the request object now
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:[NSURL URLWithString:urlString]];
-        [request setHTTPMethod:@"POST"];
-        
-        /*
-         add some header info now
-         we always need a boundary when we post a file
-         also we need to set the content type
-         
-         You might want to generate a random boundary.. this is just the same
-         as my output from wireshark on a valid html post
-         */
-        NSString *boundary = @"---------------------------14737809831466499882746641449";
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-        
-        /*
-         now lets create the body of the post
-         */
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", [dict objectForKey:@"dbname"]] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:imageData];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        // setting the body of the post to the reqeust
-        [request setHTTPBody:body];
-        
-        // now lets make the connection to the web
-        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-        NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-        
-        //NSLog(@"%@",returnString);
-        if ([returnString isEqualToString:@"Success"]) {
-            //NSLog(@"file return success");
-            [self removeFromFailedFileUploadRecords:[dict objectForKey:@"path"]];
-            NSLog(@"remove image to fail log");
-            [self saveFileUploadRecords:[dict objectForKey:@"dbname"] withDateTime:dateString];
-        }
-        else {
-            //NSLog(@"%@", returnString);
-            //[self saveFailedFileUploadRecords:imagePath withDBName:imageString andFileType:@"image"];
-            NSLog(@"%@ fail", [dict objectForKey:@"dbname"]);
-        }
-    }
 }
 
 - (void) uploadPDFFromFailList : (NSDictionary *) dict {
@@ -2351,11 +997,11 @@ static SqlClient *client = nil;
     [dateFormat setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
     NSString *dateString = [dateFormat stringFromDate:fileDate];
     /*
-    if ([self checkIfFileUploaded:pdfString withDateTime:dateString]) {
-        //return YES means it found the same file has been uploaded, stop uploading
-        //NSLog(@"don't upload pdf");
-        return;
-    }
+     if ([self checkIfFileUploaded:pdfString withDateTime:dateString]) {
+     //return YES means it found the same file has been uploaded, stop uploading
+     //NSLog(@"don't upload pdf");
+     return;
+     }
      */
     //NSLog(@"upload pdf");
     NSData *myData = [NSData dataWithContentsOfFile:pdfPath];
@@ -2388,14 +1034,14 @@ static SqlClient *client = nil;
         }
         //use pdfPath as main id. If file does not exists, it cannot upload anyway.
         /*
-        [self writeToFailedFileUploadRecords:pdfPath withDBName:pdfString andFileType:@"pdf" andActivity:activity andTeqRep:teqrep];
-        NSLog(@"write pdf to fail log");
-        */
+         [self writeToFailedFileUploadRecords:pdfPath withDBName:pdfString andFileType:@"pdf" andActivity:activity andTeqRep:teqrep];
+         NSLog(@"write pdf to fail log");
+         */
         // setting up the URL to post to
 #ifdef testing
-        NSString *urlString = @"http://108.54.230.13/website4/Default.aspx";
+        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #else
-        NSString *urlString = @"http://108.54.230.13/website3/Default.aspx";
+        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #endif
         
         // setting up the request object now
@@ -2515,6 +1161,95 @@ static SqlClient *client = nil;
         [self uploadImagesFromFailList:failedFiles];
     }
     
+}
+
+- (void) uploadSpeedTestFile {
+    
+    NSString *speedtestFileName = [[NSBundle mainBundle] pathForResource:@"speedtest" ofType:@"png"];
+    
+    NSData *myData = [NSData dataWithContentsOfFile:speedtestFileName];
+    
+#ifdef testing
+    NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
+#else
+    NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
+#endif
+    
+    // setting up the request object now
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:urlString]];
+    [request setHTTPMethod:@"POST"];
+    
+    /*
+     add some header info now
+     we always need a boundary when we post a file
+     also we need to set the content type
+     
+     You might want to generate a random boundary.. this is just the same
+     as my output from wireshark on a valid html post
+     */
+    NSString *boundary = @"---------------------------14737809831466499882746641449";
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
+    /*
+     now lets create the body of the post
+     */
+    NSMutableData *body = [NSMutableData data];
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", @"speedtest.png"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:myData];
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    // setting the body of the post to the reqeust
+    [request setHTTPBody:body];
+    
+    // now lets make the connection to the web
+    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+    
+    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    float speed = (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime);
+    TFLog(@"upload speed = %f Kbps", speed);
+    //NSLog(@"time elapse = %f",([NSDate timeIntervalSinceReferenceDate] - startTime));
+    //NSLog(@"upload speed = %f Kbps",  (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime));
+    NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
+    
+    if ([returnString isEqualToString:@"Success"]) {
+        if (speed > 10) {
+            //fast enough
+            [self localDestToRemoteDest];
+        }
+        else {
+            //alert and give options
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Your internet seems to be slow. Are you sure to sync now?" message: nil delegate:self cancelButtonTitle:@"Sync now" otherButtonTitles: @"Sync later", nil];
+            [message show];
+        }
+    }
+    else {
+        //alert and stop
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Sync error" message: returnString delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [message show];
+        [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    //detect slow internet. buttonIndex = 0 means continue to sync, buttonIndex = 1 means stop.
+    if (buttonIndex == 0) {
+        [self localDestToRemoteDest];
+    }
+    else {
+        [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
+    }
 }
 
 - (BOOL) checkIfFileUploaded : (NSString *) filename withDateTime : (NSString *) saveDateTime {
@@ -3236,26 +1971,6 @@ static SqlClient *client = nil;
     return result;
 }
 
-- (void) resetSBMountAudioAfterProjectionChanged 
-{
-    
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"resetSBMountAudioTabs" object:self userInfo:nil];
-     
-}
-
-- (void) resetSBHeight
-{
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"resetSBHeight" object:self userInfo:nil];
-}
-
-- (void) revisitWallStructure
-{
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"revisitWallStructure" object:self userInfo:nil];
-}
-
 - (void) greyoutMenu: (NSMutableDictionary *)greyoutDict andHightlight:(int)menuNumber {
     
     isql *database = [isql initialize];
@@ -3351,9 +2066,11 @@ static SqlClient *client = nil;
     if (![[database.room_complete_status objectForKey:@"3"] isEqualToString:@"1"]) result = 0;
     if (result == 1) {
         database.current_raceway_part_9 = @"complete";
+        NSLog(@"comp");
     }
     else {
         database.current_raceway_part_9 = @"incomplete";
+        NSLog(@"incomp");
     }
     /*
     if (result == 1 && [database.current_raceway_part_10 isEqualToString:@""]) {

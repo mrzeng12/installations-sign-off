@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/isql.m"
-         timestampString = "392569391.787955"
+         timestampString = "392832833.491618"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "3323"
-         endingLineNumber = "3323"
+         startingLineNumber = "2038"
+         endingLineNumber = "2038"
          landmarkName = "-addNumberToAppIcon"
          landmarkType = "5">
       </FileBreakpoint>
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/RootViewController.m"
-         timestampString = "391620320.535252"
+         timestampString = "392584833.692155"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "553"
-         endingLineNumber = "553"
+         startingLineNumber = "552"
+         endingLineNumber = "552"
          landmarkName = "-moveOnToCertainMenuPage:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -105,32 +105,6 @@
          startingLineNumber = "818"
          endingLineNumber = "818"
          landmarkName = "-getPDFFileName"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Classes/isql.m"
-         timestampString = "392560115.668479"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1942"
-         endingLineNumber = "1942"
-         landmarkName = "-uploadSpeedTestFile"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "Classes/isql.m"
-         timestampString = "392560115.668479"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "2302"
-         endingLineNumber = "2302"
-         landmarkName = "-uploadImageFromFailList:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

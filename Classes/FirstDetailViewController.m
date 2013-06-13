@@ -341,8 +341,6 @@
     
     [hud showInView:super.splitViewController.view];    
 
-    [database checkLatestVersion];
-
     [self deleteOldFiles];
     [database remoteSrcToLocalSrc:NO];
 }

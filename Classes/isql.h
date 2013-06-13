@@ -25,11 +25,7 @@
 
 - (void) loadVariablesFromLocalDest: (BOOL) loadViews;
 
-- (void) checkLatestVersion;
-
 - (void) remoteSrcToLocalSrc: (BOOL) upload;
-
-- (void) remoteMenuToLocalMenu;
 
 - (void) remoteUserToLocalUser;
 
@@ -51,18 +47,10 @@
 
 //- (void) uploadImage : (NSString *) imageString withType : (NSString *) type;
 
-- (void) uploadImage : (NSString *) imageString withType : (NSString *) type andActivity: (NSString *) activity andTeqRep: (NSString *) teqrep;
-
 - (BOOL) checkIfFileUploaded : (NSString *) filename withDateTime : (NSString *) saveDateTime;
 
 - (void) saveFileUploadRecords : (NSString *) filename withDateTime : (NSString *) saveDateTime;
     
-- (void) resetSBMountAudioAfterProjectionChanged;
-
-- (void) resetSBHeight;
-
-- (void) revisitWallStructure;
-
 - (void) copyDatabaseIfNeeded;
 
 - (void) greyoutMenu: (NSMutableDictionary *)greyoutDict andHightlight:(int)menuNumber;
@@ -70,11 +58,6 @@
 - (void) addNumberToAppIcon;
 
 - (NSString *) sanitizeFile: (NSString *)string;
-
-- (NSMutableDictionary *) outputCableDictFromRawData : (NSMutableDictionary *) Rowofdict;
-//- (void) updateLocalDestForSummary;
-
-- (NSMutableArray *) queryMenu: (NSString *) query;
 
 -(NSString *)escapeString: (NSString *)string;
 

@@ -104,18 +104,24 @@
                 [self createButton:@"(SK)" andAutoFill:[dict objectForKey:@"serial"]];
             }
         }
+        if ([[dict objectForKey:@"type"] isEqualToString:@"Camera"]) {
+            [self createButton:@"(CAM)" andAutoFill:[dict objectForKey:@"serial"]];
+        }
         if ([[dict objectForKey:@"type"] isEqualToString:@"Other"]) {
             [self createButton:@"(Other)" andAutoFill:[dict objectForKey:@"serial"]];
         }
-    }
-     
-    [self checkComplete];
+    }     
+    
 }
 
 -(void)checkComplete
 {
     isql *database = [isql initialize];
-    if ([self.installers.text length] > 0 && [self.statusOutlet.text length]> 0 ) {
+    NSData *data = [database.current_serial_no dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *e = nil;
+    NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
+    
+    if ([database.current_installer length] > 0 && [database.current_status length]> 0 && [dictArray count] >0) {
         NSMutableDictionary *myDict = [[NSMutableDictionary alloc] init];
               
         [database.menu_complete replaceObjectAtIndex:2 withObject:@"Complete"];
@@ -146,6 +152,7 @@
 
 - (IBAction)serialNoChanged:(id)sender {
     [self saveSerialNumber];
+    [self checkComplete];
 }
 
 - (void)saveSerialNumber {
@@ -181,6 +188,9 @@
             }
             if ([textField.placeholder isEqualToString:@"(SK)"]) {
                 type = @"SK";
+            }
+            if ([textField.placeholder isEqualToString:@"(CAM)"]) {
+                type = @"Camera";
             }
             if ([textField.placeholder isEqualToString:@"(Other)"]) {
                 type = @"Other";
@@ -266,7 +276,7 @@
 }
 
 - (IBAction)addSerial:(id)sender {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: @"SMARTBoard", @"Projector", @"Speaker", @"Other", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: @"SMARTBoard", @"Projector", @"Speaker", @"Camera", @"Other", nil];
     [actionSheet setTag:1];
     [actionSheet showFromRect:self.addBtn.frame inView:self.scrollview animated:YES];   
     
@@ -296,6 +306,9 @@
                 text = @"(SK)";
                 break;
             case 3:
+                text = @"(CAM)";
+                break;
+            case 4:
                 text = @"(Other)";
                 break;
             default:

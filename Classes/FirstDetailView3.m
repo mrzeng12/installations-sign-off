@@ -713,7 +713,7 @@
     [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
     [scrollView setFrame:CGRectMake(0, 0, 703, 356)];
     [UIView commitAnimations];
-    int movementDistance = [textView.superview.superview convertPoint:textView.frame.origin toView:self.view].y - 150;
+    int movementDistance = [textView.superview.superview convertPoint:textView.frame.origin toView:self.view].y - 70;
     [scrollView scrollRectToVisible:CGRectMake(0, movementDistance, 703, 356) animated:YES];
     
     return YES;

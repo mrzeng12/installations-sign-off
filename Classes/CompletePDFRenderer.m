@@ -330,33 +330,7 @@
     }
     @finally {
         sqlite3_close(db);
-        NSLog(@"loadCablesForPDF success");
-        NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-        NSMutableDictionary *Rowofdict;
-        PDF_cables = [NSMutableArray array];
-        for (int index = 0; index < [tempArrayDict count]; index++) {
-            Rowofdict = [tempArrayDict objectAtIndex:index];
-            
-            //use the output function to convert raw cable data to part number and volumes
-            dict = [database outputCableDictFromRawData:Rowofdict];
-            
-            NSMutableString *pdf_one_room = [NSMutableString stringWithFormat:@""];
-            for (id key in dict) {
-                NSString *item_quantity = [dict objectForKey:key];
-                if ([item_quantity intValue] > 0) {
-                    [pdf_one_room appendString: key];
-                    [pdf_one_room appendString: @", "];
-                    [pdf_one_room appendString: item_quantity];
-                    [pdf_one_room appendString: @";   "];
-                }
-            }
-            if ([[Rowofdict objectForKey:@"Cables_other"] length] > 0) {
-                [pdf_one_room appendFormat:@"%@", [Rowofdict objectForKey:@"Cables_other"]];
-            }
-            [PDF_cables addObject:pdf_one_room];
-            
-        }
-        
+        NSLog(@"loadCablesForPDF success");               
         
         [self rewriteVariablesToReadablePDFFields];
     }
