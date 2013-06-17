@@ -6,6 +6,8 @@
 #import "RoomCell.h"
 #import "LGViewHUD.h"
 #import "FileSystem.h"
+#import <objc/runtime.h>
+const char MyConstantKey;
 
 @implementation SecondDetailViewController
 
@@ -108,20 +110,20 @@
 
 - (IBAction)addRoom {
     
-    if (self.roomNoInTextField.text!=nil && [self.roomNoInTextField.text length]) {        
+    if (self.roomNoInTextField.text!=nil && [self.roomNoInTextField.text length]) {
         NSCharacterSet *illegalCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_"] invertedSet];
         NSString *convertedStr = [[self.roomNoInTextField.text componentsSeparatedByCharactersInSet:illegalCharSet] componentsJoinedByString:@""];
         
         if ([convertedStr length] == 0) {
             //show alert if they type just &**() as room number
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please input room number" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Room number can only use   0-9, a-z, A-Z, _ , -" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [message show];            
             return;
         }
         self.roomNoInTextField.text = convertedStr;
     }
     else {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please input room number" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Please input a room number." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [message show];
         
         return;
@@ -132,7 +134,7 @@
     for (int i = 0; i< [database.classrooms_in_one_location count]; i++) {
         if ([[[database.classrooms_in_one_location objectAtIndex:i] objectAtIndex:0] isEqualToString: self.roomNoInTextField.text] ) {
             
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"This room already exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"This room already exists." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [message show];            
             return;
         }
@@ -262,7 +264,7 @@
     }    
     
     else {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please pick a room." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Please pick a room." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [message show];
     }
 }
@@ -280,46 +282,6 @@
     [hud showInView:super.splitViewController.view];
 }
 
-- (IBAction)duplicateRoom {
-    
-    //load an old room as ususal, store new room number into selected_current_classroom_number,
-    //query db to get old room variables, then change current_classroom_number and save it back
-    
-    isql *database = [isql initialize];
-            
-    if (self.roomNoInTextField.text!=nil && [self.roomNoInTextField.text length]) {        
-        NSCharacterSet *illegalCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_"] invertedSet];
-        NSString *convertedStr = [[self.roomNoInTextField.text componentsSeparatedByCharactersInSet:illegalCharSet] componentsJoinedByString:@""];
-        self.roomNoInTextField.text = convertedStr;
-
-    }
-    else {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:nil message:@"Please input room number" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [message show];
-        
-        return;
-    }
-        
-    for (int i = 0; i< [database.classrooms_in_one_location count]; i++) {
-        if ([[[database.classrooms_in_one_location objectAtIndex:i] objectAtIndex:0] isEqualToString: self.roomNoInTextField.text] ) {
-            
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"This room already exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [message show];            
-            return;
-        }
-    }
-    if ([[tableviews indexPathsForSelectedRows] count] == 0) {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please select an existing room to duplicate" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [message show];            
-        return;
-    }
-    
-    UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Duplicate diagram?" message:nil delegate:self cancelButtonTitle:@"No" otherButtonTitles: @"Yes", nil];
-    [message setTag: 4];
-    [message show];
-    
-}
-
 - (IBAction)deleteRoom {
     
     if ([[tableviews indexPathsForSelectedRows] count] == 0) {
@@ -335,7 +297,32 @@
     }
 }
 
-
+- (IBAction)renameRoom:(id)sender {
+    
+    isql *database = [isql initialize];
+    
+    if ([[tableviews indexPathsForSelectedRows] count] > 0) {
+        
+        NSString *index = database.selected_room_index;
+        
+        int room_index = [index intValue];
+        
+        NSString *current_classroom_number = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:0];
+        UIAlertView *labelNameOther = [[UIAlertView alloc] initWithTitle:@"New Room Number: " message:nil   delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Change", nil];
+        [labelNameOther setDelegate:self];
+        [labelNameOther setTag:3];        
+        objc_setAssociatedObject(labelNameOther, &MyConstantKey, current_classroom_number, OBJC_ASSOCIATION_RETAIN);
+        //[labelNameOther setValue:current_classroom_number forKey:];
+        [labelNameOther setAlertViewStyle:UIAlertViewStylePlainTextInput];
+        [[labelNameOther textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeDefault];
+        [labelNameOther textFieldAtIndex:0].text = current_classroom_number;
+        [labelNameOther show];
+    }
+    else {
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Please pick a room." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [message show];
+    }    
+}
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
@@ -348,7 +335,6 @@
  
 }
 
-
 -(void) alertView: (UIAlertView *) alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     if ([alertView tag] == 1) {
@@ -357,6 +343,154 @@
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"moveOnToCertainMenuPage" object:self userInfo:dict];
     }    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 2 && buttonIndex == 1) {
+        isql *database = [isql initialize];
+        
+        sqlite3 *db;
+        sqlite3_stmt    *statement;
+        
+        @try {
+            
+            const char *dbpath = [database.dbpathString UTF8String];
+            
+            if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+            {
+                int room_index = [database.selected_room_index intValue];
+                
+                NSString *selectedRoomNumber = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:0];
+                
+                NSString *selectSQL = [NSString stringWithFormat:@"delete from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and [Room_Number] = '%@';", database.current_activity_no, database.current_teq_rep, selectedRoomNumber];
+                
+                const char *select_stmt = [selectSQL UTF8String];
+                
+                if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                    
+                    
+                    if (sqlite3_step(statement) == SQLITE_DONE)
+                    {
+                        
+                    } else {
+                        NSLog(@"delete failed: %s", sqlite3_errmsg(db));
+                    }
+                    
+                    sqlite3_finalize(statement);
+                }
+                else {
+                    NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
+                    
+                }
+            }
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            sqlite3_close(db);
+            NSLog(@"delete room successful");
+            
+            database.current_classroom_number = nil;
+            database.current_classroom_floor = nil;
+            database.current_classroom_grade = nil;
+            database.current_classroom_notes = nil;
+            
+            database.classroom_index = nil;
+            database.selected_room_index = nil;
+            
+            database.selected_current_classroom_number = nil;
+            database.selected_current_classroom_floor = nil;
+            database.selected_current_classroom_grade = nil;
+            database.selected_current_classroom_notes = nil;
+            
+            //database.current_raceway_part_8 = nil;
+            database.current_raceway_part_9 = nil;
+            database.current_raceway_part_10 = nil;
+            
+            [self loadRoomFromDB];
+            
+        }
+    }
+    
+    if (alertView.tag == 3 && buttonIndex == 1) {
+        
+        isql *database = [isql initialize];
+        NSString *newRoom = [alertView textFieldAtIndex:0].text;
+        
+        if ([newRoom length] > 0) {
+            NSCharacterSet *illegalCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_"] invertedSet];
+            NSString *convertedStr = [[newRoom componentsSeparatedByCharactersInSet:illegalCharSet] componentsJoinedByString:@""];
+            
+            if ([convertedStr length] == 0) {
+                //show alert if they type just &**() as room number
+                UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Room number can only use   0-9, a-z, A-Z, _ , -" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [message show];
+                return;
+            }
+            newRoom = convertedStr;
+        }
+        else {
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Please input a room number." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [message show];
+            
+            return;
+        }
+        
+        for (int i = 0; i< [database.classrooms_in_one_location count]; i++) {
+            if ([[[database.classrooms_in_one_location objectAtIndex:i] objectAtIndex:0] isEqualToString: newRoom] ) {
+                
+                UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"This room already exists." message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [message show];
+                return;
+            }
+        }
+        
+        sqlite3 *db;
+        sqlite3_stmt    *statement;
+        
+        //save date time
+        NSDate *today = [NSDate date];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+        
+        NSString *oldRoom = objc_getAssociatedObject(alertView, &MyConstantKey);
+        
+        NSString *queryString = [NSString stringWithFormat:@"UPDATE local_dest SET [Room_Number] = '%@', [Save_time] = '%@' WHERE [Activity_no] = '%@' AND [Teq_rep] like '%%%@%%' AND [Room_Number] = '%@'", newRoom, [formatter stringFromDate: today], database.current_activity_no, database.current_teq_rep, oldRoom];
+        
+        @try {
+            
+            const char *dbpath = [database.dbpathString UTF8String];
+            
+            if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+            {
+                const char *insert_stmt = [queryString UTF8String];
+                
+                if ( sqlite3_prepare_v2(db, insert_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                    
+                    if (sqlite3_step(statement) == SQLITE_DONE)
+                    {
+                        NSLog(@"updateCustomActivityCustomLocation success");
+                    } else {
+                        NSLog(@"update failed: %s", sqlite3_errmsg(db));
+                        
+                    }
+                    sqlite3_finalize(statement);
+                }
+                else {
+                    NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
+                }
+            }
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            sqlite3_close(db);
+            [self loadRoomFromDB];
+        }
+    }
 }
 
 - (void)checkIfPreviousPagesAreFinished
@@ -623,187 +757,6 @@
     self.floorNoTextField.text = [[database.classrooms_in_one_location objectAtIndex:[database.classroom_index intValue]] objectAtIndex:1]; 
     self.notesNoTextField.text = [[database.classrooms_in_one_location objectAtIndex:[database.classroom_index intValue]] objectAtIndex:2];     
      */
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == 2 && buttonIndex == 1) {
-        isql *database = [isql initialize];    
-               
-        sqlite3 *db;
-        sqlite3_stmt    *statement;
-        
-        @try {
-            
-            const char *dbpath = [database.dbpathString UTF8String];
-            
-            if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-            {
-                int room_index = [database.selected_room_index intValue];
-                
-                NSString *selectedRoomNumber = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:0];
-                
-                NSString *selectSQL = [NSString stringWithFormat:@"delete from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and [Room_Number] = '%@';", database.current_activity_no, database.current_teq_rep, selectedRoomNumber];
-                
-                const char *select_stmt = [selectSQL UTF8String];
-                
-                if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                    
-                    
-                    if (sqlite3_step(statement) == SQLITE_DONE)
-                    {
-                        
-                    } else {
-                        NSLog(@"delete failed: %s", sqlite3_errmsg(db));                                             
-                    }  
-                    
-                    sqlite3_finalize(statement);
-                } 
-                else {
-                    NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db)); 
-                    
-                }
-            }            
-        }
-        @catch (NSException *exception) {
-            
-        }
-        @finally {        
-            sqlite3_close(db);
-            NSLog(@"delete room successful");
-                        
-            database.current_classroom_number = nil;
-            database.current_classroom_floor = nil;            
-            database.current_classroom_grade = nil;            
-            database.current_classroom_notes = nil;
-            
-            database.classroom_index = nil;
-            database.selected_room_index = nil;
-            
-            database.selected_current_classroom_number = nil;            
-            database.selected_current_classroom_floor = nil;            
-            database.selected_current_classroom_grade = nil;
-            database.selected_current_classroom_notes = nil;
-            
-            //database.current_raceway_part_8 = nil;
-            database.current_raceway_part_9 = nil;
-            database.current_raceway_part_10 = nil;
-            
-            [self loadRoomFromDB];
-            
-        }  
-    }
-    
-    if (alertView.tag == 4) {
-        isql *database = [isql initialize];
-        if (buttonIndex == 1) {
-            database.duplicate_drawing = @"Yes";
-        }
-        else {
-            database.duplicate_drawing = @"No";
-        }
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Duplicate notes?" message:nil delegate:self cancelButtonTitle:@"No" otherButtonTitles: @"Yes", nil];
-        [message setTag: 5];
-        [message show];
-    }
-    
-    if (alertView.tag == 5) {
-        isql *database = [isql initialize];
-        if (buttonIndex == 1) {
-            database.duplicate_notes = @"Yes";
-        }
-        else {
-            database.duplicate_notes = @"No";
-        }
-        
-        database.classroom_index = database.selected_room_index;
-        
-        int room_index = [database.selected_room_index intValue];
-        
-        database.current_classroom_number = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:0];
-        database.current_classroom_floor = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:1];
-        database.current_classroom_grade = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:2];
-        database.current_classroom_notes = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:3];
-        
-        NSString *current_room_number;
-        NSString *current_floor_number;
-        NSString *current_grade;
-        NSString *current_notes;
-        
-        if (self.roomNoInTextField.text == nil ) {
-            current_room_number = @"";
-        }
-        else {
-            current_room_number = self.roomNoInTextField.text;
-        }
-        
-        if (self.floorNoTextField.text == nil) {
-            current_floor_number = @"";
-        }
-        else {
-            current_floor_number = self.floorNoTextField.text;
-        }
-        
-        if (self.gradeNoTextField.text == nil) {
-            current_grade = @"";
-        }
-        else {
-            current_grade = self.gradeNoTextField.text;
-        }
-        
-        if (self.notesNoTextField.text == nil) {
-            current_notes = @"";
-        }
-        else {
-            current_notes = self.notesNoTextField.text;
-        }
-        
-        if(database.classrooms_in_one_location == nil)
-            database.classrooms_in_one_location = [NSMutableArray arrayWithObjects: nil];
-        
-        NSMutableArray *newClassRoom = [NSMutableArray arrayWithObjects:nil];
-        
-        [newClassRoom addObject:current_room_number];
-        [newClassRoom addObject:current_floor_number];
-        [newClassRoom addObject:current_grade];
-        [newClassRoom addObject:current_notes];
-        [newClassRoom addObject:@"notsync"];
-        [newClassRoom addObject:@"incomplete"];
-        [newClassRoom addObject:@""];
-        
-        [database.classrooms_in_one_location addObject: newClassRoom];
-        
-        database.selected_current_classroom_number = current_room_number;
-        database.selected_current_classroom_floor = current_floor_number;
-        database.selected_current_classroom_grade = current_grade;
-        database.selected_current_classroom_notes = current_notes;
-        
-        [self.tableviews reloadData];
-        float temp_height = 316 + [tableviews contentSize].height;
-        
-        float height = (temp_height > 615)? temp_height: 615;
-        
-        [loadButton setFrame:CGRectMake(267, height , 196, 42)];
-        float scrollHeight = ((height+89) < 705)? 705: (height +89);
-        [scrollview setContentSize:CGSizeMake(703, scrollHeight)];
-        
-        self.roomNoInTextField.text = @"";
-        self.floorNoTextField.text = @"";
-        self.gradeNoTextField.text = @"";
-        self.notesNoTextField.text = @"";
-        
-        int classroom_counter = [database.classrooms_in_one_location count];
-        
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow: (classroom_counter - 1) inSection:0]; // create a new index path
-        
-        [tableviews selectRowAtIndexPath: indexPath animated: YES scrollPosition: UITableViewScrollPositionNone];
-        
-        database.selected_room_index = [NSString stringWithFormat:@"%d", classroom_counter - 1];
-        
-        [self.view endEditing:YES];
-        
-        [database loadVariablesFromLocalDest:NO];
-    }
 }
 
 - (IBAction) readyBtnAction:(UIButton *)sender {

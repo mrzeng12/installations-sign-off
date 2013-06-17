@@ -1550,33 +1550,6 @@ static SqlClient *client = nil;
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"loadSavedViewsFromVariables" object:self userInfo:nil];
         }
-        else {
-            //duplicate rooms
-            
-            database.current_classroom_number = database.selected_current_classroom_number;
-            database.current_classroom_floor = database.selected_current_classroom_floor;
-            database.current_classroom_grade = database.selected_current_classroom_grade;
-            database.current_classroom_notes = database.selected_current_classroom_notes;
-            
-            //database.current_raceway_part_8 = @"notsync";
-            database.current_raceway_part_9 = @"incomplete";
-            database.current_raceway_part_10 = @"";
-            //NSLog(@"%@", database.current_classroom_number);
-            //NSLog(@"%@", database.current_projection_availability);
-            
-            database.current_photo_file_directory_1 = @"";
-            database.current_photo_file_directory_2 = @"";
-            database.current_photo_file_directory_3 = @"";
-            database.current_photo_file_directory_4 = @"";
-            database.current_photo_file_directory_5 = @"";
-            database.current_photo_file_directory_6 = @"";
-            database.current_photo_file_directory_7 = @"";
-            database.current_photo_file_directory_8 = @"";
-            
-            [database saveVariableToLocalDest];
-            [database addNumberToAppIcon];
-        }
-        //NSLog(@"db closed");
     }
     
 }

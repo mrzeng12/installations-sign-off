@@ -3,7 +3,7 @@
 #import <UIKit/UIKit.h>
 #import "RootViewController.h"
 #import "loginModal.h"
-
+extern const char MyConstantKey;
 @interface SecondDetailViewController : UIViewController <UITextFieldDelegate> {
     
     UINavigationBar *navigationBar;
@@ -48,10 +48,9 @@
 
 - (IBAction)loadRoom;
 
-- (IBAction)duplicateRoom;
-
 - (IBAction)deleteRoom;
 
+- (IBAction)renameRoom:(id)sender;
 
 //-(IBAction)goToModalView;
 
