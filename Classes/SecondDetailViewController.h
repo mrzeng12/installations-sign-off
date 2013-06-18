@@ -4,11 +4,12 @@
 #import "RootViewController.h"
 #import "loginModal.h"
 extern const char MyConstantKey;
-@interface SecondDetailViewController : UIViewController <UITextFieldDelegate> {
+@interface SecondDetailViewController : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate> {
     
     UINavigationBar *navigationBar;
     loginModal *myModalViewController;
 }
+@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
 @property (nonatomic, strong) IBOutlet UINavigationBar *navigationBar;
 

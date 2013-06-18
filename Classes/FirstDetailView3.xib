@@ -58,6 +58,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrameSize">{703, 748}</string>
 						<reference key="NSSuperview" ref="766721923"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -234,7 +235,7 @@
 								<int key="IBUIContentVerticalAlignment">0</int>
 								<string key="IBUIText"/>
 								<int key="IBUIBorderStyle">3</int>
-								<object class="NSColor" key="IBUITextColor">
+								<object class="NSColor" key="IBUITextColor" id="975371888">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 								</object>
@@ -894,11 +895,7 @@
 								<int key="IBUIContentVerticalAlignment">0</int>
 								<string key="IBUIText"/>
 								<int key="IBUIBorderStyle">3</int>
-								<object class="NSColor" key="IBUITextColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MAA</bytes>
-									<reference key="NSCustomColorSpace" ref="984602288"/>
-								</object>
+								<reference key="IBUITextColor" ref="975371888"/>
 								<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 								<float key="IBUIMinimumFontSize">17</float>
 								<object class="IBUITextInputTraits" key="IBUITextInputTraits">
@@ -1014,14 +1011,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">scrollView</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="344304234"/>
-					</object>
-					<int key="connectionID">75</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">departureTimeOutlet</string>
 						<reference key="source" ref="841351856"/>
 						<reference key="destination" ref="333989201"/>
@@ -1030,115 +1019,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">arrivalTimeOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="481906864"/>
-					</object>
-					<int key="connectionID">476</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">SOOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="78312299"/>
-					</object>
-					<int key="connectionID">62</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">typeofworkBtn</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="938152796"/>
-					</object>
-					<int key="connectionID">500</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">departureBtn</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="772407796"/>
-					</object>
-					<int key="connectionID">503</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">districtOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="754785032"/>
-					</object>
-					<int key="connectionID">472</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">pdfBtn1</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="150882754"/>
-					</object>
-					<int key="connectionID">490</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">reasonForVisit</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="166146558"/>
-					</object>
-					<int key="connectionID">469</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">arrivalBtn</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="124954449"/>
-					</object>
-					<int key="connectionID">502</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">jobSummary</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="45196611"/>
-					</object>
-					<int key="connectionID">506</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">schoolNameOutlet</string>
 						<reference key="source" ref="841351856"/>
 						<reference key="destination" ref="853451900"/>
 					</object>
 					<int key="connectionID">58</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">dateOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="503249916"/>
-					</object>
-					<int key="connectionID">61</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">activityIndicator</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="367849398"/>
-					</object>
-					<int key="connectionID">32</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">jobStatusOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="701470127"/>
-					</object>
-					<int key="connectionID">474</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">activityNoOutlet</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="679113509"/>
-					</object>
-					<int key="connectionID">60</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -1158,19 +1043,35 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">jobstatusBtn</string>
+						<string key="label">activityIndicator</string>
 						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="448091400"/>
+						<reference key="destination" ref="367849398"/>
 					</object>
-					<int key="connectionID">501</int>
+					<int key="connectionID">32</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">primarycontactOutlet</string>
+						<string key="label">jobSummary</string>
 						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="464474970"/>
+						<reference key="destination" ref="45196611"/>
 					</object>
-					<int key="connectionID">121</int>
+					<int key="connectionID">506</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">departureBtn</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="772407796"/>
+					</object>
+					<int key="connectionID">503</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">SOOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="78312299"/>
+					</object>
+					<int key="connectionID">62</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -1182,11 +1083,107 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">typeofworkBtn</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="938152796"/>
+					</object>
+					<int key="connectionID">500</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">dateOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="503249916"/>
+					</object>
+					<int key="connectionID">61</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">primarycontactOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="464474970"/>
+					</object>
+					<int key="connectionID">121</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">scrollView</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="344304234"/>
+					</object>
+					<int key="connectionID">75</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">jobstatusBtn</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="448091400"/>
+					</object>
+					<int key="connectionID">501</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">teamOutlet</string>
 						<reference key="source" ref="841351856"/>
 						<reference key="destination" ref="713369146"/>
 					</object>
 					<int key="connectionID">470</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">activityNoOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="679113509"/>
+					</object>
+					<int key="connectionID">60</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">arrivalTimeOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="481906864"/>
+					</object>
+					<int key="connectionID">476</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">districtOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="754785032"/>
+					</object>
+					<int key="connectionID">472</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">arrivalBtn</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="124954449"/>
+					</object>
+					<int key="connectionID">502</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">jobStatusOutlet</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="701470127"/>
+					</object>
+					<int key="connectionID">474</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">pdfBtn1</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="150882754"/>
+					</object>
+					<int key="connectionID">490</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">reasonForVisit</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="166146558"/>
+					</object>
+					<int key="connectionID">469</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">

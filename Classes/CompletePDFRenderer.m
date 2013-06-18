@@ -274,68 +274,11 @@
         sqlite3_close(db);
         NSLog(@"loadVariablesForPDF success");
         
-        [self loadCablesForPDF];
-        
-    }
-    
-}
-
-- (void) loadCablesForPDF {
-    NSMutableArray *tempArrayDict = [NSMutableArray array];
-    
-    sqlite3 *db;
-    sqlite3_stmt    *statement;
-    
-    isql *database = [isql initialize];
-
-    @try {
-        
-        const char *dbpath = [database.dbpathString UTF8String];
-        
-        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {
-            
-            NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", database.current_activity_no, database.current_teq_rep];
-            const char *select_stmt = [selectSQL UTF8String];
-            
-            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                //NSLog(@"%@", selectSQL);
-                
-                while (sqlite3_step(statement) == SQLITE_ROW)
-                {
-                    //NSLog(@"fetch a row");
-                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                    int column_count = sqlite3_data_count(statement);
-                    for (int i = 0; i< column_count; i++) {
-                        
-                        NSString *tempString = [NSString stringWithFormat:@"%@",[[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i)]];
-                        NSString *tempFieldName = [NSString stringWithFormat:@"%@",[[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_name(statement, i)]];
-                        [tempDict setObject:tempString forKey:tempFieldName];
-                        
-                    }
-                    [tempArrayDict addObject:tempDict];
-                }
-                
-                sqlite3_finalize(statement);
-            }
-            else {
-                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-                
-            }
-        }
-        
-    }
-    @catch (NSException *exception) {
-        NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
-    }
-    @finally {
-        sqlite3_close(db);
-        NSLog(@"loadCablesForPDF success");               
-        
         [self rewriteVariablesToReadablePDFFields];
+        
     }
+    
 }
-
 
 -(void) rewriteVariablesToReadablePDFFields {
     

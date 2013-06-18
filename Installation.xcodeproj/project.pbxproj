@@ -958,6 +958,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Sanoff (3RP4EU536J)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -981,6 +982,7 @@
 					"\"$(SRCROOT)/Classes\"",
 				);
 				PRODUCT_NAME = Installation;
+				PROVISIONING_PROFILE = "81588C95-C561-4DD1-9F43-ABEE54F8DDDE";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
@@ -991,6 +993,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Sanoff (3RP4EU536J)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1012,6 +1015,7 @@
 					"\"$(SRCROOT)/Classes\"",
 				);
 				PRODUCT_NAME = Installation;
+				PROVISIONING_PROFILE = "81588C95-C561-4DD1-9F43-ABEE54F8DDDE";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

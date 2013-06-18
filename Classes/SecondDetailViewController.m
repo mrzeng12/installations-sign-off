@@ -36,10 +36,12 @@ const char MyConstantKey;
 
 -(void) viewDidLoad {
     
-    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
-    gestureRecognizer.cancelsTouchesInView = NO;
-    [self.tableviews addGestureRecognizer:gestureRecognizer];
-    [self.view addGestureRecognizer:gestureRecognizer];
+    self.gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
+    self.gestureRecognizer.cancelsTouchesInView = NO;
+    self.gestureRecognizer.delegate = self;
+    
+    //[self.tableviews addGestureRecognizer:self.gestureRecognizer];
+    [self.view addGestureRecognizer:self.gestureRecognizer];
     
     [scrollview setFrame:CGRectMake(0, 44, 703, 704)];
     //[scrollview setContentSize:CGSizeMake(703, 1500)];
@@ -227,8 +229,8 @@ const char MyConstantKey;
     
     database.selected_room_index = [NSString stringWithFormat:@"%d", classroom_counter - 1];
     
-    [self.view endEditing:YES];
-    
+    //[self.view endEditing:YES];
+    [self hideKeyboard];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"resetAllTabsExceptRoom" object:self userInfo:nil]; 
     //UITableView *newTableView = self.tableviews; // create a pointer to a new table View
@@ -284,6 +286,7 @@ const char MyConstantKey;
 
 - (IBAction)deleteRoom {
     
+    [self hideKeyboard];
     if ([[tableviews indexPathsForSelectedRows] count] == 0) {
         UIAlertView *labelNameOther = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please select a room."   delegate:self cancelButtonTitle:nil otherButtonTitles: @"Ok", nil];
         [labelNameOther setDelegate:self];
@@ -299,6 +302,7 @@ const char MyConstantKey;
 
 - (IBAction)renameRoom:(id)sender {
     
+    [self hideKeyboard];
     isql *database = [isql initialize];
     
     if ([[tableviews indexPathsForSelectedRows] count] > 0) {
@@ -314,7 +318,7 @@ const char MyConstantKey;
         objc_setAssociatedObject(labelNameOther, &MyConstantKey, current_classroom_number, OBJC_ASSOCIATION_RETAIN);
         //[labelNameOther setValue:current_classroom_number forKey:];
         [labelNameOther setAlertViewStyle:UIAlertViewStylePlainTextInput];
-        [[labelNameOther textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeDefault];
+        [[labelNameOther textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeNumberPad];
         [labelNameOther textFieldAtIndex:0].text = current_classroom_number;
         [labelNameOther show];
     }
@@ -326,13 +330,24 @@ const char MyConstantKey;
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    //[self animateTextField: textField up: YES];
-    float movementDistance = [textField.superview.superview convertPoint:textField.frame.origin toView:self.view].y - 150;
-    [scrollview scrollRectToVisible:CGRectMake(0, movementDistance, 703, 704) animated:YES];
+    self.gestureRecognizer.cancelsTouchesInView = YES;
+    const float movementDuration = 0.3f;
+    [UIView beginAnimations: @"anim" context: nil];
+    [UIView setAnimationBeginsFromCurrentState: YES];
+    [UIView setAnimationDuration: movementDuration];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
+    [self.scrollview setFrame:CGRectMake(0, 0, 703, 356)];
+    [UIView commitAnimations];    
+    [self.scrollview scrollRectToVisible:CGRectMake(0, 195, 703, 356) animated:YES];
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
  
+}
+- (void)enableSelection:(NSString *)animationID finished:(BOOL)finished context:(void *)context
+{
+    //self.gestureRecognizer.cancelsTouchesInView = NO;
 }
 
 -(void) alertView: (UIAlertView *) alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -410,7 +425,6 @@ const char MyConstantKey;
             database.current_raceway_part_10 = nil;
             
             [self loadRoomFromDB];
-            
         }
     }
     
@@ -839,6 +853,16 @@ const char MyConstantKey;
 }
 - (void) hideKeyboard {
     [self.view endEditing:YES];
+    self.gestureRecognizer.cancelsTouchesInView = NO;
+    const float movementDuration = 0.3f; // tweak as needed
+    
+    [UIView beginAnimations: @"anim" context: nil];
+    [UIView setAnimationBeginsFromCurrentState: YES];
+    [UIView setAnimationDuration: movementDuration];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
+    [self.scrollview setFrame:CGRectMake(0, 0, 703, 704)];
+    [UIView commitAnimations];
 }
 
 @end
