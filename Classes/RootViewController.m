@@ -716,8 +716,8 @@
         [fs copyOldFiles:fileNames];
     }
     
-    if ([database.current_date length] == 0 || [database.current_location length] == 0) {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Oops..." message:@"Please start or load a survey to view the summary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    if ([database.current_activity_no length] == 0 ) {
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Oops..." message:@"Please start or load an installation to view the summary." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [message show];
         return;
     }

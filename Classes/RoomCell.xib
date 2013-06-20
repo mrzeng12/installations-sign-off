@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1552</int>
-		<string key="IBDocument.SystemVersion">12C3012</string>
+		<string key="IBDocument.SystemVersion">12E55</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.34</string>
-		<string key="IBDocument.HIToolboxVersion">625.00</string>
+		<string key="IBDocument.AppKitVersion">1187.39</string>
+		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			<string key="NS.object.0">2083</string>
@@ -157,7 +157,7 @@
 				<reference key="IBUIContentView" ref="41117106"/>
 			</object>
 			<object class="IBUITableViewCell" id="324164092">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="548009696">
@@ -260,7 +260,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{600, 44}</string>
-				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="548009696"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="IBUITag">2</int>
@@ -268,7 +267,7 @@
 				<reference key="IBUIContentView" ref="548009696"/>
 			</object>
 			<object class="IBUITableViewCell" id="268403496">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="500541156">
@@ -355,7 +354,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{600, 44}</string>
-				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="500541156"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="IBUITag">4</int>
@@ -363,7 +361,7 @@
 				<reference key="IBUIContentView" ref="500541156"/>
 			</object>
 			<object class="IBUITableViewCell" id="216165535">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="515462922">
@@ -452,7 +450,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{600, 44}</string>
-				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="515462922"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="IBUITag">3</int>
@@ -460,7 +457,7 @@
 				<reference key="IBUIContentView" ref="515462922"/>
 			</object>
 			<object class="IBUITableViewCell" id="234747407">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="771906879">
@@ -522,7 +519,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{600, 44}</string>
-				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="771906879"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="IBUITag">1</int>
@@ -530,7 +526,7 @@
 				<reference key="IBUIContentView" ref="771906879"/>
 			</object>
 			<object class="IBUITableViewCell" id="226599897">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="738703320">
@@ -614,7 +610,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{600, 44}</string>
-				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="738703320"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<int key="IBUITag">5</int>

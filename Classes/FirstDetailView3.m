@@ -370,7 +370,7 @@
     NSString  *documentsDirectory = [paths objectAtIndex:0];
     
     NSString  *filePath = [NSString stringWithFormat:@"%@/%@", documentsDirectory, controller.title];
-    
+    NSLog(@"%@", filePath);
     return [NSURL fileURLWithPath:filePath];
 }
 

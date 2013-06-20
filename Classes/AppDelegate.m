@@ -5,6 +5,7 @@
 #import "loginModal.h"
 #import "isql.h"
 #import "TestFlight.h"
+#import <NewRelicAgent/NewRelicAgent.h>
 
 //#import <Crashlytics/Crashlytics.h>
 
@@ -34,6 +35,8 @@
     //[TestFlight takeOff:@"a7cf1f951223c1a232afedace04054d8_MTQ0NTA1MjAxMi0xMC0xNyAxMjowNjo0MC4yMjIxMzM"];
     [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
     [TestFlight takeOff:@"0d9ec0ec-4db6-4772-9f4f-81e3582a0624"];
+    
+    [NewRelicAgent startWithApplicationToken:@"AA2e2522e626311c8dd236ff74b9a92c0544d34cbc"];
     
     return YES;
 }

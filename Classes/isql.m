@@ -634,7 +634,7 @@ static SqlClient *client = nil;
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
 #ifdef testing
-    [queryString appendString:@"INSERT INTO [Install].[dbo].[Install  CoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #else
     [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #endif
@@ -672,7 +672,7 @@ static SqlClient *client = nil;
         }else{
             
             NSLog(@"%@", query.errorText);  
-            //NSLog(@"%@", queryString);
+            NSLog(@"%@", queryString);
             
             NSDictionary *dict = [NSDictionary dictionaryWithObject:@"Sync failed" forKey:@"index"]; 
             
@@ -1694,7 +1694,7 @@ static SqlClient *client = nil;
    
     if ([database.current_activity_no length]>0 && [database.current_username length] >0) {
         //completereport
-        NSString* fileName = [NSString stringWithFormat:@"SS-%@-%@.PDF", (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_username == nil)? @"":[database.current_username capitalizedString]];
+        NSString* fileName = [NSString stringWithFormat:@"IR-%@-%@.PDF", (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_username == nil)? @"":[database.current_username capitalizedString]];
         fileName = [database sanitizeFile:fileName];
         database.current_comlete_pdf_file_name = fileName;
     }

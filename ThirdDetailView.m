@@ -59,27 +59,14 @@
     [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
     [self checkComplete];
-}
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
+    
     isql *database = [isql initialize];
     NSData *data = [database.current_serial_no dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
     
     for (NSMutableDictionary *dict in dictArray) {
-                
+        
         if ([[dict objectForKey:@"type"] isEqualToString:@"SB"]) {
             if ([self.SerialSB.text length] == 0) {
                 self.SerialSB.text = [dict objectForKey:@"serial"];
@@ -110,7 +97,22 @@
         if ([[dict objectForKey:@"type"] isEqualToString:@"Other"]) {
             [self createButton:@"(Other)" andAutoFill:[dict objectForKey:@"serial"]];
         }
-    }     
+    }
+}
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+       
     
 }
 

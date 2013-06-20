@@ -282,7 +282,7 @@
         }
     }   
     else {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please pick a saved survey" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please pick a saved installation" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [message show];
     }
 }
