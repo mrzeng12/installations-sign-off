@@ -325,12 +325,12 @@
     [self drawText:database.current_departure_time withX:774 withY:407 andWidth:246 andFont:font andFontSize:21];
     [self drawText:database.current_reason_for_visit withX:199 withY:451 andWidth:999 andFont:font andFontSize:21];
     
-    [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(68, 526, 1130, 299) withFont:font];
-    
-    //PDF_room;    PDF_status_installer;    PDF_serial_no;    PDF_comments;
+    [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(68, 526, 1130, 299) withFont:font];   
+
     int row_number = 0;
     int row_number2 = 0;
     int row_number3 = 0;
+    int page = 0;
     for (int i = 0; i < [PDF_room count]; i++) {
         NSString *serial_string = [PDF_serial_no objectAtIndex:i];
         
@@ -354,32 +354,72 @@
         if (number_of_lines == 0) {
             number_of_lines = 1;
         }
+        
+        int cutoff_rows;
+        if (page == 0) {
+            cutoff_rows = 16;
+        }
+        else {
+            cutoff_rows = 30;
+        }
+        if ((row_number + number_of_lines) > cutoff_rows) {
+            
+            UIGraphicsPopContext();
+            CGPDFContextEndPage(pdfContext);
+            
+            CGPDFContextBeginPage(pdfContext, NULL);
+            UIGraphicsPushContext(pdfContext);
+            
+            // Flip coordinate system
+            CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
+            CGContextScaleCTM(pdfContext, 1.0, -1.0);
+            CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
+            
+            // Drawing commands
+            
+            NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-2" ofType:@"jpg"];
+            NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
+            UIImage * logo = [UIImage imageWithData:imageData];
+            [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
+            row_number = 0;
+            row_number2 = 0;
+            row_number3 = 0;
+            page++;
+        }
+        float base_height;
+        if (page == 0) {
+            base_height = 882;
+        }
+        else {
+            base_height = 234;
+        }
         // draw table cells
         for (int j = 0; j < number_of_lines; j++) {            
             
             NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"table-cell" ofType:@"jpg"];
             NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
             UIImage * logo = [UIImage imageWithData:imageData];
-            [logo drawInRect:CGRectMake(56, 882 + row_number * 44, 1152, 44)];
+            [logo drawInRect:CGRectMake(56, base_height + row_number * 44, 1152, 44)];
             row_number++;
         }
         // draw room
-        [self drawText:[PDF_room objectAtIndex:i] withX:68 withY:892 + row_number3 * 44 andWidth:128 andFont:font andFontSize:21.0];
+        [self drawText:[PDF_room objectAtIndex:i] withX:68 withY:base_height+10 + row_number3 * 44 andWidth:128 andFont:font andFontSize:21.0];
         // draw status installer
-        [self drawText:[PDF_status_installer objectAtIndex:i] withX:208 withY:892 + row_number3 * 44 andWidth:265 andFont:font andFontSize:21.0];
+        [self drawText:[PDF_status_installer objectAtIndex:i] withX:208 withY:base_height+10 + row_number3 * 44 andWidth:265 andFont:font andFontSize:21.0];
         // draw serial
         for (int j = 0; j < [dictArray count]; j++) {
             NSMutableDictionary *dict = [dictArray objectAtIndex:j];
             NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];
             
             //[self drawText:type_and_serial withX:485 withY:892 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21];
-            [self drawText:type_and_serial withX:485 withY:892 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21.0];
+            [self drawText:type_and_serial withX:485 withY:base_height+10 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21.0];
             row_number2++;
         }
+        row_number2 = row_number;
         //draw comments
         NSString *comments = [self conciseText:[PDF_comments objectAtIndex:i]];
-        [comments drawInRect:CGRectMake(891, 892 + row_number3 * 44, 317, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
-        row_number3 += [dictArray count];
+        [comments drawInRect:CGRectMake(891, base_height+10 + row_number3 * 44, 317, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        row_number3 = row_number;
     }
     
     UIGraphicsPopContext();
@@ -445,19 +485,29 @@
     
 }
 
-- (void)drawText: (NSString *) string withX: (CGFloat) x withY: (CGFloat) y andWidth: (CGFloat) width andFont: (UIFont *)font andFontSize: (CGFloat) fontsize {
+- (float)drawText: (NSString *) string withX: (CGFloat) x withY: (CGFloat) y andWidth: (CGFloat) width andFont: (UIFont *)font andFontSize: (CGFloat) fontsize {
     
     float serial_height = [self textAreaHight: string withRect:CGRectMake(0, 0, width, 100000) andFont:font];
     if (serial_height > 88) {
         font = [UIFont fontWithName:normalFont size:15.0f];
+        float real_height = [self textAreaHight: string withRect:CGRectMake(0, 0, width, 100000) andFont:font];
         [string drawInRect:CGRectMake(x, y - 3, width, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        return real_height;
     }
     else if (serial_height > 44) {
         font = [UIFont fontWithName:normalFont size:18.0f];
-        [string drawInRect:CGRectMake(x, y - 7, width, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        float real_height = [self textAreaHight: string withRect:CGRectMake(0, 0, width, 100000) andFont:font];
+        if (real_height > 44) {
+            [string drawInRect:CGRectMake(x, y - 7, width, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        }
+        else {
+            [string drawInRect:CGRectMake(x, y, width, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        }
+        return real_height;
     }
     else {
         [string drawInRect:CGRectMake(x, y, width, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        return serial_height;
     }
     if (serial_height > 44) {
         font = [UIFont fontWithName:normalFont size:fontsize];
