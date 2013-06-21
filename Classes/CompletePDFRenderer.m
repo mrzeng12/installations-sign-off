@@ -340,15 +340,25 @@
         NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
 
         //decide how many lines needed in this room
-        float height = [self textAreaHight: [self conciseText:[PDF_comments objectAtIndex:i]] withRect:CGRectMake(0, 0, 317, 100000) andFont:font];
-        int int_height = (int) ceilf(height);
-        int number_of_lines;
-        if (int_height % 44 == 0) {
-            number_of_lines = int_height / 44;
+        float height_room = [self textAreaHight: [PDF_room objectAtIndex:i] withRect:CGRectMake(0, 0, 128, 100000) andFont:font];
+        float height_installer = [self textAreaHight: [PDF_status_installer objectAtIndex:i] withRect:CGRectMake(0, 0, 265, 100000) andFont:font];
+        float height_comments = [self textAreaHight: [self conciseText:[PDF_comments objectAtIndex:i]] withRect:CGRectMake(0, 0, 317, 100000) andFont:font];
+        float height_serial = 0;
+        NSMutableArray *rows_needed_for_serial = [NSMutableArray array];
+        for (int j = 0; j < [dictArray count]; j++) {
+            NSMutableDictionary *dict = [dictArray objectAtIndex:j];
+            NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];
+            float height_one_serial = [self textAreaHight: type_and_serial withRect:CGRectMake(0, 0, 394, 100000) andFont:font];
+            int rows_needed = [self findNumberOfLines:height_one_serial withLineHeight:44];
+            [rows_needed_for_serial addObject:[NSNumber numberWithInt:rows_needed]];
+            height_serial += rows_needed * 44;
         }
-        else {
-            number_of_lines = int_height / 44 + 1;
-        }
+        
+        float highest = height_room;
+        if (height_installer > highest) highest = height_installer;
+        if (height_comments > highest) highest = height_comments;
+        if (height_serial > highest) highest = height_serial;
+        int number_of_lines = [self findNumberOfLines:highest withLineHeight:44];
         
         if ([dictArray count] > number_of_lines) {
             number_of_lines = [dictArray count];
@@ -403,17 +413,31 @@
             [logo drawInRect:CGRectMake(56, base_height + row_number * 44, 1152, 44)];
             row_number++;
         }
-        // draw room
-        [self drawText:[PDF_room objectAtIndex:i] withX:68 withY:base_height+10 + row_number3 * 44 andWidth:128 andFont:font andFontSize:21.0];
-        // draw status installer
-        [self drawText:[PDF_status_installer objectAtIndex:i] withX:208 withY:base_height+10 + row_number3 * 44 andWidth:265 andFont:font andFontSize:21.0];
+        // draw blank space in the form.
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGContextSetFillColorWithColor(pdfContext, [UIColor whiteColor].CGColor);
+        CGContextFillRect(ctx, CGRectMake(58, base_height + row_number3 * 44, 137, 44 * number_of_lines - 2));
+        CGContextFillRect(ctx, CGRectMake(197, base_height + row_number3 * 44, 276, 44 * number_of_lines - 2));
+        CGContextFillRect(ctx, CGRectMake(881, base_height + row_number3 * 44, 325, 44 * number_of_lines - 2));
+        int existing_rows = 0;
+        for (int j = 0; j < [dictArray count]; j++) {
+            int rows_needed = [[rows_needed_for_serial objectAtIndex:j] integerValue];
+            if (rows_needed > 1) {
+                CGContextFillRect(ctx, CGRectMake(475, base_height + row_number3 * 44 + existing_rows * 44, 404, 44 * rows_needed - 2));
+            }
+            existing_rows += rows_needed;
+        }
+        CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
+        // draw room number
+        [[PDF_room objectAtIndex:i] drawInRect:CGRectMake(68, base_height+10 + row_number3 * 44, 128, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+        // draw status installer        
+        [[PDF_status_installer objectAtIndex:i] drawInRect:CGRectMake(208, base_height+10 + row_number3 * 44, 265, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
         // draw serial
         for (int j = 0; j < [dictArray count]; j++) {
             NSMutableDictionary *dict = [dictArray objectAtIndex:j];
-            NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];            
-           
-            [self drawText:type_and_serial withX:485 withY:base_height+10 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21.0];
-            row_number2++;
+            NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];                       
+            [type_and_serial drawInRect:CGRectMake(485, base_height+10 + row_number2 * 44, 394, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+            row_number2 += [[rows_needed_for_serial objectAtIndex:j] integerValue];
         }
         row_number2 = row_number;
         //draw comments
@@ -458,6 +482,7 @@
             [urls addObject:[PDF_photo_file_directory_8 objectAtIndex:i]];
         }
         
+        //create picture hight array
         NSMutableArray *heightArray = [NSMutableArray array];
         NSMutableArray *updated_url = [NSMutableArray array];
         
@@ -499,8 +524,9 @@
                 pic_base_hight = 163;
             }
             // draw room
-            //NSLog(@"%d", (pic_base_hight + 26));
-            [self drawText:[NSString stringWithFormat:@"%@:", [PDF_room objectAtIndex:i]] withX:56 withY:pic_base_hight + 26 andWidth:1151 andFont:font andFontSize:21.0];
+            font = [UIFont fontWithName:boldFont size:22.0f];
+            [[NSString stringWithFormat:@"%@:", [PDF_room objectAtIndex:i]] drawInRect:CGRectMake(56, pic_base_hight + 26, 1151, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
+            font = [UIFont fontWithName:normalFont size:21.0f];
             pic_base_hight += 26 + 21;
             //loop through all the photos
             for (int imageIndex = 0; imageIndex < [updated_url count]; imageIndex += 2) {
@@ -564,7 +590,7 @@
                     myImage = nil;
                 }
                 
-                pic_base_hight += 26 + [[heightArray objectAtIndex:imageIndex] floatValue];
+                pic_base_hight += 26 + image_height;
             }
         }
         
@@ -674,6 +700,17 @@
     return [array_updated componentsJoinedByString:@"; "];
 }
 
+- (int)findNumberOfLines: (float)height withLineHeight: (int)lineHeight {
+    int int_height = (int) ceilf(height);
+    int number_of_lines;
+    if (int_height % lineHeight == 0) {
+        number_of_lines = int_height / lineHeight;
+    }
+    else {
+        number_of_lines = int_height / lineHeight + 1;
+    }
+    return number_of_lines;
+}
 
 -(UIImage *) loadImage:(NSString *)fileName ofType:(NSString *)extension inDirectory:(NSString *)directoryPath {
     

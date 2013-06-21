@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-#define testing
+//#define testing
 
 @implementation isql
 
@@ -105,8 +105,11 @@ static SqlClient *client = nil;
     //[activityIndicator startAnimating];
     
     NSMutableString* queryString = [NSMutableString string];
+#ifdef testing
+    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2] from [DevInstall].[dbo].[IpadInstall_Phoenix]"]];
+#else
     [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2] from [install].[dbo].[IpadInstall_Phoenix]"]];
-    
+#endif
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
         
@@ -507,12 +510,20 @@ static SqlClient *client = nil;
     NSString *thisTeqRep = [[Rowofdict objectForKey:@"Teq_rep"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisActivityNumber = [[Rowofdict objectForKey:@"Activity_no"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisRoomNumber = [[Rowofdict objectForKey:@"Room_Number"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
-    
-    //insert all items except cables
+    NSString *allRooms = [self saveAllRoomsWithActivity:thisActivityNumber andTeqRep:thisTeqRep];
+    //insert all items 
     [queryString appendString:@"BEGIN TRANSACTION;"];
+#ifdef testing
+    NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[InstallSummary] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+    [queryString appendString: deleteQuery];
+    NSString *deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [DevInstall].[dbo].[InstallSummary] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+    [queryString appendString: deleteOtherRoomQuery];
+#else
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallSummary] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
     [queryString appendString: deleteQuery];
-    
+    NSString *deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [Install].[dbo].[InstallSummary] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+    [queryString appendString: deleteOtherRoomQuery];
+#endif    
     for (NSMutableDictionary *oneItem in items) {
         NSString *installCol = [oneItem objectForKey:@"install"];
         NSString *statusCol = [oneItem objectForKey:@"status"];
@@ -526,7 +537,7 @@ static SqlClient *client = nil;
         serialnumberCol = [self escapeString:serialnumberCol];
         notesCol = [self escapeString:notesCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #else
         [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #endif
@@ -536,7 +547,7 @@ static SqlClient *client = nil;
     //just to make sure it is not sending empty query
     if ([queryString length] == 0) {
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
 #else
         [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
 #endif
@@ -609,8 +620,7 @@ static SqlClient *client = nil;
 {
     
     if (index < 0) {
-        [self uploadImages:tempArray];
-        //[self remoteSrcToLocalSrc];
+        [self selectFailFileList];
         return;
     }
     NSMutableDictionary *Rowofdict = [tempArrayDict objectAtIndex:index];
@@ -631,11 +641,14 @@ static SqlClient *client = nil;
     NSMutableString* queryString = [NSMutableString string];
     
     [queryString appendString:@"BEGIN TRANSACTION;"];
+    
+#ifdef testing
+    NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
+    [queryString appendString:deleteQuery];
+    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+#else
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-#ifdef testing
-    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
-#else
     [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [ReasonForVisit], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #endif
     
@@ -750,34 +763,70 @@ static SqlClient *client = nil;
     }
     @finally {        
         sqlite3_close(db);        
-    }  
-    
-    
-    //[activityIndicator startAnimating];
-    
+    }      
     [self saveAllPendingUploadPhotoAndPDFToFailList:tempArray];
     [self localDestToRemoteDestRecursive:tempArray withIndexNumber:([tempArray count]-1) andDict: tempArrayDict];
          
 }
-
+- (NSString *) saveAllRoomsWithActivity : (NSString *)activity_no andTeqRep: (NSString *) teq_rep{
+    isql *database = [isql initialize];
+    
+    sqlite3 *db;
+    sqlite3_stmt    *statement;
+    NSMutableArray *roomList = [NSMutableArray array];
+    @try {
+        
+        const char *dbpath = [database.dbpathString UTF8String];
+        
+        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+        {
+            
+            NSString *selectSQL = [NSString stringWithFormat:@"select Room_Number from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", activity_no, teq_rep];
+            
+            
+            const char *select_stmt = [selectSQL UTF8String];
+            
+            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                
+                while (sqlite3_step(statement) == SQLITE_ROW)
+                {
+                    [roomList addObject:[[NSString alloc]
+                                         initWithUTF8String:
+                                         (const char *) sqlite3_column_text(statement, 0)]];
+                }                
+                sqlite3_finalize(statement);
+            }
+            else {
+                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
+                
+            }
+        }
+        
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        sqlite3_close(db);
+        NSMutableString *allRooms = [NSMutableString string];
+        for (NSString *room in roomList) {
+            NSString *string = [NSString stringWithFormat:@"'%@',", room];
+            [allRooms appendString:string];
+        }
+        if ( [allRooms length] > 0)
+            allRooms = [NSMutableString stringWithFormat:@"(%@)", [allRooms substringToIndex:[allRooms length] - 1]];
+        return allRooms;
+    }
+}
 - (void) saveAllPendingUploadPhotoAndPDFToFailList: (NSArray *) tempArray {
     
     for(int index = 0; index< [tempArray count]; index++)
     {
         NSArray *tempRow = [tempArray objectAtIndex:index];
         
-        NSString *thisTeqRep = [tempRow objectAtIndex:8] ;
-        NSString *thisActivityNumber = [tempRow objectAtIndex:1];
-        /*
-         for (int i = 104; i <= 115; i++) {
-         
-         if([[tempRow objectAtIndex:i] length] > 10) {
-         
-         NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
-         [self saveAllPendingUploadPhotoToFailList:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
-         }
-         }
-         */
+        NSString *thisTeqRep = [tempRow objectAtIndex:1] ;
+        NSString *thisActivityNumber = [tempRow objectAtIndex:0];
+        
         if([[tempRow objectAtIndex:44] length] > 10) {
             NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:44]];
             [self saveAllPendingUploadPDFToFailList:imageString withActivity:thisActivityNumber andTeqRep:thisTeqRep];
@@ -814,150 +863,6 @@ static SqlClient *client = nil;
     
 }
 
-- (void) uploadImages: (NSArray *) tempArray {
-    
-    for(int index = 0; index< [tempArray count]; index++)
-    {
-        NSArray *tempRow = [tempArray objectAtIndex:index];
-        
-        NSString *thisTeqRep = [tempRow objectAtIndex:8] ;
-        NSString *thisActivityNumber = [tempRow objectAtIndex:1];
-        /*
-        for (int i = 104; i <= 115; i++) {
-            
-            if([[tempRow objectAtIndex:i] length] > 10) {
-                
-                NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:i]];
-                [self uploadImage:imageString withType:@"jpg" andActivity:thisActivityNumber andTeqRep:thisTeqRep];
-            }
-        }
-        */
-        if([[tempRow objectAtIndex:44] length] > 10) {
-            NSString *imageString = [NSString stringWithFormat: @"%@",[tempRow objectAtIndex:44]];
-            [self uploadPDF:imageString withActivity:thisActivityNumber andTeqRep:thisTeqRep];
-        }
-        
-    }
-    
-    [self selectFailFileList];
-}
-
-- (void) uploadPDF : (NSString *) pdfString withActivity: (NSString *) activity andTeqRep: (NSString *) teqrep {
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    NSString *documentsDir = [paths objectAtIndex:0];
-    NSString *pdfPath = [documentsDir stringByAppendingPathComponent:pdfString];
-    
-    NSError *error;
-    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:pdfPath error:&error];
-    NSDate *fileDate = [dictionary objectForKey:NSFileModificationDate];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
-    NSString *dateString = [dateFormat stringFromDate:fileDate];
-    if ([self checkIfFileUploaded:pdfString withDateTime:dateString]) {
-        //return YES means it found the same file has been uploaded, stop uploading
-        //NSLog(@"don't upload pdf");
-        return;
-    }
-    //NSLog(@"upload pdf");
-    NSData *myData = [NSData dataWithContentsOfFile:pdfPath];
-    
-    if (myData == nil) {
-        //NSLog(@"no image");
-    }
-    else {
-        NSString *zipFileName = [NSString stringWithFormat:@"%@zip", [pdfString substringToIndex:[pdfString length] - 3]];
-        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString* dPath = [paths objectAtIndex:0];
-        NSString* zipfile = [dPath stringByAppendingPathComponent:zipFileName];
-        ZipArchive* zip = [[ZipArchive alloc] init];
-        [zip CreateZipFile2:zipfile];
-        [zip addFileToZip:pdfPath newname:pdfString];//zip
-        if( ![zip CloseZipFile2] )
-        {
-            zipfile = @"";
-        }
-        NSLog(@"The file has been zipped");
-        
-        //NSString *zipFilePath = [documentsDir stringByAppendingPathComponent:zipFileName];
-        //NSData *myZipData = [NSData dataWithContentsOfFile:zipFilePath];
-        NSData *myZipData = [NSData dataWithContentsOfFile:zipfile];
-        //if zip file is not created, transfer PDF file instead
-        NSString *transferFileName = pdfString;
-        
-        if (myZipData != nil) {
-            myData = myZipData;
-            transferFileName = zipFileName;
-        }
-        //use pdfPath as main id. If file does not exists, it cannot upload anyway.
-        //[self writeToFailedFileUploadRecords:pdfPath withDBName:pdfString andFileType:@"pdf" andActivity:activity andTeqRep:teqrep];
-        //NSLog(@"write pdf to fail log");
-        
-        // setting up the URL to post to
-#ifdef testing
-        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
-#else
-        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
-#endif
-        
-        // setting up the request object now
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL:[NSURL URLWithString:urlString]];
-        [request setHTTPMethod:@"POST"];
-        
-        /*
-         add some header info now
-         we always need a boundary when we post a file
-         also we need to set the content type
-         
-         You might want to generate a random boundary.. this is just the same
-         as my output from wireshark on a valid html post
-         */
-        NSString *boundary = @"---------------------------14737809831466499882746641449";
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-        
-        /*
-         now lets create the body of the post
-         */
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"%@\"\r\n", transferFileName] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:myData];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        // setting the body of the post to the reqeust
-        [request setHTTPBody:body];
-        
-        // now lets make the connection to the web
-        //NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-        
-        NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-        
-        //NSLog(@"time elapse = %f",([NSDate timeIntervalSinceReferenceDate] - startTime));
-        //NSLog(@"upload speed = %f Kbps",  (myData.length/1024)/([NSDate timeIntervalSinceReferenceDate] - startTime));
-        NSString *returnString = [[NSString alloc] initWithData:returnData encoding:NSUTF8StringEncoding];
-        
-        //NSLog(@"%@",returnString);
-        
-        if ([returnString isEqualToString:@"Success"]) {
-            //NSLog(@"insert into file upload log");
-            [self removeFromFailedFileUploadRecords:pdfPath];
-            NSLog(@"remove pdf from fail log %@", pdfString);
-            [self saveFileUploadRecords:pdfString withDateTime:dateString];
-        }
-        else {
-            NSLog(@"%@", returnString);
-            //[self saveFailedFileUploadRecords:pdfPath withDBName:pdfString andFileType:@"pdf"];
-            NSLog(@"%@ fail", pdfString);
-        }
-        //Remove zip file after uploaded
-        if (myZipData != nil) {
-            [[NSFileManager defaultManager] removeItemAtPath:zipfile error:&error];
-        }
-    }
-}
-
 - (void) uploadImagesFromFailList: (NSArray *) tempArray {
     
     //upload failed pdf
@@ -966,14 +871,7 @@ static SqlClient *client = nil;
             [self uploadPDFFromFailList:dict];
         }
     }
-    /*
-     //upload failed image
-     for (NSMutableDictionary *dict in tempArray) {
-     if ([[dict objectForKey:@"filetype"] isEqualToString:@"image"]) {
-     [self uploadImageFromFailList:dict];
-     }
-     }
-     */
+   
     [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
@@ -984,10 +882,6 @@ static SqlClient *client = nil;
 }
 
 - (void) uploadPDFFromFailList : (NSDictionary *) dict {
-    
-    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
-    //NSString *documentsDir = [paths objectAtIndex:0];
-    //NSString *pdfPath = [documentsDir stringByAppendingPathComponent:pdfString];
     
     NSString *pdfPath = [dict objectForKey:@"path"];
     NSError *error;
@@ -1039,7 +933,7 @@ static SqlClient *client = nil;
          */
         // setting up the URL to post to
 #ifdef testing
-        NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
+        NSString *urlString = @"http://108.54.230.13/devinstall/Default.aspx";
 #else
         NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #endif
@@ -1170,7 +1064,7 @@ static SqlClient *client = nil;
     NSData *myData = [NSData dataWithContentsOfFile:speedtestFileName];
     
 #ifdef testing
-    NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
+    NSString *urlString = @"http://108.54.230.13/devinstall/Default.aspx";
 #else
     NSString *urlString = @"http://108.54.230.13/install/Default.aspx";
 #endif

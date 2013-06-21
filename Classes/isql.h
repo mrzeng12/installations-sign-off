@@ -41,8 +41,6 @@
 
 - (NSString *) getDBPath;
 
-- (void) uploadImages: (NSArray *) tempArray;
-
 - (UIImage *) loadImage:(NSString *)fileName ofType:(NSString *)extension inDirectory:(NSString *)directoryPath; 
 
 //- (void) uploadImage : (NSString *) imageString withType : (NSString *) type;
