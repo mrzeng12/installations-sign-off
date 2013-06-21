@@ -343,6 +343,7 @@
     textFieldRounded.keyboardType = UIKeyboardTypeDefault;
     textFieldRounded.returnKeyType = UIReturnKeyDone;    
     textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;
+    textFieldRounded.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
     textFieldRounded.text = serial;
     [textFieldRounded addTarget:self action:@selector(serialNoChanged:) forControlEvents:UIControlEventEditingChanged];
     [self.scrollview addSubview:textFieldRounded];

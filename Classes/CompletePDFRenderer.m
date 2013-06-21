@@ -291,7 +291,6 @@
         CGPDFContextEndPage(pdfContext);       
     }
     [self printReports:pdfContext];
-    //[self printRooms:pdfContext withRoomIndex:0];
 }
 
 - (void) printReports: (CGContextRef) pdfContext {
@@ -327,17 +326,20 @@
     
     [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(68, 526, 1130, 299) withFont:font];   
 
-    int row_number = 0;
-    int row_number2 = 0;
-    int row_number3 = 0;
+    int row_number = 0; //for drawing table cells
+    int row_number2 = 0;    //for drawing serials
+    int row_number3 = 0;    //for drawing room number, installer, comments
     int page = 0;
     for (int i = 0; i < [PDF_room count]; i++) {
+        
+        //parse serial number
         NSString *serial_string = [PDF_serial_no objectAtIndex:i];
         
         NSData *data = [serial_string dataUsingEncoding:NSUTF8StringEncoding];
         NSError *e = nil;
         NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
 
+        //decide how many lines needed in this room
         float height = [self textAreaHight: [self conciseText:[PDF_comments objectAtIndex:i]] withRect:CGRectMake(0, 0, 317, 100000) andFont:font];
         int int_height = (int) ceilf(height);
         int number_of_lines;
@@ -354,7 +356,7 @@
         if (number_of_lines == 0) {
             number_of_lines = 1;
         }
-        
+        //decide where the data form row ends
         int cutoff_rows;
         if (page == 0) {
             cutoff_rows = 16;
@@ -375,8 +377,7 @@
             CGContextScaleCTM(pdfContext, 1.0, -1.0);
             CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
             
-            // Drawing commands
-            
+            // Drawing backgrounds            
             NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-2" ofType:@"jpg"];
             NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
             UIImage * logo = [UIImage imageWithData:imageData];
@@ -409,9 +410,8 @@
         // draw serial
         for (int j = 0; j < [dictArray count]; j++) {
             NSMutableDictionary *dict = [dictArray objectAtIndex:j];
-            NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];
-            
-            //[self drawText:type_and_serial withX:485 withY:892 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21];
+            NSString *type_and_serial = [NSString stringWithFormat:@"%@: %@", [dict objectForKey:@"type"], [dict objectForKey:@"serial"]];            
+           
             [self drawText:type_and_serial withX:485 withY:base_height+10 + row_number2 * 44 andWidth:394 andFont:font andFontSize:21.0];
             row_number2++;
         }
@@ -420,6 +420,154 @@
         NSString *comments = [self conciseText:[PDF_comments objectAtIndex:i]];
         [comments drawInRect:CGRectMake(891, base_height+10 + row_number3 * 44, 317, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
         row_number3 = row_number;
+    }
+    float base_height;
+    if (page == 0) {
+        base_height = 882;
+    }
+    else {
+        base_height = 234;
+    }
+    int pic_base_hight = base_height + (row_number) * 44 + 26; //26 is the padding between last line of the data form and picture title
+    
+    for (int i = 0; i < [PDF_room count]; i++) {
+     
+        NSMutableArray *urls = [NSMutableArray arrayWithObjects: nil];
+        if ([[PDF_photo_file_directory_1 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_1 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_2 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_2 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_3 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_3 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_4 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_4 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_5 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_5 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_6 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_6 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_7 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_7 objectAtIndex:i]];
+        }
+        if ([[PDF_photo_file_directory_8 objectAtIndex:i] length] > 0) {
+            [urls addObject:[PDF_photo_file_directory_8 objectAtIndex:i]];
+        }
+        
+        NSMutableArray *heightArray = [NSMutableArray array];
+        NSMutableArray *updated_url = [NSMutableArray array];
+        
+        for (int imageIndex = 0; imageIndex < [urls count]; imageIndex++) {
+            UIImage *myImage = [self loadImage: [urls objectAtIndex:imageIndex] ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
+            
+            if (myImage != nil) {
+                [heightArray addObject: [NSNumber numberWithFloat: (myImage.size.height > myImage.size.width)? 552 : 414]];
+                [updated_url addObject:[urls objectAtIndex:imageIndex]];
+            }
+        }
+        if ([heightArray count] != 0) {
+            //if there is at least one picture, draw room number
+            float first_two_page_height = [[heightArray objectAtIndex:0] floatValue];
+            if ([heightArray count] > 1) {
+                if ([[heightArray objectAtIndex:1] floatValue] > first_two_page_height) {
+                    first_two_page_height = [[heightArray objectAtIndex:1] floatValue];
+                }
+            }
+            if ((pic_base_hight + 26 + 21 + 26 + first_two_page_height) > 1624 ){
+                
+                //if first two pics plus room number are off the edge, create a new page
+                UIGraphicsPopContext();
+                CGPDFContextEndPage(pdfContext);
+                
+                CGPDFContextBeginPage(pdfContext, NULL);
+                UIGraphicsPushContext(pdfContext);
+                
+                // Flip coordinate system
+                CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
+                CGContextScaleCTM(pdfContext, 1.0, -1.0);
+                CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
+                
+                // Drawing backgrounds
+                NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-4" ofType:@"jpg"];
+                NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
+                UIImage * logo = [UIImage imageWithData:imageData];
+                [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
+                pic_base_hight = 163;
+            }
+            // draw room
+            //NSLog(@"%d", (pic_base_hight + 26));
+            [self drawText:[NSString stringWithFormat:@"%@:", [PDF_room objectAtIndex:i]] withX:56 withY:pic_base_hight + 26 andWidth:1151 andFont:font andFontSize:21.0];
+            pic_base_hight += 26 + 21;
+            //loop through all the photos
+            for (int imageIndex = 0; imageIndex < [updated_url count]; imageIndex += 2) {
+                float image_height = [[heightArray objectAtIndex:imageIndex] floatValue];
+                if ((imageIndex+1) < [updated_url count]) {
+                    if (image_height < [[heightArray objectAtIndex:(imageIndex+1)] floatValue]) {
+                        image_height = [[heightArray objectAtIndex:(imageIndex+1)] floatValue];
+                    }
+                }
+                if ((pic_base_hight + 26 + image_height) > 1624) {
+                    
+                    //if the upcoming two photos are off the edge, create a new page
+                    UIGraphicsPopContext();
+                    CGPDFContextEndPage(pdfContext);
+                    
+                    CGPDFContextBeginPage(pdfContext, NULL);
+                    UIGraphicsPushContext(pdfContext);
+                    
+                    // Flip coordinate system
+                    CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
+                    CGContextScaleCTM(pdfContext, 1.0, -1.0);
+                    CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
+                    
+                    // Drawing backgrounds
+                    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-4" ofType:@"jpg"];
+                    NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
+                    UIImage * logo = [UIImage imageWithData:imageData];
+                    [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
+                    pic_base_hight = 163;
+                }
+                
+                //draw the photos on canvas
+                for (int offset = 0; offset < 2; offset++) {
+                    if ((imageIndex+offset) == [updated_url count]) {
+                        break;
+                    }
+                    UIImage *myImage = [self loadImage: [updated_url objectAtIndex:(imageIndex+offset)] ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
+                    CGRect tempRect;
+                    float tempHeight = myImage.size.height;
+                    float tempWidth = myImage.size.width;
+                    if (tempHeight > tempWidth) {
+                        if ((imageIndex+offset) % 2 == 0) {
+                            tempRect = CGRectMake(56, pic_base_hight + 26, 414, 552);
+                        }
+                        else {
+                            tempRect = CGRectMake(655, pic_base_hight + 26, 414, 552);
+                        }
+                    }
+                    else {
+                        if ((imageIndex+offset) % 2 == 0) {
+                            tempRect = CGRectMake(56, pic_base_hight + 26, 552, 414);
+                        }
+                        else {
+                            tempRect = CGRectMake(655, pic_base_hight + 26, 552, 414);
+                        }
+                    }
+                    
+                    NSData *imageData = UIImageJPEGRepresentation(myImage, 0.75);
+                    myImage = [UIImage imageWithData:imageData];
+                    [myImage drawInRect:tempRect];
+                    myImage = nil;
+                }
+                
+                pic_base_hight += 26 + [[heightArray objectAtIndex:imageIndex] floatValue];
+            }
+        }
+        
     }
     
     UIGraphicsPopContext();
@@ -478,12 +626,6 @@
     }
     return;
 }
-- (void) printReportsPageEmptyWithTitle: (CGContextRef) pdfContext AndIndex: (int) index {
-    
-}
-- (void) printReportsPageEmpty: (CGContextRef) pdfContext {
-    
-}
 
 - (float)drawText: (NSString *) string withX: (CGFloat) x withY: (CGFloat) y andWidth: (CGFloat) width andFont: (UIFont *)font andFontSize: (CGFloat) fontsize {
     
@@ -513,7 +655,6 @@
         font = [UIFont fontWithName:normalFont size:fontsize];
     }
     
-    //[string drawAtPoint:CGPointMake(x, y) forWidth:width withFont:font minFontSize:12.0 actualFontSize:&fontsize lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignBaselines];
 }
 
 - (float)textAreaHight: (NSString *) string withRect: (CGRect) rect andFont: (UIFont *) font {
@@ -533,324 +674,6 @@
     return [array_updated componentsJoinedByString:@"; "];
 }
 
-- (void) printRooms: (CGContextRef) pdfContext withRoomIndex: (int) i {
-    //for (int i = 0; i < [PDF_board count]; i++)
-    //{
-    isql *database = [isql initialize];
-    if (i == [PDF_comments count]) {
-        CGPDFContextClose(pdfContext);
-        CGContextRelease(pdfContext);
-        NSLog(@"create %@", database.current_comlete_pdf_file_name);
-        if ([callBackFunction isEqualToString:@"preview"]) {
-            
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"showCompletePDF" object:self userInfo:nil];
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        }
-        else if ([callBackFunction isEqualToString:@"saving"]) {
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        }
-        else if ([callBackFunction isEqualToString:@"finishEditing"]) {
-            
-            [database resetVariables];
-            database.current_classroom_number = nil;
-            database.current_classroom_floor = nil;
-            database.current_classroom_grade = nil;
-            database.current_classroom_notes = nil;
-            database.current_raceway_part_9 = nil;
-            database.current_raceway_part_10 = nil;
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        }
-        else if ([callBackFunction isEqualToString:@"sync"]){
-            [database resetVariables];
-            database.current_classroom_number = nil;
-            database.current_classroom_floor = nil;
-            database.current_classroom_grade = nil;
-            database.current_classroom_notes = nil;
-            database.current_raceway_part_9 = nil;
-            database.current_raceway_part_10 = nil;
-            
-            [database uploadSpeedTestFile];
-            //[database localDestToRemoteDest];
-            //[database remoteSrcToLocalSrc:YES];
-        }
-        else if ([callBackFunction isEqualToString:@"continueToCreateNewActivity"]){
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"continueToCreateNewActivity" object:self userInfo:nil];
-        }
-        else if ([callBackFunction isEqualToString:@"continueToLoadOldActivity"]){
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"continueToLoadOldActivity" object:self userInfo:nil];
-        }
-        else if ([callBackFunction isEqualToString:@"continueToCreateEmptySurvey"]){
-            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"continueToCreateEmptySurvey" object:self userInfo:nil];
-        }
-        return;
-    }
-    CGPDFContextBeginPage(pdfContext, NULL);
-    UIGraphicsPushContext(pdfContext);
-    
-    // Flip coordinate system
-    CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
-    CGContextScaleCTM(pdfContext, 1.0, -1.0);
-    CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
-    
-    // Drawing commands
-    
-    //NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-customer-report" ofType:@"jpg"];
-    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-blank-page" ofType:@"jpg"];
-    NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
-    UIImage * logo = [UIImage imageWithData:imageData];
-    [logo drawInRect:CGRectMake(0, 0, 2550 *factor, 3300 *factor)];
-    
-    //first two green lines
-    //CGContextSetFillColorWithColor(pdfContext, [UIColor colorWithRed:142.0/255.0 green:198.0/255.0 blue:63.0/255.0 alpha:1.0].CGColor);
-    CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
-    UIFont *font = [UIFont fontWithName:boldFont
-                                   size:48.0f *factor];
-    [[NSString stringWithFormat:@"%@, %@",database.current_location, database.current_date ] drawAtPoint:CGPointMake(468 *factor, 259 *factor) withFont: font];
-    // [database.current_address drawAtPoint:CGPointMake(468, 332) withFont: font];
-    [[PDF_room objectAtIndex: i] drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
-    
-    //first row
-    float bl_projection = 527;
-    fileLocation = [[NSBundle mainBundle] pathForResource:@"black-line" ofType:@"png"];
-    imageData = [NSData dataWithContentsOfFile:fileLocation];
-    logo = [UIImage imageWithData:imageData];
-    [logo drawInRect:CGRectMake(0, (bl_projection+293) *factor, 2549 *factor, 29 *factor)];
-    
-    // Clean up
-    UIGraphicsPopContext();
-    CGPDFContextEndPage(pdfContext);
-    
-    CGPDFContextBeginPage(pdfContext, NULL);
-    UIGraphicsPushContext(pdfContext);
-    
-    // Flip coordinate system
-    bounds = CGContextGetClipBoundingBox(pdfContext);
-    CGContextScaleCTM(pdfContext, 1.0, -1.0);
-    CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
-    
-    // Drawing commands
-    
-    //NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-customer-report" ofType:@"jpg"];
-    fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-blank-page" ofType:@"jpg"];
-    imageData = [NSData dataWithContentsOfFile:fileLocation];
-    logo = [UIImage imageWithData:imageData];
-    [logo drawInRect:CGRectMake(0, 0, 2550 *factor, 3300 *factor)];
-    
-    //first two green lines
-    //CGContextSetFillColorWithColor(pdfContext, [UIColor colorWithRed:142.0/255.0 green:198.0/255.0 blue:63.0/255.0 alpha:1.0].CGColor);
-    font = [UIFont fontWithName:boldFont
-                           size:48.0f *factor];
-    [[NSString stringWithFormat:@"%@, %@",database.current_location, database.current_date ] drawAtPoint:CGPointMake(468 *factor, 259 *factor) withFont: font];
-    // [database.current_address drawAtPoint:CGPointMake(468, 332) withFont: font];
-    [[PDF_room objectAtIndex: i] drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
-    
-    CGContextSetFillColorWithColor(pdfContext, [UIColor grayColor].CGColor);
-    font = [UIFont fontWithName:normalFont
-                           size:48.0f *factor];
-    
-    float cm_client = 527;
-    
-    [@"Comments: " drawAtPoint:CGPointMake(129 *factor, (cm_client) *factor) withFont: font];
-    
-    CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
-    font = [UIFont fontWithName:boldFont
-                           size:48.0f *factor];
-    [[PDF_comments objectAtIndex:i] drawInRect:CGRectMake(129 *factor, (cm_client+80) *factor, 850 *factor, 1600 *factor) withFont:font];
-           
-   
-    NSMutableArray *urls = [NSMutableArray arrayWithObjects: nil];
-    if ([[PDF_photo_file_directory_1 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_1 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_2 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_2 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_3 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_3 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_4 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_4 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_5 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_5 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_6 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_6 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_7 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_7 objectAtIndex:i]];
-    }
-    if ([[PDF_photo_file_directory_8 objectAtIndex:i] length] > 0) {
-        [urls addObject:[PDF_photo_file_directory_8 objectAtIndex:i]];
-    }
-    CGRect rect1 = CGRectMake(129 *factor, 1950 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect2 = CGRectMake(1300 *factor, 1950 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect3 = CGRectMake(129 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect4 = CGRectMake(1300 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect5 = CGRectMake(129 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect6 = CGRectMake(1300 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect7 = CGRectMake(129 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect8 = CGRectMake(1300 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    /*
-    CGRect rect1 = CGRectMake(129 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect2 = CGRectMake(1300 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect3 = CGRectMake(129 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect4 = CGRectMake(1300 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect5 = CGRectMake(129 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect6 = CGRectMake(1300 *factor, 500 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect7 = CGRectMake(129 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    CGRect rect8 = CGRectMake(1300 *factor, 1900 *factor, 1100 *factor, 1100 *factor);
-    */
-    NSArray *rectArray = [NSArray arrayWithObjects:[NSValue valueWithCGRect:rect1], [NSValue valueWithCGRect:rect2],[NSValue valueWithCGRect:rect3], [NSValue valueWithCGRect:rect4],[NSValue valueWithCGRect:rect5], [NSValue valueWithCGRect:rect6],[NSValue valueWithCGRect:rect7], [NSValue valueWithCGRect:rect8], nil];
-    
-    [self loadImage:urls withPDFContent:pdfContext andURLIndex:0 andRects:rectArray andRoomIndex:i];
-    //UIGraphicsPopContext();
-    //CGPDFContextEndPage(pdfContext);
-    
-    //}
-}
-
-- (void) loadImage: (NSMutableArray *)urls withPDFContent: (CGContextRef)pdfContext andURLIndex: (int) index andRects: (NSArray *) rectArray andRoomIndex: (int) roomIndex {
-    
-    if (index == 2) {
-        UIGraphicsPopContext();
-        CGPDFContextEndPage(pdfContext);
-        
-        //if ([[[urls objectAtIndex:0] absoluteString] length] < 10) {
-        if ([urls count] <= 2) {
-            /*
-            CGPDFContextClose(pdfContext);
-            CGContextRelease(pdfContext);
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"showCompletePDF" object:self userInfo:nil];
-             */
-            [self printRooms:pdfContext withRoomIndex:(roomIndex+1)];
-            return;
-        }
-        else {
-            //going to create a third page.
-            CGPDFContextBeginPage(pdfContext, NULL);
-            UIGraphicsPushContext(pdfContext);
-            // Flip coordinate system
-            CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
-            CGContextScaleCTM(pdfContext, 1.0, -1.0);
-            CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
-            
-            // Drawing commands
-            
-            //NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-customer-report" ofType:@"jpg"];
-            NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-blank-page" ofType:@"jpg"];
-            NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
-            UIImage *logo = [UIImage imageWithData:imageData];
-            [logo drawInRect:CGRectMake(0, 0, 2550 *factor, 3300 *factor)];
-            
-            //first two green lines
-            CGContextSetFillColorWithColor(pdfContext, [UIColor colorWithRed:142.0/255.0 green:198.0/255.0 blue:63.0/255.0 alpha:1.0].CGColor);
-            UIFont *font = [UIFont fontWithName:boldFont
-     size:48.0f *factor];
-            isql *database = [isql initialize];
-            [[NSString stringWithFormat:@"%@, %@",database.current_location, database.current_date ] drawAtPoint:CGPointMake(468 *factor, 259 *factor) withFont: font];
-            // [database.current_address drawAtPoint:CGPointMake(468, 332) withFont: font];
-            [[PDF_room objectAtIndex: roomIndex] drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
-        }
-    }
-    if (index == 6) {
-        UIGraphicsPopContext();
-        CGPDFContextEndPage(pdfContext);
-        
-        //if ([[[urls objectAtIndex:4] absoluteString] length] < 10) {
-        if ([urls count] <= 6) {
-            /*
-            CGPDFContextClose(pdfContext);
-            CGContextRelease(pdfContext);
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"showCompletePDF" object:self userInfo:nil];
-             */
-            [self printRooms:pdfContext withRoomIndex:(roomIndex+1)];
-            return;
-        }
-        else {
-            //going to create a third page.
-            CGPDFContextBeginPage(pdfContext, NULL);
-            UIGraphicsPushContext(pdfContext);
-            // Flip coordinate system
-            CGRect bounds = CGContextGetClipBoundingBox(pdfContext);
-            CGContextScaleCTM(pdfContext, 1.0, -1.0);
-            CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
-            
-            // Drawing commands
-            
-            //NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-customer-report" ofType:@"jpg"];
-            NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"site-survey-blank-page" ofType:@"jpg"];
-            NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
-            UIImage *logo = [UIImage imageWithData:imageData];
-            [logo drawInRect:CGRectMake(0, 0, 2550 *factor, 3300 *factor)];
-            
-            //first two green lines
-            CGContextSetFillColorWithColor(pdfContext, [UIColor colorWithRed:142.0/255.0 green:198.0/255.0 blue:63.0/255.0 alpha:1.0].CGColor);
-            UIFont *font = [UIFont fontWithName:boldFont
-     size:48.0f *factor];
-            isql *database = [isql initialize];
-            [[NSString stringWithFormat:@"%@, %@",database.current_location, database.current_date ] drawAtPoint:CGPointMake(468 *factor, 259 *factor) withFont: font];
-            // [database.current_address drawAtPoint:CGPointMake(468, 332) withFont: font];
-            [[PDF_room objectAtIndex: roomIndex] drawAtPoint:CGPointMake(468 *factor, 332 *factor) withFont: font];
-        }
-    }
-    if (index == 8) {
-        UIGraphicsPopContext();
-        CGPDFContextEndPage(pdfContext);
-        /*
-        CGPDFContextClose(pdfContext);
-        CGContextRelease(pdfContext);
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"showCompletePDF" object:self userInfo:nil];
-         */
-        [self printRooms:pdfContext withRoomIndex:(roomIndex+1)];
-        return;
-    }
-    
-    if ([urls count] > index) {
-        
-        UIImage *myImage = [self loadImage: [urls objectAtIndex:index] ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-        
-        if (myImage != nil) {
-            
-            //myImage = [myImage fixOrientationWithOrientation:5];
-            NSValue *tempValue = [rectArray objectAtIndex:index];
-            
-            CGRect tempRect = [tempValue CGRectValue];
-            float tempHeight = myImage.size.height;
-            float tempWidth = myImage.size.width;
-            if (tempHeight > tempWidth) {
-                tempWidth = tempWidth / tempHeight * (1100 *factor);
-                tempHeight = 1100 *factor;
-            }
-            else {
-                tempHeight = tempHeight / tempWidth * (1100 *factor);
-                tempWidth = 1100 *factor;
-            }
-            
-            NSData *imageData = UIImageJPEGRepresentation(myImage, 0.75);
-            myImage = [UIImage imageWithData:imageData];
-            tempRect = CGRectMake(tempRect.origin.x, tempRect.origin.y, tempWidth, tempHeight);
-            
-            [myImage drawInRect:tempRect];
-            myImage = nil;
-            //CGImageRelease(imageRef);
-            
-        }
-    }
-    
-    [self loadImage:urls withPDFContent:pdfContext andURLIndex:(index+1) andRects:rectArray andRoomIndex:roomIndex];
-    
-}   
 
 -(UIImage *) loadImage:(NSString *)fileName ofType:(NSString *)extension inDirectory:(NSString *)directoryPath {
     
