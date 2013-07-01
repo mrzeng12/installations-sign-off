@@ -9,15 +9,10 @@
 #import "RoomCell.h"
 
 @implementation RoomCell
-@synthesize roomNumber;
-@synthesize roomFloorNumber;
-@synthesize roomGradeNumber;
-@synthesize roomNotes;
+
 @synthesize roomNumber1;
 @synthesize roomNumber2;
 @synthesize roomNumber3;
-@synthesize roomNumber4;
-@synthesize roomNumber5;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

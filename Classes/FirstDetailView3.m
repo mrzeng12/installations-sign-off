@@ -346,7 +346,7 @@
     if (sender.tag == 1) {
         UIActionSheet *actionSheet = [[UIActionSheet alloc]
                                       initWithTitle:nil
-                                      delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Installation", @"Uninstall", nil];
+                                      delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Installation", @"Uninstall", @"Reinstall", @"Uninstall / Reinstall", @"Field Service", nil];
         actionSheet.tag = 1;
         [actionSheet showFromRect:self.typeofworkBtn.frame inView:self.scrollView animated:YES];
     }
@@ -408,6 +408,15 @@
         }
         if (buttonIndex == 1) {
             database.current_type_of_work = self.typeofworkOutlet.text = @"Uninstall";
+        }
+        if (buttonIndex == 2) {
+            database.current_type_of_work = self.typeofworkOutlet.text = @"Reinstall";
+        }
+        if (buttonIndex == 3) {
+            database.current_type_of_work = self.typeofworkOutlet.text = @"Uninstall / Reinstall";
+        }
+        if (buttonIndex == 4) {
+            database.current_type_of_work = self.typeofworkOutlet.text = @"Field Service";
         }
     }
     if (actionSheet.tag == 2) {

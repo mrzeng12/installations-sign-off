@@ -122,8 +122,15 @@
     NSData *data = [database.current_serial_no dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
-    if ([database.current_installer length] > 0 && [database.current_status length]> 0 && [dictArray count] >0) {
+    int sb_flag = 0;
+    int pj_flag = 0;
+    int sk_flag = 0;
+    for (NSMutableDictionary *dict in dictArray) {
+        if([[dict objectForKey:@"type"] isEqualToString:@"SB"]) sb_flag = 1;
+        if([[dict objectForKey:@"type"] isEqualToString:@"PJ"]) pj_flag = 1;
+        if([[dict objectForKey:@"type"] isEqualToString:@"SK"]) sk_flag = 1;
+    }
+    if ([database.current_installer length] > 0 && [database.current_status length]> 0 && sb_flag == 1 && pj_flag == 1 && sk_flag == 1) {
         NSMutableDictionary *myDict = [[NSMutableDictionary alloc] init];
               
         [database.menu_complete replaceObjectAtIndex:2 withObject:@"Complete"];

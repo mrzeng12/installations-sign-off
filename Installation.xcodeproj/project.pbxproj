@@ -39,6 +39,8 @@
 		B24AB41516FD596B0017B00E /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = B24AB40E16FD596B0017B00E /* zip.c */; };
 		B24AB41616FD596B0017B00E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = B24AB41116FD596B0017B00E /* ZipArchive.mm */; };
 		B24AB41816FF5DAB0017B00E /* speedtest.png in Resources */ = {isa = PBXBuildFile; fileRef = B24AB41716FF5DAB0017B00E /* speedtest.png */; };
+		B24D2FC91781C9110018DBB9 /* box.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FC81781C9110018DBB9 /* box.jpg */; };
+		B24D2FCB1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */; };
 		B2677D851709B99500C4156C /* NewActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B2677D841709B99500C4156C /* NewActivityCell.m */; };
 		B2677D871709B9C200C4156C /* NewActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2677D861709B9C200C4156C /* NewActivityCell.xib */; };
 		B28F583C16DC0AF500FCF620 /* SavedActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */; };
@@ -228,6 +230,8 @@
 		B24AB41016FD596B0017B00E /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		B24AB41116FD596B0017B00E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		B24AB41716FF5DAB0017B00E /* speedtest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speedtest.png; sourceTree = "<group>"; };
+		B24D2FC81781C9110018DBB9 /* box.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = box.jpg; sourceTree = "<group>"; };
+		B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-6.jpg"; sourceTree = "<group>"; };
 		B2677D831709B99500C4156C /* NewActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewActivityCell.h; sourceTree = "<group>"; };
 		B2677D841709B99500C4156C /* NewActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewActivityCell.m; sourceTree = "<group>"; };
 		B2677D861709B9C200C4156C /* NewActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewActivityCell.xib; sourceTree = "<group>"; };
@@ -476,6 +480,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B24D2FC81781C9110018DBB9 /* box.jpg */,
+				B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */,
 				B201FD6817733E7D00EC2309 /* installation-reports-4.jpg */,
 				B2FF0EFC1770F4360003D95E /* installation-reports-3.jpg */,
 				B2FF0EE61770A9EF0003D95E /* installation-reports-2.jpg */,
@@ -905,6 +911,8 @@
 				B2FF0EFB1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg in Resources */,
 				B2FF0EFD1770F4360003D95E /* installation-reports-3.jpg in Resources */,
 				B201FD6917733E7D00EC2309 /* installation-reports-4.jpg in Resources */,
+				B24D2FC91781C9110018DBB9 /* box.jpg in Resources */,
+				B24D2FCB1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

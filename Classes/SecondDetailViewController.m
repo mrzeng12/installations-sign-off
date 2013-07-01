@@ -195,6 +195,7 @@ const char MyConstantKey;
     [newClassRoom addObject:@"notsync"];
     [newClassRoom addObject:@"incomplete"];
     [newClassRoom addObject:@""];
+    [newClassRoom addObject:@"Incomplete"];
     
     [database.classrooms_in_one_location addObject: newClassRoom];
     
@@ -205,6 +206,7 @@ const char MyConstantKey;
     //database.current_raceway_part_8 = @"notsync";
     database.current_raceway_part_9 = @"incomplete";
     database.current_raceway_part_10 = @"";
+    database.current_status = @"Incomplete";
         
     [self.tableviews reloadData];
     float temp_height = 316 + [tableviews contentSize].height;
@@ -255,6 +257,7 @@ const char MyConstantKey;
         //database.current_raceway_part_8 = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:4];
         database.current_raceway_part_9 = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:5];
         database.current_raceway_part_10 = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:6];
+        database.current_status = [[database.classrooms_in_one_location objectAtIndex:room_index] objectAtIndex:7];
         
         [NSThread detachNewThreadSelector:@selector(myThreadMethod:) toTarget:self withObject:nil];
         
@@ -423,6 +426,7 @@ const char MyConstantKey;
             //database.current_raceway_part_8 = nil;
             database.current_raceway_part_9 = nil;
             database.current_raceway_part_10 = nil;
+            database.current_status = nil;
             
             [self loadRoomFromDB];
         }
@@ -581,8 +585,15 @@ const char MyConstantKey;
                     }
                 }
             }
-            cell.roomNumber2.text = room_info;
-            
+            cell.roomNumber2.text = room_info;            
+            if ([[[database.classrooms_in_one_location objectAtIndex:[indexPath row]] objectAtIndex:7] isEqualToString:@"Complete"]) {
+                cell.complete2.textColor = [UIColor colorWithRed:62.0/255.0 green:166/255.0 blue:0 alpha:1];
+                cell.complete2.text = @"Complete";
+            }
+            else {
+                cell.complete2.textColor = [UIColor redColor];
+                cell.complete2.text = @"Incomplete";
+            }            
             if (![[[database.classrooms_in_one_location objectAtIndex:[indexPath row]] objectAtIndex:6] isEqualToString:@"onhold"]) {
                 //string is "ready" or ""(default), show "ready"
                 cell.readyBtn.selected = NO;
@@ -604,6 +615,14 @@ const char MyConstantKey;
                 }
             }
             cell.roomNumber3.text = room_info;
+            if ([[[database.classrooms_in_one_location objectAtIndex:[indexPath row]] objectAtIndex:7] isEqualToString:@"Complete"]) {
+                cell.complete3.textColor = [UIColor colorWithRed:62.0/255.0 green:166/255.0 blue:0 alpha:1];
+                cell.complete3.text = @"Complete";
+            }
+            else {
+                cell.complete3.textColor = [UIColor redColor];
+                cell.complete3.text = @"Incomplete";
+            }
         }
         
     }
@@ -617,6 +636,14 @@ const char MyConstantKey;
             }
         }
         cell.roomNumber1.text = room_info;
+        if ([[[database.classrooms_in_one_location objectAtIndex:[indexPath row]] objectAtIndex:7] isEqualToString:@"Complete"]) {
+            cell.complete1.textColor = [UIColor colorWithRed:62.0/255.0 green:166/255.0 blue:0 alpha:1];
+            cell.complete1.text = @"Complete";
+        }
+        else {
+            cell.complete1.textColor = [UIColor redColor];
+            cell.complete1.text = @"Incomplete";
+        }
     }
     
    /*
@@ -703,7 +730,7 @@ const char MyConstantKey;
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {
             
-            NSString *selectSQL = [NSString stringWithFormat:@"select Room_Number, Room_Floor_Number, Classroom_grade, Room_Notes, (Case When Save_time > Sync_time Then 'notsync' Else 'sync' End), Raceway_part_9, Raceway_part_10 from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", database.current_activity_no, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat:@"select Room_Number, Room_Floor_Number, Classroom_grade, Room_Notes, (Case When Save_time > Sync_time Then 'notsync' Else 'sync' End), Raceway_part_9, Raceway_part_10, Status from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", database.current_activity_no, database.current_teq_rep];
         
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -735,7 +762,9 @@ const char MyConstantKey;
                     [newClassRoom addObject:[[NSString alloc]
                                              initWithUTF8String:
                                              (const char *) sqlite3_column_text(statement, 6)]];
-
+                    [newClassRoom addObject:[[NSString alloc]
+                                             initWithUTF8String:
+                                             (const char *) sqlite3_column_text(statement, 7)]];
                     [database.classrooms_in_one_location addObject: newClassRoom];
                 } 
                 NSLog(@"loadRoomsFromDB success");

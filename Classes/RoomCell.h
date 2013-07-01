@@ -10,22 +10,21 @@
 
 @interface RoomCell : UITableViewCell
 
-@property (strong, nonatomic) IBOutlet UILabel *roomNumber;
-
-@property (strong, nonatomic) IBOutlet UILabel *roomFloorNumber;
-
-@property (strong, nonatomic) IBOutlet UILabel *roomGradeNumber;
-
-@property (strong, nonatomic) IBOutlet UILabel *roomNotes;
 
 @property (weak, nonatomic) IBOutlet UILabel *roomNumber1;
 @property (weak, nonatomic) IBOutlet UILabel *roomNumber2;
 @property (weak, nonatomic) IBOutlet UILabel *roomNumber3;
-@property (weak, nonatomic) IBOutlet UILabel *roomNumber4;
-@property (weak, nonatomic) IBOutlet UILabel *roomNumber5;
+
 
 @property (weak, nonatomic) IBOutlet UIButton *readyBtn;
 
 @property (weak, nonatomic) IBOutlet UIButton *checkmarkBtn;
+
+@property (weak, nonatomic) IBOutlet UILabel *complete1;
+
+@property (weak, nonatomic) IBOutlet UILabel *complete2;
+
+@property (weak, nonatomic) IBOutlet UILabel *complete3;
+
 
 @end
