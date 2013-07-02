@@ -258,13 +258,13 @@
 
 @property (strong, nonatomic) NSString *current_comlete_pdf_file_name;
 
-@property (strong, nonatomic) NSString *current_job_summary;
+@property (strong, nonatomic) NSString *current_job_summary;    //reserved 1
 
-@property (strong, nonatomic) NSString *current_reserved_2;
+@property (strong, nonatomic) NSString *current_address;        //reserved 2
 
-@property (strong, nonatomic) NSString *current_reserved_3;
+@property (strong, nonatomic) NSString *current_address_2;      //reserved 3
 
-@property (strong, nonatomic) NSString *current_reserved_4;
+@property (strong, nonatomic) NSString *current_van_stock;      //reserved 4
 
 @property (strong, nonatomic) NSString *current_reserved_5;
 

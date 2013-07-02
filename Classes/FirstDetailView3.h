@@ -23,8 +23,11 @@
 @property (nonatomic, strong) NSMutableArray *appointmentList;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-
 @property (strong, nonatomic) IBOutlet UITextField *schoolNameOutlet;
+
+@property (strong, nonatomic) IBOutlet UITextField *addressOutlet;
+
+@property (strong, nonatomic) IBOutlet UITextField *address2Outlet;
 
 @property (strong, nonatomic) IBOutlet UITextField *activityNoOutlet;
 
@@ -55,8 +58,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *typeofworkOutlet;
 
 
-@property (strong, nonatomic) IBOutlet UITextView *reasonForVisit;
-
 @property (strong, nonatomic) IBOutlet UITextView *jobSummary;
 
 @property (strong, nonatomic) IBOutlet UIButton *typeofworkBtn;
@@ -82,6 +83,8 @@
 - (IBAction)openPDF:(UIButton *)sender;
 
 - (IBAction)autoFill:(UIButton *)sender;
+
+- (IBAction)duplicateAddress:(id)sender;
 
 @property (strong, nonatomic) IBOutlet UIButton *pdfBtn1;
 

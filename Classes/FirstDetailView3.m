@@ -20,12 +20,13 @@
 @implementation FirstDetailView3
 
 @synthesize schoolNameOutlet;
+@synthesize addressOutlet;
+@synthesize address2Outlet;
 @synthesize activityNoOutlet;
 @synthesize dateOutlet;
 @synthesize SOOutlet;
 @synthesize primarycontactOutlet;
 @synthesize existingEquipOutlet;
-@synthesize reasonForVisit;
 @synthesize jobSummary;
 @synthesize teamOutlet;
 @synthesize districtOutlet;
@@ -72,7 +73,10 @@
     activityIndicator.hidesWhenStopped = YES;    
     
     schoolNameOutlet.delegate = self;
+    
     activityNoOutlet.delegate = self;
+    addressOutlet.delegate = self;
+    address2Outlet.delegate = self;
     dateOutlet.delegate = self;
     SOOutlet.delegate = self;
     primarycontactOutlet.delegate = self;
@@ -81,16 +85,8 @@
     jobStatusOutlet.delegate = self;
     arrivalTimeOutlet.delegate = self;
     departureTimeOutlet.delegate = self;
-    reasonForVisit.delegate = self;
     jobSummary.delegate = self;
-    
-    reasonForVisit.text = @"Please type the reason for visit...";
-    reasonForVisit.textColor = [UIColor lightGrayColor];
-    reasonForVisit.layer.borderWidth = 1;
-    reasonForVisit.layer.borderColor = [[UIColor grayColor] CGColor];
-    reasonForVisit.layer.cornerRadius = 7.0f;
-    reasonForVisit.delegate = self;
-    
+        
     jobSummary.text = @"Please type job summary here...";
     jobSummary.textColor = [UIColor lightGrayColor];
     jobSummary.layer.borderWidth = 1;
@@ -203,6 +199,12 @@
     if (sender == schoolNameOutlet) {
         database.current_location = schoolNameOutlet.text;
     }
+    if (sender == addressOutlet) {
+        database.current_address = addressOutlet.text;
+    }
+    if (sender == address2Outlet) {
+        database.current_address_2 = address2Outlet.text;
+    }
     if (sender == teamOutlet) {
         database.current_pod = teamOutlet.text;
     }
@@ -238,6 +240,10 @@
     
     database.current_location = schoolNameOutlet.text = nil;
     
+    database.current_address = addressOutlet.text = nil;
+    
+    database.current_address_2 = address2Outlet.text = nil;
+    
     database.current_pod = teamOutlet.text = nil;
     
     database.current_district = districtOutlet.text = nil;
@@ -255,9 +261,7 @@
     database.current_arrival_time = arrivalTimeOutlet.text = nil;
     
     database.current_departure_time = departureTimeOutlet.text = nil;
-    
-    database.current_reason_for_visit = reasonForVisit.text = nil;
-    
+        
     self.pdfBtn1.userInteractionEnabled = NO;
     self.pdfBtn1.alpha = 0.5;
     
@@ -359,6 +363,12 @@
     }
 }
 
+- (IBAction)duplicateAddress:(id)sender {
+    isql *database = [isql initialize];
+    address2Outlet.text = addressOutlet.text;
+    database.current_address_2 = database.current_address;
+}
+
 - (NSInteger) numberOfPreviewItemsInPreviewController: (QLPreviewController *) controller
 {
 	return 1;
@@ -447,7 +457,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Job_status], [Arrival_time], [Departure_time], [Reason_for_visit], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Job_status], [Arrival_time], [Departure_time], [Reason_for_visit], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes], [Reserved 2], [Reserved 3] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -505,18 +515,7 @@
                     
                     database.current_departure_time = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 12)]];
                     departureTimeOutlet.text = database.current_departure_time;
-                    
-                    database.current_reason_for_visit = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 13)]];
-                    reasonForVisit.text = database.current_reason_for_visit;
-                    
-                    if (reasonForVisit.text.length == 0) {
-                        reasonForVisit.textColor = [UIColor lightGrayColor];
-                        reasonForVisit.text = @"Please type the reason for visit...";
-                    }
-                    else {
-                        reasonForVisit.textColor = [UIColor blackColor];
-                    }
-                    
+                                                            
                     database.current_agreement_1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 14)]];
                     
                     database.current_agreement_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 15)]];
@@ -543,6 +542,10 @@
                     }
                     
                     database.current_customer_notes = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 22)]];
+                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 23)]];
+                    addressOutlet.text = database.current_address;
+                    database.current_address_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 24)]];
+                    address2Outlet.text = database.current_address_2;
                                         
                 } 
                 
@@ -587,7 +590,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number],  coalesce([BP_Code],''), coalesce([BP_Name],''), coalesce([District],''), coalesce([Contact_Person],''), coalesce([POD],''), coalesce([SO],''), [StartDateTime], coalesce([File1],''), coalesce([File2],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number],  coalesce([BP_Code],''), coalesce([BP_Name],''), coalesce([District],''), coalesce([Contact_Person],''), coalesce([POD],''), coalesce([SO],''), [StartDateTime], coalesce([File1],''), coalesce([File2],''), coalesce([Reserved 1],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -636,10 +639,11 @@
                     if ([database.current_pdf2 length] > 0) {
                         self.pdfBtn2.userInteractionEnabled = YES;
                         self.pdfBtn2.alpha = 1.0;
-                    }                    
-                    reasonForVisit.textColor = [UIColor lightGrayColor];
-                    reasonForVisit.text = @"Please type the reason for visit...";
+                    }
                     
+                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)]];
+                    addressOutlet.text = database.current_address;
+                                        
                     jobSummary.textColor = [UIColor lightGrayColor];
                     jobSummary.text = @"Please type job summary here...";
                 } 
@@ -704,10 +708,7 @@
 
 
 - (BOOL) textViewShouldBeginEditing: (UITextView *)textView
-{
-    if ([textView.text isEqualToString: @"Please type the reason for visit..."]) {
-        textView.text = @"";
-    }
+{    
     if ([textView.text isEqualToString: @"Please type job summary here..."]) {
         textView.text = @"";
     }    
@@ -729,13 +730,7 @@
 }
 
 -(void) textViewDidEndEditing:(UITextView *)textView
-{
-    if (textView.tag == 1) {
-        if (textView.text.length == 0) {
-            textView.textColor = [UIColor lightGrayColor];
-            textView.text = @"Please type the reason for visit...";
-        }
-    }
+{    
     if (textView.tag == 2) {
         if (textView.text.length == 0) {
             textView.textColor = [UIColor lightGrayColor];
@@ -746,12 +741,7 @@
 
 -(void) textViewDidChange:(UITextView *)textView
 {
-    isql *database = [isql initialize];
-    if (textView.tag == 1) {
-        if (![textView.text isEqualToString: @"Please type the reason for visit..."]) {
-            database.current_reason_for_visit = textView.text;
-        }
-    }
+    isql *database = [isql initialize];    
     if (textView.tag == 2) {
         if (![textView.text isEqualToString: @"Please type job summary here..."]) {
             database.current_job_summary = textView.text;

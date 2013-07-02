@@ -88,7 +88,8 @@ const char MyConstantKey;
     self.lastDate = database.current_date;
     
     [super viewWillDisappear:NO];
-    [self.view endEditing:YES];
+    //[self.view endEditing:YES];
+    [self hideKeyboard];
 }
 
 -(void) viewDidUnload {
@@ -209,7 +210,7 @@ const char MyConstantKey;
     database.current_status = @"Incomplete";
         
     [self.tableviews reloadData];
-    float temp_height = 316 + [tableviews contentSize].height;
+    float temp_height = 321 + [tableviews contentSize].height;
     
     float height = (temp_height > 615)? temp_height: 615;
     
@@ -341,8 +342,9 @@ const char MyConstantKey;
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
     [self.scrollview setFrame:CGRectMake(0, 0, 703, 356)];
-    [UIView commitAnimations];    
+    [UIView commitAnimations];
     [self.scrollview scrollRectToVisible:CGRectMake(0, 195, 703, 356) animated:YES];
+    [tableviews setFrame:CGRectMake(0, 355, 703, 20000)];
 }
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
@@ -785,7 +787,7 @@ const char MyConstantKey;
     @finally {
         sqlite3_close(db);
         [self.tableviews reloadData];        
-        float temp_height = 316 + [tableviews contentSize].height;
+        float temp_height = 321 + [tableviews contentSize].height;
         
         float height = (temp_height > 615)? temp_height: 615;
         
@@ -891,6 +893,7 @@ const char MyConstantKey;
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
     [self.scrollview setFrame:CGRectMake(0, 0, 703, 704)];
+    //[self.scrollview scrollRectToVisible:CGRectMake(0, 0, 703, 704) animated:YES];
     [UIView commitAnimations];
 }
 
