@@ -44,6 +44,8 @@
     status = [NSMutableArray array];
     serial_no = [NSMutableArray array];
     general_notes = [NSMutableArray array];
+    use_van_stock = [NSMutableArray array];
+    van_stock = [NSMutableArray array];
     
     Photo_file_directory_1 = [NSMutableArray array];
     Photo_file_directory_2 = [NSMutableArray array];
@@ -64,7 +66,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {            
             
-            NSString *selectSQL = [NSString stringWithFormat:@"select [Room_Number], [Room_Floor_Number], [Classroom_grade], [Room_Notes], [Installer], [Status], [Serial_no], [General_notes], [Photo_file_directory_1], [Photo_file_directory_2], [Photo_file_directory_3], [Photo_file_directory_4], [Photo_file_directory_5], [Photo_file_directory_6], [Photo_file_directory_7], [Photo_file_directory_8] from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", database.current_activity_no, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat:@"select [Room_Number], [Room_Floor_Number], [Classroom_grade], [Room_Notes], [Installer], [Status], [Serial_no], [General_notes], [Reserved 4], [Reserved 5], [Photo_file_directory_1], [Photo_file_directory_2], [Photo_file_directory_3], [Photo_file_directory_4], [Photo_file_directory_5], [Photo_file_directory_6], [Photo_file_directory_7], [Photo_file_directory_8] from local_dest where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' order by CASE WHEN cast(Room_Number as int) = 0 THEN 9999999999 ELSE cast(Room_Number as int) END, Room_Number;", database.current_activity_no, database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -84,6 +86,8 @@
                     [status  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
                     [serial_no  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
                     [general_notes  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
+                    [use_van_stock  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
+                    [van_stock  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
                     
                     [Photo_file_directory_1  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
                     [Photo_file_directory_2  addObject: [[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, i++)]];
@@ -154,7 +158,28 @@
 
     PDF_serial_no = serial_no;
 
-    PDF_comments = general_notes;
+    PDF_comments = [NSMutableArray array];
+    for (int i = 0; i < [general_notes count]; i++) {
+        NSMutableString *temp_comments = [NSMutableString string];
+        if ([[general_notes objectAtIndex:i] length] > 0) {
+            [temp_comments appendString:[general_notes objectAtIndex:i]];
+        }
+        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([[van_stock objectAtIndex:i] length] > 0)) {
+            if ([temp_comments length] > 0) {
+                [temp_comments appendString:@" / "];
+            }
+            [temp_comments appendString:[NSString stringWithFormat:@"Van Stock: %@", [van_stock objectAtIndex:i]]];
+        }
+        [PDF_comments addObject:temp_comments];
+    }
+    NSMutableString *string = [NSMutableString string];
+    for (int i = 0; i < [classroom_number count]; i++) {
+        
+        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([[van_stock objectAtIndex:i] length] > 0)) {
+            [string appendString:[NSString stringWithFormat:@"%@; ", [classroom_number objectAtIndex:i]]];
+        }
+    }
+    PDF_van_stock = string;
     
     PDF_photo_file_directory_1 = Photo_file_directory_1;
     
@@ -264,8 +289,13 @@
         [@"Reinstall / Uninstall" drawInRect:CGRectMake(968, 240, 296, 28) withFont:font];
         
         CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
-        font = [UIFont fontWithName:boldFont size:24.0f];
-        [database.current_location drawInRect:CGRectMake(241, 350, 473, 68) withFont:font];
+        font = [UIFont fontWithName:boldFont size:21.0f];
+        NSMutableString *nameAndAddress = [NSMutableString string];
+        if ([database.current_location length] > 0) [nameAndAddress appendString:database.current_location];
+        [nameAndAddress appendString:@"\n"];
+        if ([database.current_address length] > 0) [nameAndAddress appendString: [self conciseTextWithSpace:database.current_address]];
+        [self drawText:nameAndAddress withX:241 withY:350 andWidth:473 andFont:font andFontSize:21];
+        [self drawText:[self conciseTextWithSpace:database.current_address_2] withX:241 withY:439 andWidth:473 andFont:font andFontSize:21];
         [database.current_so drawInRect:CGRectMake(742, 350, 462, 68) withFont:font];                       
         
         font = [UIFont fontWithName:boldFont size:26.0f];
@@ -331,7 +361,7 @@
     
     // Drawing commands
     
-    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-3" ofType:@"jpg"];
+    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-6" ofType:@"jpg"];
     NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
     UIImage * logo = [UIImage imageWithData:imageData];
     [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
@@ -347,7 +377,7 @@
     [self drawText:database.current_date withX:118 withY:407 andWidth:210 andFont:font andFontSize:21];
     [self drawText:database.current_arrival_time withX:492 withY:407 andWidth:246 andFont:font andFontSize:21];
     [self drawText:database.current_departure_time withX:774 withY:407 andWidth:246 andFont:font andFontSize:21];
-    [self drawText:database.current_reason_for_visit withX:199 withY:451 andWidth:999 andFont:font andFontSize:21];
+    [self drawText:PDF_van_stock withX:160 withY:451 andWidth:1048 andFont:font andFontSize:21];
     
     [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(68, 526, 1130, 299) withFont:font];   
 
@@ -413,7 +443,7 @@
             CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
             
             // Drawing backgrounds            
-            NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-2" ofType:@"jpg"];
+            NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-8" ofType:@"jpg"];
             NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
             UIImage * logo = [UIImage imageWithData:imageData];
             [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
@@ -723,6 +753,18 @@
         }
     }
     return [array_updated componentsJoinedByString:@"; "];
+}
+
+- (NSString *)conciseTextWithSpace: (NSString *)string {
+    NSArray *array = [NSArray array];
+    array = [string componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSMutableArray *array_updated = [NSMutableArray array];
+    for (NSString *breakdown in array) {
+        if ([breakdown length] > 0) {
+            [array_updated addObject:breakdown];
+        }
+    }
+    return [array_updated componentsJoinedByString:@" "];
 }
 
 - (int)findNumberOfLines: (float)height withLineHeight: (int)lineHeight {

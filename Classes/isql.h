@@ -264,9 +264,9 @@
 
 @property (strong, nonatomic) NSString *current_address_2;      //reserved 3
 
-@property (strong, nonatomic) NSString *current_van_stock;      //reserved 4
+@property (strong, nonatomic) NSString *current_use_van_stock;  //reserved 4
 
-@property (strong, nonatomic) NSString *current_reserved_5;
+@property (strong, nonatomic) NSString *current_van_stock;      //reserved 5
 
 @property (strong, nonatomic) NSString *current_reserved_6;
 

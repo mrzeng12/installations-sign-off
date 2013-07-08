@@ -83,12 +83,32 @@
 						</object>
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 					</object>
+					<object class="IBUILabel" id="836831411">
+						<reference key="NSNextResponder" ref="191373211"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{241, 431}, {473, 68}}</string>
+						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSNextKeyView" ref="401253259"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIClipsSubviews">YES</bool>
+						<int key="IBUIContentMode">7</int>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<string key="IBUIText">Label</string>
+						<reference key="IBUITextColor" ref="287013517"/>
+						<nil key="IBUIHighlightedColor"/>
+						<int key="IBUIBaselineAdjustment">0</int>
+						<reference key="IBUIFontDescription" ref="13294766"/>
+						<reference key="IBUIFont" ref="573158743"/>
+						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
+					</object>
 					<object class="IBUILabel" id="189651058">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{742, 342}, {462, 68}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView" ref="401253259"/>
+						<reference key="NSNextKeyView" ref="836831411"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -505,7 +525,7 @@
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">installation-reports-3.jpg</string>
+							<string key="NSResourceName">installation-reports-6.jpg</string>
 						</object>
 					</object>
 					<object class="IBUILabel" id="515740140">
@@ -551,7 +571,7 @@
 					<object class="IBUILabel" id="84043995">
 						<reference key="NSNextResponder" ref="531334466"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{199, 441}, {999, 44}}</string>
+						<string key="NSFrame">{{160, 441}, {1048, 44}}</string>
 						<reference key="NSSuperview" ref="531334466"/>
 						<reference key="NSNextKeyView" ref="6562749"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -1862,6 +1882,7 @@
 							<reference ref="682446353"/>
 							<reference ref="173221944"/>
 							<reference ref="235843563"/>
+							<reference ref="836831411"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -2553,6 +2574,11 @@
 						<reference key="object" ref="100655458"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">242</int>
+						<reference key="object" ref="836831411"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -2629,6 +2655,7 @@
 				<string key="239.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="240.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="241.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="242.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="3.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="35.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -2681,7 +2708,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">241</int>
+			<int key="maxID">242</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
@@ -2691,8 +2718,8 @@
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="box.jpg">{28, 28}</string>
 			<string key="installation-reports-2.jpg">{1275, 1650}</string>
-			<string key="installation-reports-3.jpg">{1275, 1650}</string>
 			<string key="installation-reports-4.jpg">{1275, 1650}</string>
+			<string key="installation-reports-6.jpg">{1275, 1650}</string>
 			<string key="installations-signoff-cover-page-6.jpg">{1275, 1650}</string>
 			<string key="table-cell.jpg">{1152, 44}</string>
 		</dictionary>

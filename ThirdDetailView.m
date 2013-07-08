@@ -53,8 +53,14 @@
     self.SerialPJ.delegate = self;
     self.SerialSK.delegate = self;
     self.commentsOutlet.delegate = self;
+    self.vanStockInputField.delegate = self;
+    
+    self.skipSwitch = [[UICustomSwitch alloc] initWithFrame: CGRectMake(168, 704, 85, 27)];
+    [self.skipSwitch addTarget: self action: @selector(skipSwitch:) forControlEvents:UIControlEventValueChanged];
+    [self.scrollview addSubview: self.skipSwitch];
+    
     [self.scrollview setFrame:CGRectMake(0, 44, 703, 704)];
-    [self.scrollview setContentSize:CGSizeMake(703, 705)];
+    [self.scrollview setContentSize:CGSizeMake(703, 818)];
     UITapGestureRecognizer *tapGesture =
     [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
@@ -297,6 +303,11 @@
     [actionSheet showFromRect:sender.frame inView:self.scrollview animated:YES];
 }
 
+- (IBAction)vanStockChanged:(id)sender {
+    isql *database = [isql initialize];
+    database.current_van_stock = self.vanStockInputField.text;
+}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == -1) {
@@ -383,8 +394,11 @@
     [self.addBtn setFrame:CGRectMake(165, lastInputY + 115, 29, 29)];
     [self.addBtnDesc setFrame:CGRectMake(199, lastInputY + 118, 191, 21)];
     [self.commentsTag setFrame:CGRectMake(65, lastInputY + 177, 89, 21)];
-    [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 177, 383, 248)];    
-    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 462)];
+    [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 177, 383, 248)];
+    [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 464, 89, 21)];
+    [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 464, 85, 27)];
+    [self.vanStockInputField setFrame:CGRectMake(168, lastInputY + 510, 383, 30)];
+    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 565)];
     
     addBtnCount++;
     lastInputY += 65;
@@ -437,8 +451,21 @@
     [self.addBtnDesc setFrame:CGRectMake(199, lastInputY + 53, 191, 21)];
     [self.commentsTag setFrame:CGRectMake(65, lastInputY + 112, 89, 21)];
     [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 112, 383, 248)];
-    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 397)];
+    [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 399, 89, 21)];
+    [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 399, 85, 27)];
+    [self.vanStockInputField setFrame:CGRectMake(168, lastInputY + 445, 383, 30)];
+    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 500)];
 }
-
+- (IBAction)skipSwitch:(UISwitch *)sender {
+    isql *database = [isql initialize];
+    if (sender.on == YES) {
+        self.vanStockInputField.hidden = NO;
+        database.current_use_van_stock = @"Yes";
+    }
+    else {
+        self.vanStockInputField.hidden = YES;
+        database.current_use_van_stock = @"No";
+    }
+}
 
 @end

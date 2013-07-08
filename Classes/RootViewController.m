@@ -1226,7 +1226,16 @@
         tempDetailViewController.installers.text = database.current_installer;
         tempDetailViewController.statusOutlet.text = database.current_status;
         tempDetailViewController.commentsOutlet.text = database.current_general_notes;        
-        
+        if ([database.current_use_van_stock isEqualToString:@"Yes"])
+        {
+            tempDetailViewController.skipSwitch.on = YES;
+            tempDetailViewController.vanStockInputField.hidden = NO;
+        }
+        else {
+            tempDetailViewController.skipSwitch.on = NO;
+            tempDetailViewController.vanStockInputField.hidden = YES;
+        }
+        tempDetailViewController.vanStockInputField.text = database.current_van_stock;
     }
     
     {

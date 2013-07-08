@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-#define testing
+//#define testing
 
 @implementation isql
 
@@ -488,6 +488,8 @@ static SqlClient *client = nil;
     NSString *statusString = [Rowofdict objectForKey:@"Status"];
     NSString *serialNoString = [Rowofdict objectForKey:@"Serial_no"];
     NSString *notesString = [Rowofdict objectForKey:@"General_notes"];
+    NSString *useVanStockString = [Rowofdict objectForKey:@"Reserved 4"];
+    NSString *VanStockString = [Rowofdict objectForKey:@"Reserved 5"];
     
     NSData *data = [serialNoString dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
@@ -500,6 +502,8 @@ static SqlClient *client = nil;
         [oneItem setObject:[dict objectForKey:@"type"] forKey:@"itemtype"];
         [oneItem setObject:[dict objectForKey:@"serial"] forKey:@"serialnumber"];
         [oneItem setObject:notesString forKey:@"notes"];
+        [oneItem setObject:useVanStockString forKey:@"usevanstock"];
+        [oneItem setObject:VanStockString forKey:@"vanstock"];
         [items addObject:oneItem];
     }    
       
@@ -531,16 +535,20 @@ static SqlClient *client = nil;
         NSString *itemtypeCol = [oneItem objectForKey:@"itemtype"];
         NSString *serialnumberCol = [oneItem objectForKey:@"serialnumber"];
         NSString *notesCol = [oneItem objectForKey:@"notes"];
+        NSString *usevanstockCol = [oneItem objectForKey:@"usevanstock"];
+        NSString *vanstockCol = [oneItem objectForKey:@"vanstock"];
         
         installCol = [self escapeString:installCol];
         statusCol = [self escapeString:statusCol];
         itemtypeCol = [self escapeString:itemtypeCol];
         serialnumberCol = [self escapeString:serialnumberCol];
         notesCol = [self escapeString:notesCol];
+        usevanstockCol = [self escapeString:usevanstockCol];
+        vanstockCol = [self escapeString:vanstockCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [UseVanStock], [VanStock], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, usevanstockCol, vanstockCol, todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [UseVanStock], [VanStock], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, usevanstockCol, vanstockCol, todayString]];
 #endif
        
     }
@@ -646,14 +654,14 @@ static SqlClient *client = nil;
 #ifdef testing
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [VanStock], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #else
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [VanStock], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime],  [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
                       [self escapeString: [dict objectForKey:@"Activity_no"]],
                       [self escapeString: [dict objectForKey:@"Teq_rep"]],
                       [self escapeString: [dict objectForKey:@"Bp_code"]],
@@ -672,7 +680,6 @@ static SqlClient *client = nil;
                       [self escapeString: [dict objectForKey:@"Job_status"]],
                       [self escapeString: [dict objectForKey:@"Arrival_time"]],
                       [self escapeString: [dict objectForKey:@"Departure_time"]],
-                      [self escapeString: [dict objectForKey:@"Reserved 4"]],
                       [self escapeString: [dict objectForKey:@"Reserved 1"]],
                       [self escapeString: [dict objectForKey:@"Customer_notes"]],
                       [self escapeString: [dict objectForKey:@"Comlete_PDF_file_name"]],

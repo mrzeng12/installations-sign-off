@@ -25,6 +25,8 @@
     NSMutableArray *status;
     NSMutableArray *serial_no;
     NSMutableArray *general_notes;
+    NSMutableArray *use_van_stock;
+    NSMutableArray *van_stock;
     
     NSMutableArray *Photo_file_directory_1;
     NSMutableArray *Photo_file_directory_2;
@@ -41,6 +43,7 @@
     NSMutableArray *PDF_status_installer;
     NSMutableArray *PDF_serial_no;
     NSMutableArray *PDF_comments;
+    NSMutableString *PDF_van_stock;
     
     NSMutableArray *PDF_photo_file_directory_1;
     NSMutableArray *PDF_photo_file_directory_2;

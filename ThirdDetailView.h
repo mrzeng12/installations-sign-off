@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "UICustomSwitch.h"
 
 
 @interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>{
@@ -34,8 +34,14 @@
 @property (strong, nonatomic) IBOutlet UILabel *commentsTag;
 @property (strong, nonatomic) IBOutlet UITextView *commentsOutlet;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollview;
+@property (strong, nonatomic) UICustomSwitch *skipSwitch;
+@property (strong, nonatomic) IBOutlet UILabel *vanStockOutlet;
+@property (strong, nonatomic) IBOutlet UITextField *vanStockInputField;
+
 - (IBAction)addSerial:(id)sender;
 - (IBAction)autoFill:(UIButton *)sender;
+- (IBAction)vanStockChanged:(id)sender;
+
 -(void)checkComplete;
 
 @end
