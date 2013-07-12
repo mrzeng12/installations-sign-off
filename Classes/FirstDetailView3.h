@@ -86,6 +86,10 @@
 
 - (IBAction)duplicateAddress:(id)sender;
 
+@property (strong, nonatomic) IBOutlet UILabel *address2Label;
+
+@property (strong, nonatomic) IBOutlet UIButton *duplicateAddress;
+
 @property (strong, nonatomic) IBOutlet UIButton *pdfBtn1;
 
 @property (strong, nonatomic) IBOutlet UIButton *pdfBtn2;

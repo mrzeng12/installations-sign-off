@@ -259,7 +259,7 @@ static SqlClient *client = nil;
                 sqlite3_close(masterDB);
                 NSLog(@"remoteSrcToLocalSrc complete");
                                
-                [self remoteUserToLocalUser];
+                [self remoteInstallerToLocalInstaller];
             }
             
         }else{
@@ -273,6 +273,169 @@ static SqlClient *client = nil;
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
             NSLog(@"%@", query.errorText);
+        }
+    }];
+    
+}
+
+- (void) remoteInstallerToLocalInstaller {
+    
+    [self copyDatabaseIfNeeded];
+    
+    isql *database = [isql initialize];
+    
+    SqlClient *client =[database databaseConnect];
+    
+    NSMutableString* queryString = [NSMutableString string];
+    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Name] from [Install].[dbo].[Installers]"]];
+    
+    [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
+        //[activityIndicator stopAnimating];
+        
+        if(query.succeeded){
+            
+            srcDBArray = [NSMutableArray arrayWithObjects: nil];
+            SqlResultSet *resultSet = [query.resultSets objectAtIndex:0];
+            int row_number = 0;
+            while([resultSet moveNext]) {
+                NSMutableArray *srcDBRow = [NSMutableArray arrayWithObjects: nil];
+                for(int i=0; i<resultSet.fieldCount; i++){
+                    [srcDBRow addObject: [resultSet getData:i]];
+                }
+                [srcDBArray addObject: srcDBRow];
+                row_number++;
+            }
+            
+            //sqlite3 *db;
+            //sqlite3_stmt    *statement;
+            sqlite3 *masterDB;
+            
+            @try {
+                
+                
+                sqlite3_stmt *init_statement = nil;
+                const char *dbpath = [self.dbpathString UTF8String];
+                
+                if (sqlite3_open(dbpath, &masterDB) == SQLITE_OK)
+                    
+                {
+                    NSString* statement;
+                    
+                    statement = @"BEGIN EXCLUSIVE TRANSACTION";
+                    
+                    if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &init_statement, NULL) != SQLITE_OK) {
+                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                        [NSException raise:@"init_statement wrong" format:@"init_statement wrong"];
+                        //return NO;
+                    }
+                    
+                    if (sqlite3_step(init_statement) != SQLITE_DONE) {
+                        sqlite3_finalize(init_statement);
+                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                        [NSException raise:@"init_statement wrong" format:@"init_statement wrong"];
+                        //return NO;
+                    }
+                    
+                    statement = @"delete from local_installers";
+                    sqlite3_stmt *delete_statement;
+                    
+                    if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &delete_statement, NULL) != SQLITE_OK) {
+                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                        [NSException raise:@"delete_statement wrong" format:@"delete_statement wrong"];
+                        //return NO;
+                    }
+                    if (sqlite3_step(delete_statement) != SQLITE_DONE) {
+                        sqlite3_finalize(delete_statement);
+                        printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                        [NSException raise:@"delete_statement wrong" format:@"delete_statement wrong"];
+                        //return NO;
+                    }
+                    
+                    NSTimeInterval timestampB = [[NSDate date] timeIntervalSince1970];
+                    
+                    //statement = @"insert into table(id, name) values(?,?)";
+                    statement = @"INSERT INTO local_installers ([Name]) VALUES (?);";
+                    sqlite3_stmt *compiledStatement;
+                    
+                    if(sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &compiledStatement, NULL) == SQLITE_OK)
+                    {
+                        for(int i = 0; i < [srcDBArray count]; i++){
+                            NSMutableArray *stringArray = [NSMutableArray array];
+                            
+                            for (int j = 0; j < 1; j++) {
+                                NSString *tempString = [NSString stringWithFormat:@"%@", [[srcDBArray objectAtIndex:i] objectAtIndex:j] ] ;
+                                tempString = [tempString stringByReplacingOccurrencesOfString:@"'" withString:@""];
+                                [stringArray addObject: tempString];
+                                
+                            }
+                            for (int j = 0; j < 1; j++) {
+                                NSString *tempString = ([[srcDBArray objectAtIndex:i] objectAtIndex:j] != [NSNull null])?[stringArray objectAtIndex:j]:@"";
+                                sqlite3_bind_text(compiledStatement, j+1, [tempString UTF8String], -1, SQLITE_TRANSIENT);
+                            }
+                            //sqlite3_bind_int(compiledStatement, 1, i );
+                            //sqlite3_bind_text(compiledStatement, 2, [objName UTF8String], -1, SQLITE_TRANSIENT);
+                            while(YES){
+                                NSInteger result = sqlite3_step(compiledStatement);
+                                if(result == SQLITE_DONE){
+                                    break;
+                                }
+                                else if(result != SQLITE_BUSY){
+                                    printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                                    break;
+                                }
+                            }
+                            sqlite3_reset(compiledStatement);
+                            
+                        }
+                        timestampB = [[NSDate date] timeIntervalSince1970] - timestampB;
+                        NSLog(@"Installer Insert Time Taken: %f",timestampB);
+                        
+                        // COMMIT
+                        statement = @"COMMIT TRANSACTION";
+                        sqlite3_stmt *commitStatement;
+                        if (sqlite3_prepare_v2(masterDB, [statement UTF8String], -1, &commitStatement, NULL) != SQLITE_OK) {
+                            printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                            [NSException raise:@"commitStatement wrong" format:@"commitStatement wrong"];
+                            //return NO;
+                        }
+                        if (sqlite3_step(commitStatement) != SQLITE_DONE) {
+                            printf("db error: %s\n", sqlite3_errmsg(masterDB));
+                            [NSException raise:@"commitStatement wrong" format:@"commitStatement wrong"];
+                            //return NO;
+                        }
+                        
+                        //     sqlite3_finalize(beginStatement);
+                        sqlite3_finalize(compiledStatement);
+                        sqlite3_finalize(commitStatement);
+                        //return YES;
+                    }
+                    
+                    //return YES;
+                }
+                
+            }
+            @catch (NSException *exception) {
+                NSLog(@"%@", exception);
+            }
+            @finally {
+                sqlite3_close(masterDB);
+                NSLog(@"remoteInstallerToLocalInstaller complete");
+                
+                [self remoteUserToLocalUser];
+            }
+            
+            
+        }else{
+            NSLog(@"no network -- remoteInstallerToLocalInstaller fail");
+            
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:nil message:@"Could not connect to the server. Working offline" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [message show];
+            
+            NSLog(@"%@", query.errorText);
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"EnableLogin" object:self userInfo:nil];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
         }
     }];
     
@@ -654,14 +817,14 @@ static SqlClient *client = nil;
 #ifdef testing
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #else
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [JobStatus], [ArrivalTime], [DepartureTime],  [JobSummary], [CustomerNotes], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
                       [self escapeString: [dict objectForKey:@"Activity_no"]],
                       [self escapeString: [dict objectForKey:@"Teq_rep"]],
                       [self escapeString: [dict objectForKey:@"Bp_code"]],
@@ -677,11 +840,13 @@ static SqlClient *client = nil;
                       [self escapeString: [dict objectForKey:@"File1"]],
                       [self escapeString: [dict objectForKey:@"File2"]],
                       [self escapeString: [dict objectForKey:@"Type_of_work"]],
-                      [self escapeString: [dict objectForKey:@"Job_status"]],
                       [self escapeString: [dict objectForKey:@"Arrival_time"]],
                       [self escapeString: [dict objectForKey:@"Departure_time"]],
                       [self escapeString: [dict objectForKey:@"Reserved 1"]],
+                      [self escapeString: [dict objectForKey:@"Reserved 6"]],
+                      [self escapeString: [dict objectForKey:@"Print_name_1"]],
                       [self escapeString: [dict objectForKey:@"Customer_notes"]],
+                      [self escapeString: [dict objectForKey:@"Print_name_3"]],
                       [self escapeString: [dict objectForKey:@"Comlete_PDF_file_name"]],
                        todayString ];
     
@@ -712,8 +877,57 @@ static SqlClient *client = nil;
     
 }
 
+- (void) checkSignature {
+    sqlite3 *db;
+    sqlite3_stmt    *statement;
+    NSMutableString *tempString = [NSMutableString string];
+    @try {
+        
+        const char *dbpath = [self.dbpathString UTF8String];
+        
+        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+        {
+            //it does not sync as long as one of the rooms is not complete
+            NSString *selectSQL = [NSString stringWithFormat:@"SELECT DISTINCT activity_no FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND (Arrival_time = '' OR Departure_time = '' OR Signature_file_directory_3 = '' OR (Signature_file_directory_1 = '' AND [Reserved 6] = 'Yes')) ORDER BY activity_no"];
+            
+            const char *select_stmt = [selectSQL UTF8String];
+            
+            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                //NSLog(@"%@", selectSQL);
+                
+                while (sqlite3_step(statement) == SQLITE_ROW)
+                {
+                    NSString *activity = [NSString stringWithFormat:@"%@, ",[[NSString alloc] initWithUTF8String: (const char *) sqlite3_column_text(statement, 0)]];
+                    [tempString appendString:activity];
+                }                
+                sqlite3_finalize(statement);
+            }
+            else {
+                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));                
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));        
+    }
+    @finally {
+        sqlite3_close(db);
+        if ([tempString length] > 0) {
+            //some activities missing data, alert, then upload
+            NSString *string = [NSString stringWithFormat:@"The following activities are missing \"Arrival Time\", \"Departure Time\" or \"Customer Signature\" or \"Technician Signature\": %@", tempString];
+            string = [string substringToIndex:[string length] - 2];
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:nil message: string delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [message setTag:0];
+            [message show];
+        }
+        else {
+            //no activities missing data, go directly to upload
+            [self localDestToRemoteDest];
+        }
+    }
+}
+
 - (void) localDestToRemoteDest {
-    
     
     NSMutableArray *tempArray = [NSMutableArray array];
     NSMutableArray *tempArrayDict = [NSMutableArray array];
@@ -726,10 +940,12 @@ static SqlClient *client = nil;
         const char *dbpath = [self.dbpathString UTF8String];
         
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {	
+        {
+            //it does not sync as long as one of the rooms is not complete
+            NSString *selectSQL = [NSString stringWithFormat:@"SELECT * FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND [Raceway_part_9] = 'complete' AND [Raceway_part_10] != 'onhold' AND Arrival_time != '' AND Departure_time != '' AND Signature_file_directory_3 != '' AND (Signature_file_directory_1 != '' OR [Reserved 6] != 'Yes') AND [Activity_no] NOT IN (SELECT [Activity_no] FROM local_dest WHERE [Raceway_part_9] != 'complete');"];
             
-            //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest order by rowid desc limit 1,1"];
-            NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where (sync_time = '' or save_time > sync_time) and [Raceway_part_9] = 'complete' and [Raceway_part_10] != 'onhold';"];
+            //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where (sync_time = '' or save_time > sync_time) and [Raceway_part_9] = 'complete' and [Raceway_part_10] != 'onhold';"];
+            //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where (sync_time = '' or save_time > sync_time) and [Raceway_part_10] != 'onhold';"];
             const char *select_stmt = [selectSQL UTF8String];
             
             if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
@@ -1121,11 +1337,12 @@ static SqlClient *client = nil;
     if ([returnString isEqualToString:@"Success"]) {
         if (speed > 10) {
             //fast enough
-            [self localDestToRemoteDest];
+            [self checkSignature];
         }
         else {
             //alert and give options
             UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Your internet seems to be slow. Are you sure to sync now?" message: nil delegate:self cancelButtonTitle:@"Sync now" otherButtonTitles: @"Sync later", nil];
+            [message setTag:1];
             [message show];
         }
     }
@@ -1144,16 +1361,23 @@ static SqlClient *client = nil;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     //detect slow internet. buttonIndex = 0 means continue to sync, buttonIndex = 1 means stop.
-    if (buttonIndex == 0) {
-        [self localDestToRemoteDest];
+    if (alertView.tag == 0) {
+        if (buttonIndex == 0) {
+            [self localDestToRemoteDest];
+        }
     }
-    else {
-        [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
-    }
+    if (alertView.tag == 1) {
+        if (buttonIndex == 0) {
+            [self checkSignature];
+        }
+        else {
+            [[LGViewHUD defaultHUD] hideWithAnimation:HUDAnimationHideFadeOut];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"RefreshRoomList" object:self userInfo:nil];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"LoadFirstPageAfterSync" object:self userInfo:nil];
+        }
+    }    
 }
 
 - (BOOL) checkIfFileUploaded : (NSString *) filename withDateTime : (NSString *) saveDateTime {
@@ -1612,7 +1836,7 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
@@ -1662,6 +1886,8 @@ static SqlClient *client = nil;
      (database.current_address==nil)?@"":[database.current_address stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_address_2==nil)?@"":[database.current_address_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      [formatter stringFromDate: today],
           
@@ -1718,7 +1944,9 @@ static SqlClient *client = nil;
      
      (database.current_address==nil)?@"":[database.current_address stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_address_2==nil)?@"":[database.current_address_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_address_2==nil)?@"":[database.current_address_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      ];
     
     
@@ -1776,6 +2004,10 @@ static SqlClient *client = nil;
     database.current_serial_no = nil;
     
     database.current_general_notes = nil;
+    
+    database.current_use_van_stock = nil;
+    
+    database.current_van_stock = nil;
             
     database.current_photo_file_directory_1 = nil;
     

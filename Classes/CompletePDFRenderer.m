@@ -172,14 +172,37 @@
         }
         [PDF_comments addObject:temp_comments];
     }
-    NSMutableString *string = [NSMutableString string];
+    NSMutableString *van_stock_string = [NSMutableString string];
     for (int i = 0; i < [classroom_number count]; i++) {
         
         if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([[van_stock objectAtIndex:i] length] > 0)) {
-            [string appendString:[NSString stringWithFormat:@"%@; ", [classroom_number objectAtIndex:i]]];
+            [van_stock_string appendString:[NSString stringWithFormat:@"%@, ", [classroom_number objectAtIndex:i]]];
         }
     }
-    PDF_van_stock = string;
+    PDF_van_stock = van_stock_string;
+    if ([PDF_van_stock length] > 0) {
+        PDF_van_stock = [PDF_van_stock substringToIndex:[PDF_van_stock length] - 2];
+    }    
+    
+    NSMutableString *status_string = [NSMutableString string];
+    NSString *status_flag = @"n/a";
+    for (int i = 0; i < [classroom_number count]; i++) {
+        
+        if ((![[status objectAtIndex:i] isEqualToString:@"Complete"])||([status_flag isEqualToString:@"n/a"] )) {            
+            status_flag = [status objectAtIndex:i];
+        }
+        if (![[status objectAtIndex:i] isEqualToString:@"Complete"]) {
+            [status_string appendString:[NSString stringWithFormat:@"%@, ", [classroom_number objectAtIndex:i]]];
+        }
+    }
+    if ([status_flag isEqualToString:@"Complete"]) {
+        PDF_job_status = [NSString stringWithFormat:@"Complete"];
+    }
+    else {
+        PDF_job_status = [NSString stringWithFormat:@"Incomplete Room(s): %@", status_string];        
+        PDF_job_status = [PDF_job_status substringToIndex:[PDF_job_status length] - 2];
+    }
+    
     
     PDF_photo_file_directory_1 = Photo_file_directory_1;
     
@@ -373,7 +396,7 @@
     [self drawText:database.current_district withX:134 withY:297 andWidth:472 andFont:font andFontSize:21];
     [self drawText:database.current_so withX:670 withY:297 andWidth:146 andFont:font andFontSize:21];
     [self drawText:database.current_primary_contact withX:907 withY:297 andWidth:291 andFont:font andFontSize:21];
-    [self drawText:database.current_job_status withX:160 withY:341 andWidth:1039 andFont:font andFontSize:21];
+    [self drawText:PDF_job_status withX:160 withY:341 andWidth:1039 andFont:font andFontSize:21];
     [self drawText:database.current_date withX:118 withY:407 andWidth:210 andFont:font andFontSize:21];
     [self drawText:database.current_arrival_time withX:492 withY:407 andWidth:246 andFont:font andFontSize:21];
     [self drawText:database.current_departure_time withX:774 withY:407 andWidth:246 andFont:font andFontSize:21];

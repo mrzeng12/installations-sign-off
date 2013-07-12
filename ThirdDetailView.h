@@ -36,12 +36,14 @@
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollview;
 @property (strong, nonatomic) UICustomSwitch *skipSwitch;
 @property (strong, nonatomic) IBOutlet UILabel *vanStockOutlet;
-@property (strong, nonatomic) IBOutlet UITextField *vanStockInputField;
+@property (strong, nonatomic) UIActionSheet *installerActionSheet;
+@property (nonatomic, strong) NSMutableArray *installersList;
+@property (strong, nonatomic) IBOutlet UIButton *editVanStock;
 
 - (IBAction)addSerial:(id)sender;
 - (IBAction)autoFill:(UIButton *)sender;
-- (IBAction)vanStockChanged:(id)sender;
-
+- (IBAction)pullInstallers:(UIButton *)sender;
+- (IBAction)editVanStock:(id)sender;
 -(void)checkComplete;
 
 @end

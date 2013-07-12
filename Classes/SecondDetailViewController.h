@@ -45,6 +45,12 @@ extern const char MyConstantKey;
 
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
+@property (strong, nonatomic) IBOutlet UILabel *titleRoom;
+@property (strong, nonatomic) IBOutlet UILabel *titleInstallation;
+@property (strong, nonatomic) IBOutlet UILabel *titleReport;
+@property (strong, nonatomic) IBOutlet UILabel *titleSync;
+
+
 - (IBAction)addRoom;
 
 - (IBAction)loadRoom;

@@ -9,8 +9,11 @@
 #import "ThirdDetailView.h"
 #import <QuartzCore/QuartzCore.h>
 #import "isql.h"
+#import "sqlite3.h"
 
 @implementation ThirdDetailView
+@synthesize installerActionSheet;
+@synthesize installersList;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,11 +42,12 @@
     lastInputY = 308;
     addBtnCount = 0;
     addBtnArray = [NSMutableArray array];
+    [self loadInstallerList];
     
     self.commentsOutlet.layer.borderWidth = 1;
     self.commentsOutlet.layer.borderColor = [[UIColor grayColor] CGColor];
     self.commentsOutlet.layer.cornerRadius = 7.0f;
-    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(restoreView) name:UIKeyboardWillHideNotification object:nil];
     self.gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     self.gestureRecognizer.cancelsTouchesInView = NO;
     self.gestureRecognizer.delegate = self;
@@ -53,7 +57,7 @@
     self.SerialPJ.delegate = self;
     self.SerialSK.delegate = self;
     self.commentsOutlet.delegate = self;
-    self.vanStockInputField.delegate = self;
+    self.statusOutlet.textColor = [UIColor grayColor];
     
     self.skipSwitch = [[UICustomSwitch alloc] initWithFrame: CGRectMake(168, 704, 85, 27)];
     [self.skipSwitch addTarget: self action: @selector(skipSwitch:) forControlEvents:UIControlEventValueChanged];
@@ -153,6 +157,67 @@
     }
 }
 
+- (void) loadInstallerList {
+    isql *database = [isql initialize];
+    installersList = [NSMutableArray arrayWithObjects: nil];
+    sqlite3 *db;
+    sqlite3_stmt    *statement;
+    
+    @try {
+        
+        const char *dbpath = [database.dbpathString UTF8String];
+        
+        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+        {
+            
+            NSString *selectSQL = [NSString stringWithFormat:@"select Name from local_installers order by Name"];
+            
+            const char *select_stmt = [selectSQL UTF8String];
+            
+            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                
+                
+                while (sqlite3_step(statement) == SQLITE_ROW)
+                {
+                    [installersList addObject:[[NSString alloc]
+                                                initWithUTF8String:
+                                                (const char *) sqlite3_column_text(statement, 0)]];
+                    /*NSLog(@"%@",[[NSString alloc]
+                                 initWithUTF8String:
+                                 (const char *) sqlite3_column_text(statement, 0)]);*/
+                }
+                NSLog(@"loadCustomText success");
+                
+                sqlite3_finalize(statement);
+            }
+            else {
+                NSLog(@"prepare db statement for loadCustomText failed: %s", sqlite3_errmsg(db));
+                
+            }
+        }
+        
+        
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        sqlite3_close(db);
+    }
+}
+
+- (IBAction)pullInstallers:(UIButton *)sender {
+    
+    installerActionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: nil];
+    for (NSString *btnName in installersList) {
+        [installerActionSheet addButtonWithTitle:btnName];
+    }
+    [installerActionSheet addButtonWithTitle:@""];
+    [installerActionSheet setTag:3];
+    [installerActionSheet showInView:self.scrollview];
+    
+}
+
 - (IBAction)installersChanged:(id)sender {
     isql *database = [isql initialize];
     database.current_installer = self.installers.text;
@@ -170,11 +235,15 @@
     [self checkComplete];
 }
 
+- (IBAction)editVanStock:(id)sender {
+    
+}
+
 - (void)saveSerialNumber {
     isql *database = [isql initialize];
     NSMutableArray *temp_serial_no = [NSMutableArray array];
     if ([self.SerialSB.text length] > 0) {
-        NSMutableDictionary *output = [NSMutableDictionary dictionary];
+        NSMutableDictionary *output = [NSMutableDictionary dictionary]; 
         [output setObject:@"SB" forKey:@"type"];
         [output setObject:self.SerialSB.text forKey:@"serial"];
         [temp_serial_no addObject:output];
@@ -271,10 +340,15 @@
 }
 
 - (void) hideKeyboard {
+    NSLog(@"hide keyboard");
     [self.view endEditing:YES];
-    self.gestureRecognizer.cancelsTouchesInView = YES;    
+}
+
+- (void) restoreView {
+    NSLog(@"restore view");
+    self.gestureRecognizer.cancelsTouchesInView = YES;
     const float movementDuration = 0.3f; // tweak as needed
-        
+    
     [UIView beginAnimations: @"anim" context: nil];
     [UIView setAnimationBeginsFromCurrentState: YES];
     [UIView setAnimationDuration: movementDuration];
@@ -282,7 +356,6 @@
     [UIView setAnimationDidStopSelector:@selector(enableSelection:finished:context:)];
     [self.scrollview setFrame:CGRectMake(0, 0, 703, 704)];
     [UIView commitAnimations];
-    
 }
 
 - (void)enableSelection:(NSString *)animationID finished:(BOOL)finished context:(void *)context
@@ -302,12 +375,12 @@
     [actionSheet setTag:sender.tag];
     [actionSheet showFromRect:sender.frame inView:self.scrollview animated:YES];
 }
-
+/*
 - (IBAction)vanStockChanged:(id)sender {
     isql *database = [isql initialize];
     database.current_van_stock = self.vanStockInputField.text;
 }
-
+*/
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == -1) {
@@ -347,6 +420,19 @@
         database.current_status = self.statusOutlet.text;
         [self checkComplete];
     }
+    if (actionSheet.tag == 3) {
+        if (buttonIndex < [installersList count]) {
+            if ([self.installers.text length] == 0) {
+                self.installers.text = [installersList objectAtIndex:buttonIndex];
+            }
+            else {
+                self.installers.text = [NSString stringWithFormat:@"%@; %@", self.installers.text, [installersList objectAtIndex:buttonIndex]];
+            }
+        }
+        isql *database = [isql initialize];
+        database.current_installer = self.installers.text;
+        [self checkComplete];
+    }
 }
 
 - (void)createButton: (NSString *) text andAutoFill: (NSString *) serial {
@@ -359,7 +445,7 @@
     textFieldRounded.backgroundColor = [UIColor whiteColor];
     textFieldRounded.autocorrectionType = UITextAutocorrectionTypeNo;
     textFieldRounded.keyboardType = UIKeyboardTypeDefault;
-    textFieldRounded.returnKeyType = UIReturnKeyDone;    
+    //textFieldRounded.returnKeyType = UIReturnKeyDone;
     textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;
     textFieldRounded.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
     textFieldRounded.text = serial;
@@ -397,7 +483,7 @@
     [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 177, 383, 248)];
     [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 464, 89, 21)];
     [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 464, 85, 27)];
-    [self.vanStockInputField setFrame:CGRectMake(168, lastInputY + 510, 383, 30)];
+    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 464, 85, 27)];
     [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 565)];
     
     addBtnCount++;
@@ -453,17 +539,17 @@
     [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 112, 383, 248)];
     [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 399, 89, 21)];
     [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 399, 85, 27)];
-    [self.vanStockInputField setFrame:CGRectMake(168, lastInputY + 445, 383, 30)];
+    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 399, 85, 27)];
     [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 500)];
 }
 - (IBAction)skipSwitch:(UISwitch *)sender {
     isql *database = [isql initialize];
     if (sender.on == YES) {
-        self.vanStockInputField.hidden = NO;
+        self.editVanStock.hidden = NO;
         database.current_use_van_stock = @"Yes";
     }
     else {
-        self.vanStockInputField.hidden = YES;
+        self.editVanStock.hidden = YES;
         database.current_use_van_stock = @"No";
     }
 }

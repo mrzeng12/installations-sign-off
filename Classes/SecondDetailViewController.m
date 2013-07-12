@@ -36,6 +36,7 @@ const char MyConstantKey;
 
 -(void) viewDidLoad {
     
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(restoreView) name:UIKeyboardWillHideNotification object:nil];
     self.gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     self.gestureRecognizer.cancelsTouchesInView = NO;
     self.gestureRecognizer.delegate = self;
@@ -210,6 +211,12 @@ const char MyConstantKey;
     database.current_status = @"Incomplete";
         
     [self.tableviews reloadData];
+   
+    self.titleRoom.hidden = NO;
+    self.titleInstallation.hidden = NO;
+    self.titleReport.hidden = NO;
+    self.titleSync.hidden = NO;   
+    
     float temp_height = 321 + [tableviews contentSize].height;
     
     float height = (temp_height > 615)? temp_height: 615;
@@ -794,7 +801,19 @@ const char MyConstantKey;
         [loadButton setFrame:CGRectMake(267, height , 196, 42)];
         float scrollHeight = ((height+89) < 705)? 705: (height +89);
         [scrollview setContentSize:CGSizeMake(703, scrollHeight)];
-    
+        
+        if ([database.classrooms_in_one_location count] == 0) {
+            self.titleRoom.hidden = YES;
+            self.titleInstallation.hidden = YES;
+            self.titleReport.hidden = YES;
+            self.titleSync.hidden = YES;
+        }
+        else {
+            self.titleRoom.hidden = NO;
+            self.titleInstallation.hidden = NO;
+            self.titleReport.hidden = NO;
+            self.titleSync.hidden = NO;
+        }
     }  
 
     /*
@@ -883,7 +902,10 @@ const char MyConstantKey;
     [self loadRoomFromDB];
 }
 - (void) hideKeyboard {
-    [self.view endEditing:YES];
+    [self.view endEditing:YES];    
+}
+
+- (void) restoreView {
     self.gestureRecognizer.cancelsTouchesInView = NO;
     const float movementDuration = 0.3f; // tweak as needed
     

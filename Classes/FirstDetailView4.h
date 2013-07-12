@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UICustomSwitch.h"
 
 @interface FirstDetailView4 : UIViewController <UIPopoverControllerDelegate,  UITextFieldDelegate, UITextViewDelegate>
 
@@ -33,6 +34,8 @@
 @property (strong, nonatomic) NSString *lastDate;
 
 @property (strong, nonatomic) IBOutlet UITextView *customerNotes;
+
+@property (strong, nonatomic) UICustomSwitch *skipSwitch;
 
 - (IBAction)loadDefaultTeqRep;
 

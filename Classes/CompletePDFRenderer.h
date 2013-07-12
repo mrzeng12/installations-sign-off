@@ -43,7 +43,8 @@
     NSMutableArray *PDF_status_installer;
     NSMutableArray *PDF_serial_no;
     NSMutableArray *PDF_comments;
-    NSMutableString *PDF_van_stock;
+    NSString *PDF_van_stock;
+    NSString *PDF_job_status;
     
     NSMutableArray *PDF_photo_file_directory_1;
     NSMutableArray *PDF_photo_file_directory_2;

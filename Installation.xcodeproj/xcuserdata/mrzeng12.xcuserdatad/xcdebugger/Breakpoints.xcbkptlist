@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/isql.m"
-         timestampString = "394947855.379678"
+         timestampString = "395261391.084839"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1922"
-         endingLineNumber = "1922"
+         startingLineNumber = "2154"
+         endingLineNumber = "2154"
          landmarkName = "-addNumberToAppIcon"
          landmarkType = "5">
       </FileBreakpoint>

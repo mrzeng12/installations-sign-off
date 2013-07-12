@@ -72,6 +72,12 @@
     self.customerNotes.text = @"Please type customer notes here...";
     self.customerNotes.textColor = [UIColor lightGrayColor];
     self.customerNotes.delegate = self;
+    
+    self.skipSwitch = [[UICustomSwitch alloc] initWithFrame: CGRectMake(326, 21, 85, 27)];
+    [self.skipSwitch addTarget: self action: @selector(skipSwitch:) forControlEvents:UIControlEventValueChanged];
+    self.skipSwitch.on = YES;
+    [scrollView addSubview: self.skipSwitch];
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
@@ -128,11 +134,22 @@
     else {
         self.customerNotes.textColor = [UIColor blackColor];
     }
-    
+    if ([database.current_customer_signature_available isEqualToString:@"Yes"]) {
+        [self.primaryContactSign setTitle:@"Signature" forState:UIControlStateNormal];
+        self.primaryContactSign.enabled = YES;
+        self.skipSwitch.on = YES;        
+    }
+    else {
+        [self.primaryContactSign setTitle:@"Signature not available" forState:UIControlStateNormal];
+        self.primaryContactSign.enabled = NO;
+        [self.primaryContactSign setImage:nil forState:UIControlStateNormal];
+        self.skipSwitch.on = NO;
+        database.current_signature_file_directory_1 = nil;
+    }
     //}
     
     /************* set button background images, wrap it inside round rect box ************/
-    NSString *imageString1 = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature1", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
+    NSString *imageString1 = database.current_signature_file_directory_1;
     imageString1 = [database sanitizeFile:imageString1];
     UIImage *backgroundImage1 = [self loadImage: imageString1 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
     
@@ -142,7 +159,7 @@
     [primaryContactSign.layer setBorderWidth:1.0f];
     [primaryContactSign.layer setBorderColor:[UIColor grayColor].CGColor];
             
-    NSString *imageString3 = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - signature3", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
+    NSString *imageString3 = database.current_signature_file_directory_3;
     imageString3 = [database sanitizeFile:imageString3];
     UIImage *backgroundImage3 = [self loadImage: imageString3 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
     
@@ -163,17 +180,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated
-{
-    
-    //isql *database = [isql initialize];
-    //[NSThread detachNewThreadSelector:@selector(myThreadMethodAfterExit:) toTarget:self withObject:nil];
-    //[database updateLocalDestForCoverPage];
-    
-    //CompletePDFRenderer *renderer = [CompletePDFRenderer new];
-    //renderer.callBackFunction = @"saving";
-    
-    //[renderer loadVariablesForPDF];
-    
+{        
     [super viewDidDisappear:YES];
 }
 
@@ -295,11 +302,11 @@
     switch (button.tag) {
         case 1:
             database.signature_filename = @"Primary_Contact";
-            [scrollView scrollRectToVisible:CGRectMake(0, 0, 703, 748) animated:YES];
+            [scrollView scrollRectToVisible:CGRectMake(0, 69, 703, 748) animated:YES];
             break;
         case 3:
             database.signature_filename = @"Teq_Representative";
-            [scrollView scrollRectToVisible:CGRectMake(0, 426, 703, 748) animated:YES];
+            [scrollView scrollRectToVisible:CGRectMake(0, 415, 703, 748) animated:YES];
             break;
             
         default:
@@ -479,4 +486,21 @@
 - (void) hideKeyboard {
     [self.view endEditing:YES];
 }
+
+- (IBAction)skipSwitch:(UISwitch *)sender {
+    isql *database = [isql initialize];
+    if (sender.on == YES) {
+        database.current_customer_signature_available = @"Yes";
+        [self.primaryContactSign setTitle:@"Signature" forState:UIControlStateNormal];
+        self.primaryContactSign.enabled = YES;
+    }
+    else {
+        database.current_customer_signature_available = @"No";
+        [self.primaryContactSign setTitle:@"Signature not available" forState:UIControlStateNormal];
+        [self.primaryContactSign setImage:nil forState:UIControlStateNormal];
+        self.primaryContactSign.enabled = NO;
+        database.current_signature_file_directory_1 = nil;
+    }
+}
+
 @end

@@ -268,7 +268,7 @@
 
 @property (strong, nonatomic) NSString *current_van_stock;      //reserved 5
 
-@property (strong, nonatomic) NSString *current_reserved_6;
+@property (strong, nonatomic) NSString *current_customer_signature_available;   //reserved 6
 
 @property (strong, nonatomic) NSString *current_reserved_7;
 
