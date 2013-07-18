@@ -1223,18 +1223,20 @@
         /******* access the property will load the view controller ********/
         [tempDetailViewController view];
         
-        tempDetailViewController.installers.text = database.current_installer;
+        //tempDetailViewController.installers.text = database.current_installer;
         tempDetailViewController.statusOutlet.text = database.current_status;
         tempDetailViewController.commentsOutlet.text = database.current_general_notes;        
         if ([database.current_use_van_stock isEqualToString:@"Yes"])
         {
             tempDetailViewController.skipSwitch.on = YES;
             tempDetailViewController.editVanStock.hidden = NO;
+            tempDetailViewController.vanStockTextView.hidden = NO;
             //tempDetailViewController.vanStockInputField.hidden = NO;
         }
         else {
             tempDetailViewController.skipSwitch.on = NO;
             tempDetailViewController.editVanStock.hidden = YES;
+            tempDetailViewController.vanStockTextView.hidden = YES;
             //tempDetailViewController.vanStockInputField.hidden = YES;
         }
         //tempDetailViewController.vanStockInputField.text = database.current_van_stock;

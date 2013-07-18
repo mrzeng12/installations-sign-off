@@ -10,6 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "isql.h"
 #import "sqlite3.h"
+#import "VanStock.h"
+#import "Installer.h"
 
 @implementation ThirdDetailView
 @synthesize installerActionSheet;
@@ -38,15 +40,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.}
+    // Do any additional setup after loading the view from its nib.
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(reloadInstallers)
+     name:@"reloadInstallers" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(reloadVanStock)
+     name:@"reloadVanStock" object:nil];
+    
+    isql *database = [isql initialize];
+    
     lastInputY = 308;
     addBtnCount = 0;
     addBtnArray = [NSMutableArray array];
-    [self loadInstallerList];
     
     self.commentsOutlet.layer.borderWidth = 1;
     self.commentsOutlet.layer.borderColor = [[UIColor grayColor] CGColor];
     self.commentsOutlet.layer.cornerRadius = 7.0f;
+    self.vanStockTextView.layer.borderWidth = 1;
+    self.vanStockTextView.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.vanStockTextView.layer.cornerRadius = 7.0f;
+    self.vanStockTextView.textColor = [UIColor grayColor];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(restoreView) name:UIKeyboardWillHideNotification object:nil];
     self.gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     self.gestureRecognizer.cancelsTouchesInView = NO;
@@ -57,6 +72,7 @@
     self.SerialPJ.delegate = self;
     self.SerialSK.delegate = self;
     self.commentsOutlet.delegate = self;
+    self.installers.textColor = [UIColor grayColor];
     self.statusOutlet.textColor = [UIColor grayColor];
     
     self.skipSwitch = [[UICustomSwitch alloc] initWithFrame: CGRectMake(168, 704, 85, 27)];
@@ -64,13 +80,20 @@
     [self.scrollview addSubview: self.skipSwitch];
     
     [self.scrollview setFrame:CGRectMake(0, 44, 703, 704)];
-    [self.scrollview setContentSize:CGSizeMake(703, 818)];
+    if ([database.current_use_van_stock isEqualToString:@"Yes"]) {
+        [self.scrollview setContentSize:CGSizeMake(703, 983)];
+    }
+    else {
+        [self.scrollview setContentSize:CGSizeMake(703, 818)];
+    }
     UITapGestureRecognizer *tapGesture =
     [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
     [self checkComplete];
     
-    isql *database = [isql initialize];
+    [self reloadInstallers];
+    [self reloadVanStock];
+    
     NSData *data = [database.current_serial_no dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
@@ -122,8 +145,40 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-       
+     
+}
+
+- (void)reloadInstallers {
+    isql *database = [isql initialize];
+    NSMutableString *tempInstaller = [NSMutableString string];
+    for (NSString *string in database.current_installer) {
+        [tempInstaller appendString:[NSString stringWithFormat:@"%@; ", string]];
+    }
+    if ([tempInstaller length] > 1) {
+        self.installers.text = [tempInstaller substringToIndex:[tempInstaller length] - 2];
+    }
+}
+
+- (void)reloadVanStock {
     
+    isql *database = [isql initialize];
+    NSData *data = [database.current_van_stock dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *e = nil;
+    NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
+    NSMutableString *string = [NSMutableString string];
+    
+    for (int i = 0; i< [dictArray count]; i++) {
+        NSMutableDictionary *dict = [dictArray objectAtIndex:i];
+        
+        [string appendString: [dict objectForKey:@"installer"]];
+        if ([[dict objectForKey:@"installer"] length] == 0) {
+            [string appendString:@"Anonymous"];
+        }
+        [string appendString:@" - "];
+        [string appendString: [dict objectForKey:@"material"]];
+        [string appendString:@"\n"];
+    }
+    self.vanStockTextView.text = string;
 }
 
 -(void)checkComplete
@@ -140,7 +195,7 @@
         if([[dict objectForKey:@"type"] isEqualToString:@"PJ"]) pj_flag = 1;
         if([[dict objectForKey:@"type"] isEqualToString:@"SK"]) sk_flag = 1;
     }
-    if ([database.current_installer length] > 0 && [database.current_status length]> 0 && sb_flag == 1 && pj_flag == 1 && sk_flag == 1) {
+    if ([database.current_installer count] > 0 && [database.current_status length]> 0 && sb_flag == 1 && pj_flag == 1 && sk_flag == 1) {
         NSMutableDictionary *myDict = [[NSMutableDictionary alloc] init];
               
         [database.menu_complete replaceObjectAtIndex:2 withObject:@"Complete"];
@@ -157,71 +212,14 @@
     }
 }
 
-- (void) loadInstallerList {
-    isql *database = [isql initialize];
-    installersList = [NSMutableArray arrayWithObjects: nil];
-    sqlite3 *db;
-    sqlite3_stmt    *statement;
-    
-    @try {
-        
-        const char *dbpath = [database.dbpathString UTF8String];
-        
-        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
-        {
-            
-            NSString *selectSQL = [NSString stringWithFormat:@"select Name from local_installers order by Name"];
-            
-            const char *select_stmt = [selectSQL UTF8String];
-            
-            if ( sqlite3_prepare_v2(db, select_stmt,  -1, &statement, NULL) == SQLITE_OK) {
-                
-                
-                while (sqlite3_step(statement) == SQLITE_ROW)
-                {
-                    [installersList addObject:[[NSString alloc]
-                                                initWithUTF8String:
-                                                (const char *) sqlite3_column_text(statement, 0)]];
-                    /*NSLog(@"%@",[[NSString alloc]
-                                 initWithUTF8String:
-                                 (const char *) sqlite3_column_text(statement, 0)]);*/
-                }
-                NSLog(@"loadCustomText success");
-                
-                sqlite3_finalize(statement);
-            }
-            else {
-                NSLog(@"prepare db statement for loadCustomText failed: %s", sqlite3_errmsg(db));
-                
-            }
-        }
-        
-        
-    }
-    @catch (NSException *exception) {
-        
-    }
-    @finally {
-        sqlite3_close(db);
-    }
-}
 
 - (IBAction)pullInstallers:(UIButton *)sender {
     
-    installerActionSheet = [[UIActionSheet alloc] initWithTitle:nil  delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles: nil];
-    for (NSString *btnName in installersList) {
-        [installerActionSheet addButtonWithTitle:btnName];
-    }
-    [installerActionSheet addButtonWithTitle:@""];
-    [installerActionSheet setTag:3];
-    [installerActionSheet showInView:self.scrollview];
+    Installer *installerModal = [[Installer alloc] initWithNibName:@"Installer" bundle:[NSBundle mainBundle]];
     
-}
-
-- (IBAction)installersChanged:(id)sender {
-    isql *database = [isql initialize];
-    database.current_installer = self.installers.text;
-    [self checkComplete];
+    installerModal.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    installerModal.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:installerModal animated:YES completion:nil];
 }
 
 - (IBAction)statusChanged:(id)sender {
@@ -237,6 +235,11 @@
 
 - (IBAction)editVanStock:(id)sender {
     
+    VanStock *vanStockModal = [[VanStock alloc] initWithNibName:@"VanStock" bundle:[NSBundle mainBundle]];
+    
+    vanStockModal.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    vanStockModal.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:vanStockModal animated:YES completion:nil];
 }
 
 - (void)saveSerialNumber {
@@ -340,7 +343,6 @@
 }
 
 - (void) hideKeyboard {
-    NSLog(@"hide keyboard");
     [self.view endEditing:YES];
 }
 
@@ -420,7 +422,7 @@
         database.current_status = self.statusOutlet.text;
         [self checkComplete];
     }
-    if (actionSheet.tag == 3) {
+    /*if (actionSheet.tag == 3) {
         if (buttonIndex < [installersList count]) {
             if ([self.installers.text length] == 0) {
                 self.installers.text = [installersList objectAtIndex:buttonIndex];
@@ -432,10 +434,11 @@
         isql *database = [isql initialize];
         database.current_installer = self.installers.text;
         [self checkComplete];
-    }
+    }*/
 }
 
 - (void)createButton: (NSString *) text andAutoFill: (NSString *) serial {
+    isql *database = [isql initialize];
     
     UITextField *textFieldRounded = [[UITextField alloc] initWithFrame:CGRectMake(168, lastInputY + 65, 383, 30)];
     textFieldRounded.borderStyle = UITextBorderStyleRoundedRect;
@@ -483,8 +486,14 @@
     [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 177, 383, 248)];
     [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 464, 89, 21)];
     [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 464, 85, 27)];
-    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 464, 85, 27)];
-    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 565)];
+    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 463, 28, 28)];
+    [self.vanStockTextView setFrame:CGRectMake(168, lastInputY + 513, 383, 170)];
+    if ([database.current_use_van_stock isEqualToString:@"Yes"]) {
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 730)];
+    }
+    else {
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 565)];
+    }
     
     addBtnCount++;
     lastInputY += 65;
@@ -505,6 +514,8 @@
 }
 
 -(void)removeButton:(int)index {
+    
+    isql *database = [isql initialize];
     
     NSMutableDictionary *dict = [addBtnArray objectAtIndex:index];
     [[dict objectForKey:@"textFieldRounded"] removeFromSuperview];
@@ -539,18 +550,29 @@
     [self.commentsOutlet setFrame:CGRectMake(168, lastInputY + 112, 383, 248)];
     [self.vanStockOutlet setFrame:CGRectMake(65, lastInputY + 399, 89, 21)];
     [self.skipSwitch setFrame:CGRectMake(168, lastInputY + 399, 85, 27)];
-    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 399, 85, 27)];
-    [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 500)];
+    [self.editVanStock setFrame:CGRectMake(285, lastInputY + 398, 28, 28)];
+    [self.vanStockTextView setFrame:CGRectMake(168, lastInputY + 448, 383, 170)];
+    
+    if ([database.current_use_van_stock isEqualToString:@"Yes"]) {
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 665)];
+    }
+    else {
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 500)];
+    }
 }
 - (IBAction)skipSwitch:(UISwitch *)sender {
     isql *database = [isql initialize];
     if (sender.on == YES) {
         self.editVanStock.hidden = NO;
+        self.vanStockTextView.hidden = NO;
         database.current_use_van_stock = @"Yes";
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 665)];
     }
     else {
         self.editVanStock.hidden = YES;
+        self.vanStockTextView.hidden = YES;
         database.current_use_van_stock = @"No";
+        [self.scrollview setContentSize:CGSizeMake(703, lastInputY + 500)];
     }
 }
 

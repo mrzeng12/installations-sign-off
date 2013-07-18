@@ -23,6 +23,10 @@
 		B200713016B98A3900A98A9B /* CNO-1.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712E16B98A3900A98A9B /* CNO-1.png */; };
 		B200713116B98A3900A98A9B /* CNO-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712F16B98A3900A98A9B /* CNO-2.png */; };
 		B201FD6917733E7D00EC2309 /* installation-reports-4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B201FD6817733E7D00EC2309 /* installation-reports-4.jpg */; };
+		B2087B00179423DF0091EF6A /* VanStock.m in Sources */ = {isa = PBXBuildFile; fileRef = B2087AFE179423DF0091EF6A /* VanStock.m */; };
+		B2087B01179423DF0091EF6A /* VanStock.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2087AFF179423DF0091EF6A /* VanStock.xib */; };
+		B2087B0517943EB70091EF6A /* Installer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2087B0317943EB60091EF6A /* Installer.m */; };
+		B2087B0617943EB70091EF6A /* Installer.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2087B0417943EB60091EF6A /* Installer.xib */; };
 		B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20C25F71784BEB800766F6D /* installation-reports-5.jpg */; };
 		B217A561160A0D9E00207EAF /* black-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B217A560160A0D9E00207EAF /* black-line.png */; };
 		B226C04B16762BDC00EE3934 /* UICustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = B226C04A16762BDC00EE3934 /* UICustomSwitch.m */; };
@@ -210,6 +214,12 @@
 		B202AA10176A126F005ACF5D /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		B202AA12176A1299005ACF5D /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		B202AA14176A129C005ACF5D /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		B2087AFD179423DF0091EF6A /* VanStock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VanStock.h; sourceTree = "<group>"; };
+		B2087AFE179423DF0091EF6A /* VanStock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VanStock.m; sourceTree = "<group>"; };
+		B2087AFF179423DF0091EF6A /* VanStock.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VanStock.xib; sourceTree = "<group>"; };
+		B2087B0217943EB60091EF6A /* Installer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Installer.h; sourceTree = "<group>"; };
+		B2087B0317943EB60091EF6A /* Installer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Installer.m; sourceTree = "<group>"; };
+		B2087B0417943EB60091EF6A /* Installer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Installer.xib; sourceTree = "<group>"; };
 		B20C25F71784BEB800766F6D /* installation-reports-5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-5.jpg"; sourceTree = "<group>"; };
 		B217A560160A0D9E00207EAF /* black-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-line.png"; sourceTree = "<group>"; };
 		B226C04916762BDC00EE3934 /* UICustomSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICustomSwitch.h; sourceTree = "<group>"; };
@@ -729,6 +739,12 @@
 				C06DD65914FD82C600C5D033 /* ThirdDetailView.h */,
 				C06DD65A14FD82C600C5D033 /* ThirdDetailView.m */,
 				C06DD65B14FD82C600C5D033 /* ThirdDetailView.xib */,
+				B2087B0217943EB60091EF6A /* Installer.h */,
+				B2087B0317943EB60091EF6A /* Installer.m */,
+				B2087B0417943EB60091EF6A /* Installer.xib */,
+				B2087AFD179423DF0091EF6A /* VanStock.h */,
+				B2087AFE179423DF0091EF6A /* VanStock.m */,
+				B2087AFF179423DF0091EF6A /* VanStock.xib */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -929,6 +945,8 @@
 				B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */,
 				B256DCB2178A45D3003F4941 /* installation-reports-6.jpg in Resources */,
 				B256DCB4178A4ED9003F4941 /* installation-reports-8.jpg in Resources */,
+				B2087B01179423DF0091EF6A /* VanStock.xib in Resources */,
+				B2087B0617943EB70091EF6A /* Installer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,6 +1006,8 @@
 				B2E518171703481E001A1799 /* LandscapeOnlyViewController.m in Sources */,
 				B2677D851709B99500C4156C /* NewActivityCell.m in Sources */,
 				B2F8A76717159B9800EAA883 /* FileSystem.m in Sources */,
+				B2087B00179423DF0091EF6A /* VanStock.m in Sources */,
+				B2087B0517943EB70091EF6A /* Installer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -339,6 +339,10 @@
     {        
         [urlData writeToFile:filePath atomically:YES];
     }
+    else {
+        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Network error" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [message show];
+    }
     
     QLPreviewController *temp = [[QLPreviewController alloc] init];
     [temp setDelegate:self];
@@ -432,13 +436,14 @@
             self.duplicateAddress.enabled = YES;
             self.address2Label.enabled = YES;
         }
-        else {
+        if (buttonIndex == 0 || buttonIndex == 1 || buttonIndex == 2 || buttonIndex == 4) {
             self.address2Outlet.text = @"";
             database.current_address_2 = @"";
             self.address2Outlet.enabled = NO;
             self.duplicateAddress.enabled = NO;
             self.address2Label.enabled = NO;
         }
+        
     }
 }
 

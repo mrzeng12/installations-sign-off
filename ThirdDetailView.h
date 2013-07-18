@@ -18,7 +18,6 @@
 
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
 
-- (IBAction)installersChanged:(id)sender;
 - (IBAction)statusChanged:(id)sender;
 - (IBAction)serialNoChanged:(id)sender;
 
@@ -39,12 +38,14 @@
 @property (strong, nonatomic) UIActionSheet *installerActionSheet;
 @property (nonatomic, strong) NSMutableArray *installersList;
 @property (strong, nonatomic) IBOutlet UIButton *editVanStock;
+@property (strong, nonatomic) IBOutlet UITextView *vanStockTextView;
 
 - (IBAction)addSerial:(id)sender;
 - (IBAction)autoFill:(UIButton *)sender;
 - (IBAction)pullInstallers:(UIButton *)sender;
 - (IBAction)editVanStock:(id)sender;
 -(void)checkComplete;
+- (void)reloadInstallers;
 
 @end
 

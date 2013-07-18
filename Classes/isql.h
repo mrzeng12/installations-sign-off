@@ -224,7 +224,7 @@
 
 @property (strong, nonatomic) NSString *current_classroom_notes;
 
-@property (strong, nonatomic) NSString *current_installer;
+@property (strong, nonatomic) NSMutableArray *current_installer;
 
 @property (strong, nonatomic) NSString *current_status;
 

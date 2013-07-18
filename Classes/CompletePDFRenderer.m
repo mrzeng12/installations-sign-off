@@ -149,9 +149,9 @@
         }
         if ([[status objectAtIndex:i] length] > 0) {
             if ([temp_status_installer length] > 0) {
-                [temp_status_installer appendString:@" / "];
+                [temp_status_installer appendString:@"\n"];
             }
-            [temp_status_installer appendString:[status objectAtIndex:i]];
+            [temp_status_installer appendString:[NSString stringWithFormat:@"Status: %@",[status objectAtIndex:i]]];
         }
         [PDF_status_installer addObject:temp_status_installer];
     }
@@ -164,21 +164,44 @@
         if ([[general_notes objectAtIndex:i] length] > 0) {
             [temp_comments appendString:[general_notes objectAtIndex:i]];
         }
-        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([[van_stock objectAtIndex:i] length] > 0)) {
-            if ([temp_comments length] > 0) {
-                [temp_comments appendString:@" / "];
+        NSData *data = [[van_stock objectAtIndex:i] dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e = nil;
+        NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
+        NSMutableString *string = [NSMutableString string];
+        
+        for (int i = 0; i< [dictArray count]; i++) {
+            NSMutableDictionary *dict = [dictArray objectAtIndex:i];
+            
+            [string appendString: [dict objectForKey:@"installer"]];
+            if ([[dict objectForKey:@"installer"] length] == 0) {
+                [string appendString:@"Anonymous"];
             }
-            [temp_comments appendString:[NSString stringWithFormat:@"Van Stock: %@", [van_stock objectAtIndex:i]]];
+            [string appendString:@" - "];
+            [string appendString: [dict objectForKey:@"material"]];
+            [string appendString:@"\n"];
+        }
+        
+        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([dictArray count] > 0)) {
+            if ([temp_comments length] > 0) {
+                [temp_comments appendString:@"\n"];
+            }
+            [temp_comments appendString:[NSString stringWithFormat:@"Van Stock: %@", string]];
         }
         [PDF_comments addObject:temp_comments];
     }
+    
+    // the van stock below is the cover page van stock, which only includes the room numbers
     NSMutableString *van_stock_string = [NSMutableString string];
     for (int i = 0; i < [classroom_number count]; i++) {
+        NSData *data = [[van_stock objectAtIndex:i] dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e = nil;
+        NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];        
         
-        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([[van_stock objectAtIndex:i] length] > 0)) {
+        if (([[use_van_stock objectAtIndex:i] isEqualToString:@"Yes"])&&([dictArray count] > 0))
+        {
             [van_stock_string appendString:[NSString stringWithFormat:@"%@, ", [classroom_number objectAtIndex:i]]];
         }
-    }
+    }    
     PDF_van_stock = van_stock_string;
     if ([PDF_van_stock length] > 0) {
         PDF_van_stock = [PDF_van_stock substringToIndex:[PDF_van_stock length] - 2];
@@ -420,7 +443,7 @@
         //decide how many lines needed in this room
         float height_room = [self textAreaHight: [PDF_room objectAtIndex:i] withRect:CGRectMake(0, 0, 128, 100000) andFont:font];
         float height_installer = [self textAreaHight: [PDF_status_installer objectAtIndex:i] withRect:CGRectMake(0, 0, 265, 100000) andFont:font];
-        float height_comments = [self textAreaHight: [self conciseText:[PDF_comments objectAtIndex:i]] withRect:CGRectMake(0, 0, 317, 100000) andFont:font];
+        float height_comments = [self textAreaHight: [PDF_comments objectAtIndex:i] withRect:CGRectMake(0, 0, 317, 100000) andFont:font];
         float height_serial = 0;
         NSMutableArray *rows_needed_for_serial = [NSMutableArray array];
         for (int j = 0; j < [dictArray count]; j++) {
@@ -519,7 +542,7 @@
         }
         row_number2 = row_number;
         //draw comments
-        NSString *comments = [self conciseText:[PDF_comments objectAtIndex:i]];
+        NSString *comments = [PDF_comments objectAtIndex:i];
         [comments drawInRect:CGRectMake(891, base_height+10 + row_number3 * 44, 317, 100000) withFont:font lineBreakMode:NSLineBreakByWordWrapping];
         row_number3 = row_number;
     }
