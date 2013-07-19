@@ -342,7 +342,11 @@
         if ([database.current_address length] > 0) [nameAndAddress appendString: [self conciseTextWithSpace:database.current_address]];
         [self drawText:nameAndAddress withX:241 withY:350 andWidth:473 andFont:font andFontSize:21];
         [self drawText:[self conciseTextWithSpace:database.current_address_2] withX:241 withY:439 andWidth:473 andFont:font andFontSize:21];
-        [database.current_so drawInRect:CGRectMake(742, 350, 462, 68) withFont:font];                       
+        NSMutableString *so_and_po = [NSMutableString string];
+        if ([database.current_so length] > 0)   [so_and_po appendString:database.current_so];
+        if ([database.current_po length] > 0)   [so_and_po appendString:@"\n"];
+        if ([database.current_po length] > 0)   [so_and_po appendString: database.current_po];
+        [so_and_po drawInRect:CGRectMake(742, 350, 462, 68) withFont:font];
         
         font = [UIFont fontWithName:boldFont size:26.0f];
         if ([database.current_type_of_work isEqualToString:@"Installation"]) {

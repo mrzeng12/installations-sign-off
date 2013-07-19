@@ -35,6 +35,8 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *SOOutlet;
 
+@property (strong, nonatomic) IBOutlet UITextField *POOutlet;
+
 @property (strong, nonatomic) IBOutlet UITextField *primarycontactOutlet;
 
 @property (strong, nonatomic) IBOutlet UILabel *existingEquipOutlet;

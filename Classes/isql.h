@@ -270,7 +270,7 @@
 
 @property (strong, nonatomic) NSString *current_customer_signature_available;   //reserved 6
 
-@property (strong, nonatomic) NSString *current_reserved_7;
+@property (strong, nonatomic) NSString *current_po;     //reserved 7
 
 @property (strong, nonatomic) NSString *current_reserved_8;
 

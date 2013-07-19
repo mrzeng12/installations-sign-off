@@ -25,6 +25,7 @@
 @synthesize activityNoOutlet;
 @synthesize dateOutlet;
 @synthesize SOOutlet;
+@synthesize POOutlet;
 @synthesize primarycontactOutlet;
 @synthesize existingEquipOutlet;
 @synthesize jobSummary;
@@ -70,7 +71,7 @@
     gestureRecognizer.delegate = self;
     
     [scrollView setFrame:CGRectMake(0, 320, 703, 704)];
-    [scrollView setContentSize:CGSizeMake(703, 1300)];
+    [scrollView setContentSize:CGSizeMake(703, 1356)];
     activityIndicator.hidesWhenStopped = YES;    
     
     schoolNameOutlet.delegate = self;
@@ -80,6 +81,7 @@
     address2Outlet.delegate = self;
     dateOutlet.delegate = self;
     SOOutlet.delegate = self;
+    POOutlet.delegate = self;
     primarycontactOutlet.delegate = self;
     teamOutlet.delegate = self;
     districtOutlet.delegate = self;
@@ -171,6 +173,7 @@
     [self setActivityNoOutlet:nil];
     [self setDateOutlet:nil];
     [self setSOOutlet:nil];
+    [self setPOOutlet:nil];
     [self setScrollView:nil];
     [self setPrimarycontactOutlet:nil];
     [super viewDidUnload];
@@ -219,6 +222,9 @@
     if (sender == SOOutlet) {
         database.current_so =  SOOutlet.text;
     }
+    if (sender == POOutlet) {
+        database.current_po =  POOutlet.text;
+    }
     if (sender == primarycontactOutlet) {
         database.current_primary_contact =  primarycontactOutlet.text;
     }
@@ -251,6 +257,8 @@
     database.current_district = districtOutlet.text = nil;
         
     database.current_so =  SOOutlet.text = nil;
+    
+    database.current_po = POOutlet.text = nil;
     
     activityNoOutlet.text = nil;  //database.current_activity_no don't reset to nil
     
@@ -517,7 +525,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Date], [File1], [File2], [Type_of_work], [Arrival_time], [Departure_time], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes], [Reserved 2], [Reserved 3], [Reserved 6] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Reserved 7], [Date], [File1], [File2], [Type_of_work], [Arrival_time], [Departure_time], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes], [Reserved 2], [Reserved 3], [Reserved 6] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -549,7 +557,10 @@
                     
                     database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     SOOutlet.text = database.current_so; 
-                                        
+                    
+                    database.current_po = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    POOutlet.text = database.current_po;
+
                     database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     dateOutlet.text = database.current_date;
                     
@@ -653,7 +664,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number],  coalesce([BP_Code],''), coalesce([BP_Name],''), coalesce([District],''), coalesce([Contact_Person],''), coalesce([POD],''), coalesce([SO],''), [StartDateTime], coalesce([File1],''), coalesce([File2],''), coalesce([Reserved 1],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Activity_Number],  coalesce([BP_Code],''), coalesce([BP_Name],''), coalesce([District],''), coalesce([Contact_Person],''), coalesce([POD],''), coalesce([SO],''), coalesce([Reserved 2],''), [StartDateTime], coalesce([File1],''), coalesce([File2],''), coalesce([Reserved 1],'') from local_src where [Activity_Number] = '%@' AND [Assigned_Name]='%@';", database.current_activity_no, database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -666,45 +677,48 @@
                     found_in_local_src = 1;
                     //NSLog(@"sql ok");
                     //schoolNameOutlet.text = database.current_location;
-                    
-                    database.current_activity_no = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 0)]];
+                    int i = 0;
+                    database.current_activity_no = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     activityNoOutlet.text = database.current_activity_no;
                     
-                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 1)]];
+                    database.current_bp_code = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     
-                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 2)]];
+                    database.current_location = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     schoolNameOutlet.text = database.current_location;
                     
-                    database.current_district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 3)]];
+                    database.current_district = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     districtOutlet.text = database.current_district;
                     
-                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 4)]];                    
+                    database.current_primary_contact = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];                    
                     primarycontactOutlet.text = database.current_primary_contact;
                     
-                    database.current_pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 5)]];
+                    database.current_pod = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     teamOutlet.text = database.current_pod;
                     
-                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 6)]];
+                    database.current_so = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     SOOutlet.text = database.current_so;
                     
-                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 7)]];
+                    database.current_po = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    POOutlet.text = database.current_po;
+                    
+                    database.current_date = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     dateOutlet.text = database.current_date = [database.current_date substringToIndex:10];
                     
-                    database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 8)]];
+                    database.current_pdf1 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     //schoolNameOutlet.text = pdf1;
                     if ([database.current_pdf1 length] > 0) {
                         self.pdfBtn1.userInteractionEnabled = YES;
                         self.pdfBtn1.alpha = 1.0;
                     }
                     
-                    database.current_pdf2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 9)]];
+                    database.current_pdf2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     //schoolNameOutlet.text = database.current_location;
                     if ([database.current_pdf2 length] > 0) {
                         self.pdfBtn2.userInteractionEnabled = YES;
                         self.pdfBtn2.alpha = 1.0;
                     }
                     
-                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, 10)]];
+                    database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     addressOutlet.text = database.current_address;
                                         
                     jobSummary.textColor = [UIColor lightGrayColor];

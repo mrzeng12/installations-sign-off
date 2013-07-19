@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-//#define testing
+#define testing
 
 @implementation isql
 
@@ -106,9 +106,9 @@ static SqlClient *client = nil;
     
     NSMutableString* queryString = [NSMutableString string];
 #ifdef testing
-    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2], [Address], [BP2 Address] from [DevInstall].[dbo].[IpadInstall_Phoenix]"]];
+    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2], [Address], [BP2 Address], [SOJobName] from [install].[dbo].[IpadInstall_Phoenix]"]];
 #else
-    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2], [Address], [BP2 Address] from [install].[dbo].[IpadInstall_Phoenix]"]];
+    [queryString appendString:[NSString stringWithFormat:@"%@", @"select [Activity Number], [AssignedName], [BP Code], [BP Name], [Business Partner 2], [BP2 Name], [District], [Contact Person], [Contact 2], [POD], [SO], [StartDateTime], [User ID], [File1], [File2], [Address], [BP2 Address], [SOJobName] from [install].[dbo].[IpadInstall_Phoenix]"]];
 #endif
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
@@ -174,11 +174,11 @@ static SqlClient *client = nil;
                     
                     NSTimeInterval timestampB = [[NSDate date] timeIntervalSince1970];
                     //srcNameArray is the original SQL Server column names in original order
-                    NSArray *srcNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"Business Partner 2", @"BP2 Name", @"District", @"Contact Person", @"Contact 2", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", @"Address", @"BP2 Address", nil];
+                    NSArray *srcNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"Business Partner 2", @"BP2 Name", @"District", @"Contact Person", @"Contact 2", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", @"Address", @"BP2 Address", @"SOJobName", nil];
                     //destNameArray is the original SQL Server column names in local_src order
-                    NSArray *destNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"District", @"Contact Person", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", @"Address",nil];
+                    NSArray *destNameArray = [NSArray arrayWithObjects:@"Activity Number", @"AssignedName", @"BP Code", @"BP Name", @"District", @"Contact Person", @"POD", @"SO", @"StartDateTime", @"User ID", @"File1", @"File2", @"Address", @"SOJobName", nil];
                     //below is insert statement, which use local_src column names and order
-                    statement = @"INSERT INTO local_src(Activity_Number, Assigned_Name, BP_Code, BP_Name, District, Contact_Person, POD, SO, StartDateTime, User_ID, File1, File2, [Reserved 1]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    statement = @"INSERT INTO local_src(Activity_Number, Assigned_Name, BP_Code, BP_Name, District, Contact_Person, POD, SO, StartDateTime, User_ID, File1, File2, [Reserved 1], [Reserved 2]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
                     sqlite3_stmt *compiledStatement;
                     
@@ -817,14 +817,14 @@ static SqlClient *client = nil;
 #ifdef testing
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [DevInstall].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [PO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #else
     NSString *deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[InstallCoverSheet] WHERE Activity = '%@';", [dict objectForKey:@"Activity_no"]];
     [queryString appendString:deleteQuery];
-    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
+    [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [PO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
                       [self escapeString: [dict objectForKey:@"Activity_no"]],
                       [self escapeString: [dict objectForKey:@"Teq_rep"]],
                       [self escapeString: [dict objectForKey:@"Bp_code"]],
@@ -835,6 +835,7 @@ static SqlClient *client = nil;
                       [self escapeString: [dict objectForKey:@"Primary_contact"]],
                       [self escapeString: [dict objectForKey:@"Pod"]],
                       [self escapeString: [dict objectForKey:@"Sales_Order"]],
+                      [self escapeString: [dict objectForKey:@"Reserved 7"]],                      
                       [self escapeString: [dict objectForKey:@"Date"]],
                       [self escapeString: [dict objectForKey:@"Username"]],
                       [self escapeString: [dict objectForKey:@"File1"]],
@@ -1836,7 +1837,7 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Reserved 7]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@' or [Reserved 7] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
@@ -1888,6 +1889,8 @@ static SqlClient *client = nil;
      (database.current_address_2==nil)?@"":[database.current_address_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      [formatter stringFromDate: today],
           
@@ -1946,7 +1949,9 @@ static SqlClient *client = nil;
      
      (database.current_address_2==nil)?@"":[database.current_address_2 stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      ];
     
     
