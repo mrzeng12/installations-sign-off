@@ -313,11 +313,11 @@
         CGContextTranslateCTM(pdfContext, 0.0, -bounds.size.height);
         
         //set up the background
-        NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installations-signoff-cover-page-6" ofType:@"jpg"];
+        NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installations-signoff-cover-page-10" ofType:@"jpg"];
         NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
         UIImage * logo = [UIImage imageWithData:imageData];        
         [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
-        
+        /*
         fileLocation = [[NSBundle mainBundle] pathForResource:@"box" ofType:@"jpg"];
         imageData = [NSData dataWithContentsOfFile:fileLocation];
         logo = [UIImage imageWithData:imageData];
@@ -326,13 +326,13 @@
         [logo drawInRect:CGRectMake(245, 234, 28, 28)];
         [logo drawInRect:CGRectMake(579, 234, 28, 28)];
         [logo drawInRect:CGRectMake(914, 234, 28, 28)];
-        
+        */
         UIFont *font = [UIFont fontWithName:@"Arial-BoldMT" size:23.0f];
         [@"Installation" drawInRect:CGRectMake(299, 190, 134, 28) withFont:font];
         [@"Field Service" drawInRect:CGRectMake(633, 190, 184, 28) withFont:font];
         [@"Uninstall" drawInRect:CGRectMake(299, 238, 134, 28) withFont:font];
         [@"Reinstall" drawInRect:CGRectMake(633, 238, 134, 28) withFont:font];
-        [@"Reinstall / Uninstall" drawInRect:CGRectMake(968, 240, 296, 28) withFont:font];
+        [@"Uninstall / Reinstall" drawInRect:CGRectMake(968, 238, 296, 28) withFont:font];
         
         CGContextSetFillColorWithColor(pdfContext, [UIColor blackColor].CGColor);
         font = [UIFont fontWithName:boldFont size:21.0f];
@@ -350,7 +350,7 @@
         
         font = [UIFont fontWithName:boldFont size:26.0f];
         if ([database.current_type_of_work isEqualToString:@"Installation"]) {
-            [@"X" drawInRect:CGRectMake(251, 193, 21, 21) withFont:font];
+            [@"X" drawInRect:CGRectMake(251, 192, 21, 21) withFont:font];
         }
         if ([database.current_type_of_work isEqualToString:@"Field Service"]) {
             [@"X" drawInRect:CGRectMake(585, 193, 21, 21) withFont:font];
@@ -371,23 +371,23 @@
         
         [database.current_arrival_time drawInRect:CGRectMake(289, 1201, 284, 30) withFont:font];
         [database.current_departure_time drawInRect:CGRectMake(672, 1201, 284, 30) withFont:font];
-        [self drawText:database.current_print_name_1 withX:359 withY:1378 andWidth:214 andFont:font andFontSize:21.0];
+        [self drawText:database.current_print_name_1 withX:359 withY:1414 andWidth:214 andFont:font andFontSize:21.0];
         [self drawText:database.current_print_name_3 withX:359 withY:1239 andWidth:214 andFont:font andFontSize:21.0];
         [database.current_date drawInRect:CGRectMake(1101, 1201, 108, 30) withFont:font];
         
-        [[self conciseText:database.current_customer_notes] drawInRect:CGRectMake(359, 1276, 845, 86) withFont:font];
+        [[self conciseText:database.current_customer_notes] drawInRect:CGRectMake(359, 1308, 845, 90) withFont:font];
         
         NSString *imageString1 = database.current_signature_file_directory_1;
         if ([imageString1 length] > 0) {
             UIImage *backgroundImage1 = [self loadImage: imageString1 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-            [backgroundImage1 drawInRect:CGRectMake(743, 1369, 88, 35)];
-            [database.current_date drawInRect:CGRectMake(1101, 1378, 108, 30) withFont:font];
+            [backgroundImage1 drawInRect:CGRectMake(744, 1406, 175, 70)];
+            [database.current_date drawInRect:CGRectMake(1101, 1414, 108, 30) withFont:font];
         }
         
         NSString *imageString3 = database.current_signature_file_directory_3;
         if ([imageString3 length] > 0) {
             UIImage *backgroundImage3 = [self loadImage: imageString3 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-            [backgroundImage3 drawInRect:CGRectMake(743, 1230, 88, 35)];
+            [backgroundImage3 drawInRect:CGRectMake(744, 1231, 175, 70)];
             [database.current_date drawInRect:CGRectMake(1101, 1239, 108, 30) withFont:font];
         } 
         

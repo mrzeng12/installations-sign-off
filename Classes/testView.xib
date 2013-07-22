@@ -49,7 +49,7 @@
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">installations-signoff-cover-page-6.jpg</string>
+							<string key="NSResourceName">installations-signoff-cover-page-9.jpg</string>
 						</object>
 					</object>
 					<object class="IBUILabel" id="92193296">
@@ -208,6 +208,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{1107, 1372}, {108, 30}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSNextKeyView" ref="540287077"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -225,7 +226,7 @@
 					<object class="IBUILabel" id="952593772">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{365, 1231}, {214, 30}}</string>
+						<string key="NSFrame">{{359, 1231}, {214, 30}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="348719182"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -245,9 +246,9 @@
 					<object class="IBUILabel" id="417180615">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{365, 1272}, {845, 86}}</string>
+						<string key="NSFrame">{{359, 1308}, {845, 90}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView" ref="540287077"/>
+						<reference key="NSNextKeyView" ref="870398435"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -265,7 +266,7 @@
 					<object class="IBUILabel" id="348719182">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{749, 1231}, {284, 30}}</string>
+						<string key="NSFrame">{{744, 1231}, {284, 69}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="761344872"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -285,9 +286,9 @@
 					<object class="IBUILabel" id="1771469">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{749, 1367}, {284, 39}}</string>
+						<string key="NSFrame">{{744, 1406}, {284, 70}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView" ref="870398435"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -305,7 +306,7 @@
 					<object class="IBUILabel" id="540287077">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{365, 1372}, {214, 30}}</string>
+						<string key="NSFrame">{{359, 1406}, {214, 30}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="1771469"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -752,6 +753,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{68, 1607}, {73, 44}}</string>
 						<reference key="NSSuperview" ref="531334466"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1408,6 +1410,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{56, 1554}, {1152, 44}}</string>
 						<reference key="NSSuperview" ref="540304156"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1611,6 +1614,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{657, 985}, {550, 550}}</string>
 						<reference key="NSSuperview" ref="62689855"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1790,6 +1794,7 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{655, 1210}, {552, 414}}</string>
 						<reference key="NSSuperview" ref="951926033"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1863,7 +1868,6 @@
 							<reference ref="540287077"/>
 							<reference ref="4668749"/>
 							<reference ref="761344872"/>
-							<reference ref="417180615"/>
 							<reference ref="1771469"/>
 							<reference ref="870398435"/>
 							<reference ref="638403334"/>
@@ -1878,6 +1882,7 @@
 							<reference ref="173221944"/>
 							<reference ref="235843563"/>
 							<reference ref="836831411"/>
+							<reference ref="417180615"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -2715,7 +2720,7 @@
 			<string key="installation-reports-2.jpg">{1275, 1650}</string>
 			<string key="installation-reports-4.jpg">{1275, 1650}</string>
 			<string key="installation-reports-6.jpg">{1275, 1650}</string>
-			<string key="installations-signoff-cover-page-6.jpg">{1275, 1650}</string>
+			<string key="installations-signoff-cover-page-9.jpg">{1275, 1650}</string>
 			<string key="table-cell.jpg">{1152, 44}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">2083</string>

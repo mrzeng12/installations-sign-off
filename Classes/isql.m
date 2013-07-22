@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-#define testing
+//#define testing
 
 @implementation isql
 
@@ -647,28 +647,13 @@ static SqlClient *client = nil;
         
     NSMutableDictionary *Rowofdict = [tempArrayDict objectAtIndex:index];
     
-    NSString *installString = [Rowofdict objectForKey:@"Installer"];
     NSString *statusString = [Rowofdict objectForKey:@"Status"];
     NSString *serialNoString = [Rowofdict objectForKey:@"Serial_no"];
     NSString *notesString = [Rowofdict objectForKey:@"General_notes"];
-    NSString *useVanStockString = [Rowofdict objectForKey:@"Reserved 4"];
-    NSString *VanStockString = [Rowofdict objectForKey:@"Reserved 5"];
     
     NSData *data = [serialNoString dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
-    for (NSMutableDictionary *dict in dictArray) {
-        NSMutableDictionary *oneItem = [NSMutableDictionary dictionary];
-        [oneItem setObject:installString forKey:@"install"];
-        [oneItem setObject:statusString forKey:@"status"];
-        [oneItem setObject:[dict objectForKey:@"type"] forKey:@"itemtype"];
-        [oneItem setObject:[dict objectForKey:@"serial"] forKey:@"serialnumber"];
-        [oneItem setObject:notesString forKey:@"notes"];
-        [oneItem setObject:useVanStockString forKey:@"usevanstock"];
-        [oneItem setObject:VanStockString forKey:@"vanstock"];
-        [items addObject:oneItem];
-    }    
       
     NSDate *today = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -692,41 +677,87 @@ static SqlClient *client = nil;
     NSString *deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [Install].[dbo].[InstallSummary] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
     [queryString appendString: deleteOtherRoomQuery];
 #endif    
-    for (NSMutableDictionary *oneItem in items) {
-        NSString *installCol = [oneItem objectForKey:@"install"];
-        NSString *statusCol = [oneItem objectForKey:@"status"];
-        NSString *itemtypeCol = [oneItem objectForKey:@"itemtype"];
-        NSString *serialnumberCol = [oneItem objectForKey:@"serialnumber"];
-        NSString *notesCol = [oneItem objectForKey:@"notes"];
-        NSString *usevanstockCol = [oneItem objectForKey:@"usevanstock"];
-        NSString *vanstockCol = [oneItem objectForKey:@"vanstock"];
+    for (NSMutableDictionary *dict in dictArray) {
+        NSString *statusCol = statusString;
+        NSString *itemtypeCol = [dict objectForKey:@"type"];
+        NSString *serialnumberCol = [dict objectForKey:@"serial"];
+        NSString *notesCol = notesString;
         
-        installCol = [self escapeString:installCol];
         statusCol = [self escapeString:statusCol];
         itemtypeCol = [self escapeString:itemtypeCol];
         serialnumberCol = [self escapeString:serialnumberCol];
         notesCol = [self escapeString:notesCol];
-        usevanstockCol = [self escapeString:usevanstockCol];
-        vanstockCol = [self escapeString:vanstockCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [UseVanStock], [VanStock], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, usevanstockCol, vanstockCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol,  todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [UseVanStock], [VanStock], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installCol, statusCol, itemtypeCol, serialnumberCol, notesCol, usevanstockCol, vanstockCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #endif
        
-    }
-        
-    //just to make sure it is not sending empty query
-    if ([queryString length] == 0) {
+    }       
+    
+    NSString *installerString = [Rowofdict objectForKey:@"Installer"];
+    items = [[installerString  componentsSeparatedByString:@", "] mutableCopy];
+    
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
+    deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[Installer] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+    [queryString appendString: deleteQuery];
+    deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [DevInstall].[dbo].[Installer] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+    [queryString appendString: deleteOtherRoomQuery];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Installer], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, @"testing", @"testing", @"testing", @"testing", @"testing", todayString]];
+    deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[Installer] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+    [queryString appendString: deleteQuery];
+    deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [Install].[dbo].[Installer] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+    [queryString appendString: deleteOtherRoomQuery];
+#endif
+    for (NSString *oneItem in items) {
+        
+        NSString *installerCol = [self escapeString:oneItem];
+#ifdef testing
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
+#else
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
+#endif
+    }
+    
+    NSString *vanStockString = [Rowofdict objectForKey:@"Reserved 5"];
+    NSString *useVanStockString = [Rowofdict objectForKey:@"Reserved 4"];
+    
+    if ([useVanStockString isEqualToString:@"Yes"]) {
+        
+#ifdef testing
+        deleteQuery = [NSString stringWithFormat: @"DELETE FROM [DevInstall].[dbo].[VanStock] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+        [queryString appendString: deleteQuery];
+        deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [DevInstall].[dbo].[VanStock] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+        [queryString appendString: deleteOtherRoomQuery];
+#else
+        deleteQuery = [NSString stringWithFormat: @"DELETE FROM [Install].[dbo].[VanStock] WHERE Activity = '%@' AND RoomNumber = '%@';", thisActivityNumber, thisRoomNumber];
+        [queryString appendString: deleteQuery];
+        deleteOtherRoomQuery = [NSString stringWithFormat:@"DELETE FROM [Install].[dbo].[VanStock] where Activity = '%@' AND RoomNumber NOT IN %@;", thisActivityNumber, allRooms];
+        [queryString appendString: deleteOtherRoomQuery];
 #endif
         
+        data = [vanStockString dataUsingEncoding:NSUTF8StringEncoding];
+        e = nil;
+        dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
+        for (int i = 0; i< [dictArray count]; i++) {
+            NSMutableDictionary *dict = [dictArray objectAtIndex:i];
+            NSString *installerCol = [dict objectForKey:@"installer"];
+            NSString *materialCol = [dict objectForKey:@"material"];
+            
+            installerCol = [self escapeString:installerCol];
+            materialCol = [self escapeString:materialCol];
+#ifdef testing
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
+#else
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
+#endif
+        }
     }
+    
     [queryString appendString:@"COMMIT TRANSACTION;"];
-        
+    
+    //NSLog(@"%@", queryString);
+    
     [client executeQuery:queryString withCompletionBlock:^(SqlClientQuery *query){
         //[activityIndicator stopAnimating];
         
@@ -879,6 +910,8 @@ static SqlClient *client = nil;
 }
 
 - (void) checkSignature {
+    
+    isql *database = [isql initialize];
     sqlite3 *db;
     sqlite3_stmt    *statement;
     NSMutableString *tempString = [NSMutableString string];
@@ -889,7 +922,7 @@ static SqlClient *client = nil;
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {
             //it does not sync as long as one of the rooms is not complete
-            NSString *selectSQL = [NSString stringWithFormat:@"SELECT DISTINCT activity_no FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND (Arrival_time = '' OR Departure_time = '' OR Signature_file_directory_3 = '' OR (Signature_file_directory_1 = '' AND [Reserved 6] = 'Yes')) ORDER BY activity_no"];
+            NSString *selectSQL = [NSString stringWithFormat:@"SELECT DISTINCT activity_no FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND (Arrival_time = '' OR Departure_time = '' OR Signature_file_directory_3 = '' OR (Signature_file_directory_1 = '' AND [Reserved 6] = 'Yes')) AND Teq_rep = '%@' ORDER BY activity_no", database.current_teq_rep];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -930,6 +963,7 @@ static SqlClient *client = nil;
 
 - (void) localDestToRemoteDest {
     
+    isql *database = [isql initialize];
     NSMutableArray *tempArray = [NSMutableArray array];
     NSMutableArray *tempArrayDict = [NSMutableArray array];
     
@@ -943,7 +977,7 @@ static SqlClient *client = nil;
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {
             //it does not sync as long as one of the rooms is not complete
-            NSString *selectSQL = [NSString stringWithFormat:@"SELECT * FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND [Raceway_part_9] = 'complete' AND [Raceway_part_10] != 'onhold' AND Arrival_time != '' AND Departure_time != '' AND Signature_file_directory_3 != '' AND (Signature_file_directory_1 != '' OR [Reserved 6] != 'Yes') AND [Activity_no] NOT IN (SELECT [Activity_no] FROM local_dest WHERE [Raceway_part_9] != 'complete');"];
+            NSString *selectSQL = [NSString stringWithFormat:@"SELECT * FROM local_dest WHERE (sync_time = '' OR save_time > sync_time) AND [Raceway_part_9] = 'complete' AND [Raceway_part_10] != 'onhold' AND Arrival_time != '' AND Departure_time != '' AND Signature_file_directory_3 != '' AND (Signature_file_directory_1 != '' OR [Reserved 6] != 'Yes') AND [Activity_no] NOT IN (SELECT [Activity_no] FROM local_dest WHERE [Raceway_part_9] != 'complete') AND Teq_rep = '%@';", database.current_teq_rep];
             
             //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where (sync_time = '' or save_time > sync_time) and [Raceway_part_9] = 'complete' and [Raceway_part_10] != 'onhold';"];
             //NSString *selectSQL = [NSString stringWithFormat:@"select * from local_dest where (sync_time = '' or save_time > sync_time) and [Raceway_part_10] != 'onhold';"];

@@ -9,6 +9,7 @@
 #import "SignaturePaintView.h"
 #import <QuartzCore/QuartzCore.h>
 #import "isql.h"
+#import "sqlite3.h"
 
 @implementation SignaturePaintView
 
@@ -134,9 +135,65 @@
     //PDFRenderer *renderer = [PDFRenderer new];
     //renderer.callBackString = @"none";
     //[renderer loadVariablesForPDF];
-    
+    [self updateSaveTime];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"customizedDismissPopover" object:self];
+}
+
+- (void) updateSaveTime{
+    
+    isql *database = [isql initialize];    
+    
+    //save date time
+    NSDate *today = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+        
+    NSString *queryString = [NSString stringWithFormat: @"update local_dest set [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%';",
+          
+     [formatter stringFromDate: today],
+     
+     (database.current_activity_no==nil)?@"":[database.current_activity_no stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_teq_rep==nil)?@"":[database.current_teq_rep stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     
+     ];
+    
+    
+    sqlite3 *db;
+    sqlite3_stmt    *statement;
+    
+    @try {
+        
+        const char *dbpath = [database.dbpathString UTF8String];
+        
+        if (sqlite3_open(dbpath, &db) == SQLITE_OK)
+        {const char *insert_stmt = [queryString UTF8String];
+            
+            if ( sqlite3_prepare_v2(db, insert_stmt,  -1, &statement, NULL) == SQLITE_OK) {
+                
+                if (sqlite3_step(statement) == SQLITE_DONE)
+                {
+                    NSLog(@"updateSaveTime success");
+                } else {
+                    NSLog(@"update failed: %s", sqlite3_errmsg(db));
+                    
+                }
+                sqlite3_finalize(statement);
+            }
+            else {
+                NSLog(@"prepare db statement failed: %s", sqlite3_errmsg(db));
+                NSLog(@"%@", queryString);
+            }        
+        }
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        sqlite3_close(db);
+    }
+    
 }
 
 -(NSString*) writablePath {

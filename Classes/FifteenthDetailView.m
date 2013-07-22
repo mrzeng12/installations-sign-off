@@ -437,7 +437,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [self.popoverController dismissPopoverAnimated:true];
     //[popoverController release];
-        
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:@"Unsaved changes" forKey:@"datetime"];
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"displaySaveTime" object:self userInfo:dict];
+    
     __block NSURL *currentUrl;
     
     NSString *mediaType = [info

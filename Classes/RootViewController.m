@@ -1337,8 +1337,14 @@
 -(void)displaySaveTime:(NSNotification*)notifications{
     
     NSString *saveTimeString = [NSString stringWithFormat:@"%@", [[notifications userInfo] valueForKey:@"datetime"]];
-    [saveTimeLabel setTextColor:[UIColor colorWithRed:41.0/255.0 green:125.0/255.0 blue:47.0/255.0 alpha:1]];
-    [saveTimeLabel setText: saveTimeString];
+    if ([saveTimeString isEqualToString:@"Saved all changes"]) {
+        [saveTimeLabel setTextColor:[UIColor colorWithRed:41.0/255.0 green:125.0/255.0 blue:47.0/255.0 alpha:1]];
+        [saveTimeLabel setText: saveTimeString];
+    }
+    if ([saveTimeString isEqualToString:@"Unsaved changes"]) {
+        [saveTimeLabel setTextColor:[UIColor redColor]];
+        [saveTimeLabel setText: saveTimeString];
+    }
 }
 #pragma mark -
 #pragma mark Memory management
