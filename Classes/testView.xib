@@ -2720,7 +2720,7 @@
 			<string key="installation-reports-2.jpg">{1275, 1650}</string>
 			<string key="installation-reports-4.jpg">{1275, 1650}</string>
 			<string key="installation-reports-6.jpg">{1275, 1650}</string>
-			<string key="installations-signoff-cover-page-9.jpg">{1275, 1650}</string>
+			<string key="installations-signoff-cover-page-9.jpg">{16, 16}</string>
 			<string key="table-cell.jpg">{1152, 44}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">2083</string>
