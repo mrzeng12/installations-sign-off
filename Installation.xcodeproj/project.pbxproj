@@ -28,9 +28,7 @@
 		B2087B0517943EB70091EF6A /* Installer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2087B0317943EB60091EF6A /* Installer.m */; };
 		B2087B0617943EB70091EF6A /* Installer.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2087B0417943EB60091EF6A /* Installer.xib */; };
 		B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20C25F71784BEB800766F6D /* installation-reports-5.jpg */; };
-		B20D03A9179D71BA007C7686 /* installations-signoff-cover-page-8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20D03A8179D71BA007C7686 /* installations-signoff-cover-page-8.jpg */; };
 		B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */; };
-		B20D03AD179D77EC007C7686 /* installations-signoff-cover-page-9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AC179D77EC007C7686 /* installations-signoff-cover-page-9.jpg */; };
 		B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */; };
 		B217A561160A0D9E00207EAF /* black-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B217A560160A0D9E00207EAF /* black-line.png */; };
 		B226C04B16762BDC00EE3934 /* UICustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = B226C04A16762BDC00EE3934 /* UICustomSwitch.m */; };
@@ -49,7 +47,6 @@
 		B24AB41616FD596B0017B00E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = B24AB41116FD596B0017B00E /* ZipArchive.mm */; };
 		B24AB41816FF5DAB0017B00E /* speedtest.png in Resources */ = {isa = PBXBuildFile; fileRef = B24AB41716FF5DAB0017B00E /* speedtest.png */; };
 		B24D2FC91781C9110018DBB9 /* box.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FC81781C9110018DBB9 /* box.jpg */; };
-		B24D2FCB1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */; };
 		B24D2FCD178337A40018DBB9 /* duplicate.png in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FCC178337A40018DBB9 /* duplicate.png */; };
 		B256DCB2178A45D3003F4941 /* installation-reports-6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */; };
 		B256DCB4178A4ED9003F4941 /* installation-reports-8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */; };
@@ -81,15 +78,11 @@
 		B2F8A76717159B9800EAA883 /* FileSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F8A76617159B9800EAA883 /* FileSystem.m */; };
 		B2FF0EEA1770A9EF0003D95E /* installation-reports-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EE61770A9EF0003D95E /* installation-reports-2.jpg */; };
 		B2FF0EEB1770A9EF0003D95E /* installation-reports.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EE71770A9EF0003D95E /* installation-reports.jpg */; };
-		B2FF0EEC1770A9EF0003D95E /* installations-signoff-cover-page.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EE81770A9EF0003D95E /* installations-signoff-cover-page.jpg */; };
 		B2FF0EED1770A9EF0003D95E /* table-cell.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EE91770A9EF0003D95E /* table-cell.jpg */; };
 		B2FF0EEF1770ABC30003D95E /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FF0EEE1770ABC30003D95E /* NewRelicAgent.framework */; };
 		B2FF0EF11770AC020003D95E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FF0EF01770AC020003D95E /* CoreTelephony.framework */; };
 		B2FF0EF31770AC190003D95E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FF0EF21770AC190003D95E /* SystemConfiguration.framework */; };
 		B2FF0EF51770AE780003D95E /* testView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EF41770AE780003D95E /* testView.xib */; };
-		B2FF0EF71770DEAD0003D95E /* installations-signoff-cover-page-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EF61770DEAD0003D95E /* installations-signoff-cover-page-2.jpg */; };
-		B2FF0EF91770EEF80003D95E /* installations-signoff-cover-page-3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EF81770EEF80003D95E /* installations-signoff-cover-page-3.jpg */; };
-		B2FF0EFB1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EFA1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg */; };
 		B2FF0EFD1770F4360003D95E /* installation-reports-3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2FF0EFC1770F4360003D95E /* installation-reports-3.jpg */; };
 		C00592391518B04A0072DDA8 /* onebit_33.png in Resources */ = {isa = PBXBuildFile; fileRef = C00592381518B04A0072DDA8 /* onebit_33.png */; };
 		C033F9E81529E7B60018F05B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C033F9E71529E7B50018F05B /* QuartzCore.framework */; };
@@ -234,9 +227,7 @@
 		B2087B0317943EB60091EF6A /* Installer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Installer.m; sourceTree = "<group>"; };
 		B2087B0417943EB60091EF6A /* Installer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Installer.xib; sourceTree = "<group>"; };
 		B20C25F71784BEB800766F6D /* installation-reports-5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-5.jpg"; sourceTree = "<group>"; };
-		B20D03A8179D71BA007C7686 /* installations-signoff-cover-page-8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-8.jpg"; sourceTree = "<group>"; };
 		B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_unchecked.png; sourceTree = "<group>"; };
-		B20D03AC179D77EC007C7686 /* installations-signoff-cover-page-9.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-9.jpg"; sourceTree = "<group>"; };
 		B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-10.jpg"; sourceTree = "<group>"; };
 		B217A560160A0D9E00207EAF /* black-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-line.png"; sourceTree = "<group>"; };
 		B226C04916762BDC00EE3934 /* UICustomSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICustomSwitch.h; sourceTree = "<group>"; };
@@ -263,7 +254,6 @@
 		B24AB41116FD596B0017B00E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		B24AB41716FF5DAB0017B00E /* speedtest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = speedtest.png; sourceTree = "<group>"; };
 		B24D2FC81781C9110018DBB9 /* box.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = box.jpg; sourceTree = "<group>"; };
-		B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-6.jpg"; sourceTree = "<group>"; };
 		B24D2FCC178337A40018DBB9 /* duplicate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = duplicate.png; sourceTree = "<group>"; };
 		B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-6.jpg"; sourceTree = "<group>"; };
 		B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-8.jpg"; sourceTree = "<group>"; };
@@ -303,15 +293,11 @@
 		B2F8A76617159B9800EAA883 /* FileSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystem.m; sourceTree = "<group>"; };
 		B2FF0EE61770A9EF0003D95E /* installation-reports-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-2.jpg"; sourceTree = "<group>"; };
 		B2FF0EE71770A9EF0003D95E /* installation-reports.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports.jpg"; sourceTree = "<group>"; };
-		B2FF0EE81770A9EF0003D95E /* installations-signoff-cover-page.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page.jpg"; sourceTree = "<group>"; };
 		B2FF0EE91770A9EF0003D95E /* table-cell.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "table-cell.jpg"; sourceTree = "<group>"; };
 		B2FF0EEE1770ABC30003D95E /* NewRelicAgent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NewRelicAgent.framework; sourceTree = "<group>"; };
 		B2FF0EF01770AC020003D95E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		B2FF0EF21770AC190003D95E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B2FF0EF41770AE780003D95E /* testView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = testView.xib; sourceTree = "<group>"; };
-		B2FF0EF61770DEAD0003D95E /* installations-signoff-cover-page-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-2.jpg"; sourceTree = "<group>"; };
-		B2FF0EF81770EEF80003D95E /* installations-signoff-cover-page-3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-3.jpg"; sourceTree = "<group>"; };
-		B2FF0EFA1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-4.jpg"; sourceTree = "<group>"; };
 		B2FF0EFC1770F4360003D95E /* installation-reports-3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-3.jpg"; sourceTree = "<group>"; };
 		C00592381518B04A0072DDA8 /* onebit_33.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onebit_33.png; sourceTree = "<group>"; };
 		C033F9E71529E7B50018F05B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -553,13 +539,6 @@
 				B2FF0EE61770A9EF0003D95E /* installation-reports-2.jpg */,
 				B2FF0EE71770A9EF0003D95E /* installation-reports.jpg */,
 				B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */,
-				B20D03AC179D77EC007C7686 /* installations-signoff-cover-page-9.jpg */,
-				B20D03A8179D71BA007C7686 /* installations-signoff-cover-page-8.jpg */,
-				B24D2FCA1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg */,
-				B2FF0EFA1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg */,
-				B2FF0EF81770EEF80003D95E /* installations-signoff-cover-page-3.jpg */,
-				B2FF0EF61770DEAD0003D95E /* installations-signoff-cover-page-2.jpg */,
-				B2FF0EE81770A9EF0003D95E /* installations-signoff-cover-page.jpg */,
 				B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */,
 				B2FF0EE91770A9EF0003D95E /* table-cell.jpg */,
 				B202AA14176A129C005ACF5D /* Default-Landscape@2x~ipad.png */,
@@ -980,25 +959,18 @@
 				B2B34FFD175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png in Resources */,
 				B2FF0EEA1770A9EF0003D95E /* installation-reports-2.jpg in Resources */,
 				B2FF0EEB1770A9EF0003D95E /* installation-reports.jpg in Resources */,
-				B2FF0EEC1770A9EF0003D95E /* installations-signoff-cover-page.jpg in Resources */,
 				B2FF0EED1770A9EF0003D95E /* table-cell.jpg in Resources */,
 				B2FF0EF51770AE780003D95E /* testView.xib in Resources */,
-				B2FF0EF71770DEAD0003D95E /* installations-signoff-cover-page-2.jpg in Resources */,
-				B2FF0EF91770EEF80003D95E /* installations-signoff-cover-page-3.jpg in Resources */,
-				B2FF0EFB1770F1AF0003D95E /* installations-signoff-cover-page-4.jpg in Resources */,
 				B2FF0EFD1770F4360003D95E /* installation-reports-3.jpg in Resources */,
 				B201FD6917733E7D00EC2309 /* installation-reports-4.jpg in Resources */,
 				B24D2FC91781C9110018DBB9 /* box.jpg in Resources */,
-				B24D2FCB1781CEEC0018DBB9 /* installations-signoff-cover-page-6.jpg in Resources */,
 				B24D2FCD178337A40018DBB9 /* duplicate.png in Resources */,
 				B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */,
 				B256DCB2178A45D3003F4941 /* installation-reports-6.jpg in Resources */,
 				B256DCB4178A4ED9003F4941 /* installation-reports-8.jpg in Resources */,
 				B2087B01179423DF0091EF6A /* VanStock.xib in Resources */,
 				B2087B0617943EB70091EF6A /* Installer.xib in Resources */,
-				B20D03A9179D71BA007C7686 /* installations-signoff-cover-page-8.jpg in Resources */,
 				B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */,
-				B20D03AD179D77EC007C7686 /* installations-signoff-cover-page-9.jpg in Resources */,
 				B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */,
 				B25ACDBA17A9A8A4009EC40B /* RedLaser_License.xml in Resources */,
 			);
@@ -1100,7 +1072,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Sanoff (3RP4EU536J)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1124,7 +1096,7 @@
 					"\"$(SRCROOT)/Classes\"",
 				);
 				PRODUCT_NAME = Installation;
-				PROVISIONING_PROFILE = "81588C95-C561-4DD1-9F43-ABEE54F8DDDE";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
@@ -1135,8 +1107,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Sanoff (3RP4EU536J)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1157,7 +1129,7 @@
 					"\"$(SRCROOT)/Classes\"",
 				);
 				PRODUCT_NAME = Installation;
-				PROVISIONING_PROFILE = "81588C95-C561-4DD1-9F43-ABEE54F8DDDE";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
