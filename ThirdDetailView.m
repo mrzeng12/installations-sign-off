@@ -40,6 +40,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"%d", RL_CheckReadyStatus());
+    
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(reloadInstallers)

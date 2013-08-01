@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UICustomSwitch.h"
-
+#import "RedLaserSDK.h"
 
 @interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>{
     float lastInputY;

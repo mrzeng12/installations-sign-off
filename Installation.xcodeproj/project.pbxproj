@@ -50,6 +50,15 @@
 		B24D2FCD178337A40018DBB9 /* duplicate.png in Resources */ = {isa = PBXBuildFile; fileRef = B24D2FCC178337A40018DBB9 /* duplicate.png */; };
 		B256DCB2178A45D3003F4941 /* installation-reports-6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */; };
 		B256DCB4178A4ED9003F4941 /* installation-reports-8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */; };
+		B25ACDB817A9A756009EC40B /* libRedLaserSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */; };
+		B25ACDBA17A9A8A4009EC40B /* RedLaser_License.xml in Resources */ = {isa = PBXBuildFile; fileRef = B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */; };
+		B25ACDBC17A9A948009EC40B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBB17A9A948009EC40B /* CoreMedia.framework */; };
+		B25ACDBE17A9A952009EC40B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBD17A9A952009EC40B /* CoreVideo.framework */; };
+		B25ACDC017A9A95F009EC40B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */; };
+		B25ACDC217A9A979009EC40B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDC117A9A979009EC40B /* OpenGLES.framework */; };
+		B25ACDC417A9A986009EC40B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDC317A9A986009EC40B /* Security.framework */; };
+		B25ACDC617A9A99E009EC40B /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDC517A9A99E009EC40B /* libstdc++.dylib */; };
+		B25ACDC817A9A9AE009EC40B /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDC717A9A9AE009EC40B /* libiconv.dylib */; };
 		B2677D851709B99500C4156C /* NewActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B2677D841709B99500C4156C /* NewActivityCell.m */; };
 		B2677D871709B9C200C4156C /* NewActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2677D861709B9C200C4156C /* NewActivityCell.xib */; };
 		B28F583C16DC0AF500FCF620 /* SavedActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */; };
@@ -248,6 +257,16 @@
 		B24D2FCC178337A40018DBB9 /* duplicate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = duplicate.png; sourceTree = "<group>"; };
 		B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-6.jpg"; sourceTree = "<group>"; };
 		B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-8.jpg"; sourceTree = "<group>"; };
+		B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libRedLaserSDK.a; sourceTree = "<group>"; };
+		B25ACDB717A9A756009EC40B /* RedLaserSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedLaserSDK.h; sourceTree = "<group>"; };
+		B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RedLaser_License.xml; sourceTree = "<group>"; };
+		B25ACDBB17A9A948009EC40B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		B25ACDBD17A9A952009EC40B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B25ACDC117A9A979009EC40B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		B25ACDC317A9A986009EC40B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B25ACDC517A9A99E009EC40B /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
+		B25ACDC717A9A9AE009EC40B /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		B2677D831709B99500C4156C /* NewActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewActivityCell.h; sourceTree = "<group>"; };
 		B2677D841709B99500C4156C /* NewActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewActivityCell.m; sourceTree = "<group>"; };
 		B2677D861709B9C200C4156C /* NewActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewActivityCell.xib; sourceTree = "<group>"; };
@@ -412,6 +431,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B25ACDC817A9A9AE009EC40B /* libiconv.dylib in Frameworks */,
+				B25ACDC617A9A99E009EC40B /* libstdc++.dylib in Frameworks */,
+				B25ACDC417A9A986009EC40B /* Security.framework in Frameworks */,
+				B25ACDC217A9A979009EC40B /* OpenGLES.framework in Frameworks */,
+				B25ACDC017A9A95F009EC40B /* AVFoundation.framework in Frameworks */,
+				B25ACDBE17A9A952009EC40B /* CoreVideo.framework in Frameworks */,
+				B25ACDBC17A9A948009EC40B /* CoreMedia.framework in Frameworks */,
 				B2FF0EF31770AC190003D95E /* SystemConfiguration.framework in Frameworks */,
 				B2FF0EF11770AC020003D95E /* CoreTelephony.framework in Frameworks */,
 				B24A06E816BADED700235F12 /* libz.dylib in Frameworks */,
@@ -429,6 +455,7 @@
 				C06DD66514FE81AC00C5D033 /* libiSqlClientLibrary.a in Frameworks */,
 				B2B34FFB175E78B0004D5CE6 /* libTestFlight.a in Frameworks */,
 				B2FF0EEF1770ABC30003D95E /* NewRelicAgent.framework in Frameworks */,
+				B25ACDB817A9A756009EC40B /* libRedLaserSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +498,16 @@
 		29B97315FDCFA39411CA2CEA /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				B24AB40616FD596B0017B00E /* minizip */,
+				B25ACDB717A9A756009EC40B /* RedLaserSDK.h */,
+				B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */,
+				B25ACDC717A9A9AE009EC40B /* libiconv.dylib */,
+				B25ACDC517A9A99E009EC40B /* libstdc++.dylib */,
+				B25ACDC317A9A986009EC40B /* Security.framework */,
+				B25ACDC117A9A979009EC40B /* OpenGLES.framework */,
+				B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */,
+				B25ACDBD17A9A952009EC40B /* CoreVideo.framework */,
+				B25ACDBB17A9A948009EC40B /* CoreMedia.framework */,
+				B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */,
 				B24AB41016FD596B0017B00E /* ZipArchive.h */,
 				B24AB41116FD596B0017B00E /* ZipArchive.mm */,
 				B226C04916762BDC00EE3934 /* UICustomSwitch.h */,
@@ -485,6 +521,7 @@
 				C0C32B6315A777FB008DAB82 /* LGViewHUD.m */,
 				B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */,
 				B2B34FF8175E77E7004D5CE6 /* TestFlight.h */,
+				B24AB40616FD596B0017B00E /* minizip */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -935,6 +972,7 @@
 				B2087B0617943EB70091EF6A /* Installer.xib in Resources */,
 				B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */,
 				B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */,
+				B25ACDBA17A9A8A4009EC40B /* RedLaser_License.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
