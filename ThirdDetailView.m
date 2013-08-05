@@ -12,16 +12,39 @@
 #import "sqlite3.h"
 #import "VanStock.h"
 #import "Installer.h"
+#import "RedLaserSDK.h"
+#import "RedBoxOverlayController.h"
+#import "scanHistory.h"
 
 @implementation ThirdDetailView
 @synthesize installerActionSheet;
 @synthesize installersList;
+@synthesize scanHistoryPopoverController;
+@synthesize addBtnArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        @try {
+    		NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                                          NSUserDomainMask, YES) objectAtIndex:0];
+			NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
+			scanHistoryArray = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+		}
+		@catch (...) 
+		{
+    	}
+        if (!scanHistoryArray)
+			scanHistoryArray = [[NSMutableArray alloc] init];
+        // We create the BarcodePickerController here so that we can call prepareToScan before
+		// the user actually requests a scan.
+		pickerController = [[BarcodePickerController alloc] init];
+		[pickerController setDelegate:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive:)
+                                                     name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     return self;
 }
@@ -40,8 +63,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"%d", RL_CheckReadyStatus());
-    
+    int sdkStatus = RL_CheckReadyStatus();
+    NSString *sdkStatusString = nil;
+	switch (sdkStatus)
+	{
+		case RLState_EvalModeReady: sdkStatusString = @"Eval Mode Ready"; break;
+		case RLState_LicensedModeReady: sdkStatusString = @"Licensed Mode Ready"; break;
+		case RLState_MissingOSLibraries: sdkStatusString = @"Missing OS Libs"; break;
+		case RLState_NoCamera: sdkStatusString = @"No Camera"; break;
+		case RLState_BadLicense: sdkStatusString = @"Bad License"; break;
+		case RLState_ScanLimitReached: sdkStatusString = @"Scan Limit Reached"; break;
+		default: sdkStatusString = @"Unknown"; break;
+	}
+	NSLog(@"%@", [NSString stringWithFormat:@"SDK Ready Status: %@", sdkStatusString]);
+    [pickerController prepareToScan];
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(reloadInstallers)
@@ -89,7 +124,7 @@
         [self.scrollview setContentSize:CGSizeMake(703, 818)];
     }
     UITapGestureRecognizer *tapGesture =
-    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTap)];
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addSerial:)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
     [self checkComplete];
     
@@ -148,6 +183,70 @@
 - (void)viewDidAppear:(BOOL)animated
 {
      
+}
+
+- (void) appBecameActive:(NSNotification *) notification
+{
+	[pickerController prepareToScan];
+}
+
+- (void) barcodePickerController:(BarcodePickerController*)picker returnResults:(NSSet *)results
+{
+	[[UIApplication sharedApplication] setStatusBarHidden:NO];
+	
+	// Restore main screen (and restore title bar for 3.0)
+	//[self dismissModalViewControllerAnimated:TRUE];
+    [self dismissViewControllerAnimated:true completion:nil];
+	
+	// If there's any results, save them in our scan history
+	if (results && [results count])
+	{
+		NSMutableDictionary *scanSession = [[NSMutableDictionary alloc] init];
+		[scanSession setObject:[NSDate date] forKey:@"Session End Time"];
+		[scanSession setObject:[results allObjects] forKey:@"Scanned Items"];
+		[scanHistoryArray insertObject:scanSession atIndex:0];
+        // if history has more than 10 records, only include the last 10
+        if ([scanHistoryArray count] > 10) {
+            scanHistoryArray = [[scanHistoryArray subarrayWithRange:NSMakeRange(0, 10)] mutableCopy];
+        }		
+		// Save our new scans out to the archive file
+		NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                                      NSUserDomainMask, YES) objectAtIndex:0];
+		NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
+		[NSKeyedArchiver archiveRootObject:scanHistoryArray toFile:archivePath];
+		
+        
+		//[firstTimeView setHidden:TRUE];
+	}        
+    
+    scanHistory *scanHistoryViewController =[[scanHistory alloc] initWithNibName:@"scanHistory" bundle:[NSBundle mainBundle]];
+    scanHistoryViewController.thirdViewController = self;
+    
+    UIPopoverController *popover =
+    [[UIPopoverController alloc] initWithContentViewController:scanHistoryViewController];
+    
+    popover.delegate = self;
+    scanHistoryPopoverController = popover;
+    
+    //convert rect from self.scrollview's coordinate to self.view's coordinate
+    CGRect popoverRect = CGRectMake(168, 178 + self.scanTag * 65, 383, 30);
+    popoverRect = [self.scrollview convertRect:CGRectMake(168, 178 + self.scanTag * 65, 383, 30) toView:self.view];
+    
+    [scanHistoryPopoverController         presentPopoverFromRect:popoverRect
+                                                          inView:self.view
+                                        permittedArrowDirections:UIPopoverArrowDirectionRight
+                                                        animated:YES];
+    
+    [scanHistoryPopoverController setPopoverContentSize:CGSizeMake(300, 400) animated:NO];
+}
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    return YES;
+}
+
+- (void)popoverControllerDidDismissPopover:
+(UIPopoverController *)popoverController {
+    
 }
 
 - (void)reloadInstallers {
@@ -242,6 +341,19 @@
     vanStockModal.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     vanStockModal.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:vanStockModal animated:YES completion:nil];
+}
+
+- (IBAction)redLaser:(UIButton *)sender {
+    
+    RedBoxOverlayController *overlayController = [[RedBoxOverlayController alloc] init];
+    self.scanTag = sender.tag;
+	[pickerController setOverlay:overlayController];
+    pickerController.orientation = UIImageOrientationUp;
+    // hide the status bar and show the scanner view
+    pickerController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    pickerController.modalPresentationStyle = UIModalPresentationFormSheet;
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [self presentViewController:pickerController animated:YES completion:nil];
 }
 
 - (void)saveSerialNumber {
@@ -471,15 +583,26 @@
     [button addTarget:self
                action:@selector(removeButtonClicked:)
      forControlEvents:UIControlEventTouchDown];    
-    button.frame = CGRectMake(629, lastInputY + 67, 26, 25);
+    button.frame = CGRectMake(120, lastInputY + 67, 26, 25);
     [button setImage:[UIImage imageNamed:@"onebit_33.png"] forState:UIControlStateNormal];    
     
     [self.scrollview addSubview:button];
+    
+    UIButton *scanButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [scanButton setTag:addBtnCount+3];
+    [scanButton addTarget:self
+                   action:@selector(redLaser:)
+         forControlEvents:UIControlEventTouchDown];
+    scanButton.frame = CGRectMake(629, lastInputY + 62, 36, 36);
+    [scanButton setImage:[UIImage imageNamed:@"camera-button.png"] forState:UIControlStateNormal];
+    
+    [self.scrollview addSubview:scanButton];
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:textFieldRounded forKey:@"textFieldRounded"];
     [dict setObject:label forKey:@"label"];
     [dict setObject:button forKey:@"button"];
+    [dict setObject:scanButton forKey:@"scanButton"];
     [addBtnArray addObject:dict];
     
     [self.addBtn setFrame:CGRectMake(165, lastInputY + 115, 29, 29)];
@@ -523,6 +646,7 @@
     [[dict objectForKey:@"textFieldRounded"] removeFromSuperview];
     [[dict objectForKey:@"label"] removeFromSuperview];
     [[dict objectForKey:@"button"] removeFromSuperview];
+    [[dict objectForKey:@"scanButton"] removeFromSuperview];
     [addBtnArray removeObjectAtIndex:index];
     addBtnCount--;
     lastInputY -= 65;
@@ -535,7 +659,7 @@
         y = [[dict objectForKey:@"label"] frame].origin.y;
         [[dict objectForKey:@"label"] setFrame: CGRectMake(576, y - 65, 50, 21)];
         y = [[dict objectForKey:@"button"] frame].origin.y;
-        [[dict objectForKey:@"button"] setFrame: CGRectMake(629, y - 65, 26, 25)];
+        [[dict objectForKey:@"button"] setFrame: CGRectMake(120, y - 65, 26, 25)];
         
         [[dict objectForKey:@"button"] removeTarget:self
                                              action:@selector(removeButtonClicked:)
@@ -544,6 +668,16 @@
         [[dict objectForKey:@"button"] addTarget:self
                                           action:@selector(removeButtonClicked:)
                                 forControlEvents:UIControlEventTouchDown];
+        y = [[dict objectForKey:@"scanButton"] frame].origin.y;
+        [[dict objectForKey:@"scanButton"] setFrame: CGRectMake(629, y - 65, 36, 36)];
+        
+        [[dict objectForKey:@"scanButton"] removeTarget:self
+                                                 action:@selector(redLaser:)
+                                       forControlEvents:UIControlEventTouchDown];
+        [[dict objectForKey:@"scanButton"] setTag:i+3];
+        [[dict objectForKey:@"scanButton"] addTarget:self
+                                              action:@selector(redLaser:)
+                                    forControlEvents:UIControlEventTouchDown];
     }
     
     [self.addBtn setFrame:CGRectMake(165, lastInputY + 50, 29, 29)];

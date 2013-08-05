@@ -10,10 +10,12 @@
 #import "UICustomSwitch.h"
 #import "RedLaserSDK.h"
 
-@interface ThirdDetailView : UIViewController<UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>{
+@interface ThirdDetailView : UIViewController<BarcodePickerControllerDelegate, UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>{
     float lastInputY;
     int addBtnCount;
-    NSMutableArray *addBtnArray;
+    BarcodePickerController		*pickerController;
+    NSMutableArray				*scanHistoryArray;
+    UIPopoverController *scanHistoryPopoverController;
 }
 
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *gestureRecognizer;
@@ -21,7 +23,7 @@
 - (IBAction)statusChanged:(id)sender;
 - (IBAction)serialNoChanged:(id)sender;
 
-
+@property (strong, nonatomic) NSMutableArray *addBtnArray;
 @property (strong, nonatomic) IBOutlet UITextField *installers;
 @property (strong, nonatomic) IBOutlet UIButton *statusBtn;
 @property (strong, nonatomic) IBOutlet UITextField *statusOutlet;
@@ -40,10 +42,16 @@
 @property (strong, nonatomic) IBOutlet UIButton *editVanStock;
 @property (strong, nonatomic) IBOutlet UITextView *vanStockTextView;
 
+@property (nonatomic, strong) UIPopoverController *scanHistoryPopoverController;
+@property (nonatomic) int scanTag;
+
 - (IBAction)addSerial:(id)sender;
 - (IBAction)autoFill:(UIButton *)sender;
 - (IBAction)pullInstallers:(UIButton *)sender;
 - (IBAction)editVanStock:(id)sender;
+- (IBAction)redLaser:(UIButton *)sender;
+
+-(void)saveSerialNumber;
 -(void)checkComplete;
 - (void)reloadInstallers;
 

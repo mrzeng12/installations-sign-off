@@ -11,6 +11,8 @@
 		<key>App Bundle IDs</key>
 		<array>
 			<string>com.teq.www.Installation</string>
+			<string>com.yourcompany.Installation</string>
+			<string>com.teq.Installation</string>
 		</array>
 	</dict>
 	
@@ -18,15 +20,15 @@
 </dict>
 </plist>
 -----BEGIN SIGNATURE-----
-owr7W2J7NDTeumS1Qeu2lLn4FPrdsgxTTD/s3iaIJiE9zvFxOg6sAH7RPzzhD8UI
-q9N10UPLix/aLA7TjWq6tM4bo76Sac+aY7mjaO6uF/Ltt9mNDKjzBMNmOTKReQoH
-Tcpx/I4KmJIzFoBda1vzfoKVfh4SZpDbygybm3w297QR+z7cX+MIV01GxEWOUZaU
-JlP6np/o02fVPVoqtMrwTafCaie9VbL+AMGF5B0Gv3oenTLFlQfbz0MNNjNxpnVl
-PmFmir580zG0/6W0lOi6Zl5gsh8DBxm+Xq8batQcaOWkuF9O0thC+dctuNPfJrs7
-XQcxShomEXbcSo/4bp0DsBw7dLwI40Opt2gVmdejRNZd1LQsXhF4ctbtXEl8JjAR
-/dLnhGizrcSV0PYrGAdmbAtQ7y0rO2CeU0MfwNbFKJomyi56FaOgVkpy8k/f6Ak5
-1xGDw244NlNAsD5+w3YfLSXC8QSiVMSE2y7MAV1DmS7R+5D1MaB5Xn3FP5hSxaSP
-X1f8zeJ0EmPUD8qNdr6JqYutD13OncaisclZ20dHUI3hPm1uvXnkdQRc5nGncuVp
-MrlOdvedJlQzYuqBjKN0ir9QWCIFElhSpE8aFthASP7aKVvnmgGzHi37ux/l6svp
-Mfc6h4dnsrKOP9ad1BwRCkk1cGXRXgachBsIoVJaG7g=
+RwxIL4DFatK1xxQMF2o2dZ2NdoaRqBBPMHlAvC3yqJF4r4ToUJWaJaUhT1Ul/zOO
+fe2GN2QlVHmfqW3VtpxsQGRZjQCyl+uMrjG/6lv84KKhQbo6TCqhLrIlkNggKSU9
+g0P6bpumQpoL7LLqV5ywVEuKm5mrlGHD+7EU/PNJcKzRChtULVuFf3vIeEibHCJP
++ci4SHdjIDiMgv/KrISNnvomF/GfU4nm6b2zlqOQSAvLDjkAKD5LK665K5MJ2Ncj
+2Iy+Z5da/Yb0mROdXmG/eo2knmGVq6Gp4/oS9W2VNWRBmMNH66XyifDj2rOaa96y
+esiZBemT+YqYecrRA1ihY/Yai+wcl2HA25wuFFlMX5SKaxVt5iKetjN1GmB65AtX
+cU0Lz3fqgm/NtVFlPiOcYOjPh7Cmr3rJP5qJui0ZgEeDb5J0DJ+Bbxfw07Wm/p45
+it3Z1cQPE+cMaIRV+LbAtxETKam/ftLGeBfOJ4D8n6gbvDs75GwV16ZSKcYjrM6N
+Z8FBHY7fENm7j1yUMtMdsw6qT+5zqs1iOYqw8j/GLNwvMz6udYbhf05M98c5nd6V
+xBcMS9kIX0vf+BiLYq4V4eTzHfzBUDMMuCbV2/qMoDIxuz3F/ToJVg2ENfEfbNYO
+M1fIlcpItfb/c/7Pf6Lq3rx3tBO5gKGfZHat8byVU3s=
 -----END SIGNATURE-----

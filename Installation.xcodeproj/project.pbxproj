@@ -23,6 +23,12 @@
 		B200713016B98A3900A98A9B /* CNO-1.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712E16B98A3900A98A9B /* CNO-1.png */; };
 		B200713116B98A3900A98A9B /* CNO-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712F16B98A3900A98A9B /* CNO-2.png */; };
 		B201FD6917733E7D00EC2309 /* installation-reports-4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B201FD6817733E7D00EC2309 /* installation-reports-4.jpg */; };
+		B203489117ABE9C6007CF50D /* scanHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = B203488F17ABE9C6007CF50D /* scanHistory.m */; };
+		B203489217ABE9C6007CF50D /* scanHistory.xib in Resources */ = {isa = PBXBuildFile; fileRef = B203489017ABE9C6007CF50D /* scanHistory.xib */; };
+		B206324317AA966100C6AB67 /* RedLaser_License.xml in Resources */ = {isa = PBXBuildFile; fileRef = B206324217AA966100C6AB67 /* RedLaser_License.xml */; };
+		B206324717AADD8A00C6AB67 /* camera-button.png in Resources */ = {isa = PBXBuildFile; fileRef = B206324617AADD8A00C6AB67 /* camera-button.png */; };
+		B206324E17AAEA9500C6AB67 /* RedBoxOverlayController.m in Sources */ = {isa = PBXBuildFile; fileRef = B206324C17AAEA9500C6AB67 /* RedBoxOverlayController.m */; };
+		B206324F17AAEA9500C6AB67 /* RedBoxOverlayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B206324D17AAEA9500C6AB67 /* RedBoxOverlayController.xib */; };
 		B2087B00179423DF0091EF6A /* VanStock.m in Sources */ = {isa = PBXBuildFile; fileRef = B2087AFE179423DF0091EF6A /* VanStock.m */; };
 		B2087B01179423DF0091EF6A /* VanStock.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2087AFF179423DF0091EF6A /* VanStock.xib */; };
 		B2087B0517943EB70091EF6A /* Installer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2087B0317943EB60091EF6A /* Installer.m */; };
@@ -51,7 +57,6 @@
 		B256DCB2178A45D3003F4941 /* installation-reports-6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */; };
 		B256DCB4178A4ED9003F4941 /* installation-reports-8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */; };
 		B25ACDB817A9A756009EC40B /* libRedLaserSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */; };
-		B25ACDBA17A9A8A4009EC40B /* RedLaser_License.xml in Resources */ = {isa = PBXBuildFile; fileRef = B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */; };
 		B25ACDBC17A9A948009EC40B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBB17A9A948009EC40B /* CoreMedia.framework */; };
 		B25ACDBE17A9A952009EC40B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBD17A9A952009EC40B /* CoreVideo.framework */; };
 		B25ACDC017A9A95F009EC40B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */; };
@@ -220,6 +225,14 @@
 		B202AA10176A126F005ACF5D /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		B202AA12176A1299005ACF5D /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		B202AA14176A129C005ACF5D /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		B203488E17ABE9C6007CF50D /* scanHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scanHistory.h; sourceTree = "<group>"; };
+		B203488F17ABE9C6007CF50D /* scanHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scanHistory.m; sourceTree = "<group>"; };
+		B203489017ABE9C6007CF50D /* scanHistory.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = scanHistory.xib; sourceTree = "<group>"; };
+		B206324217AA966100C6AB67 /* RedLaser_License.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RedLaser_License.xml; sourceTree = "<group>"; };
+		B206324617AADD8A00C6AB67 /* camera-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera-button.png"; sourceTree = "<group>"; };
+		B206324B17AAEA9500C6AB67 /* RedBoxOverlayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedBoxOverlayController.h; sourceTree = "<group>"; };
+		B206324C17AAEA9500C6AB67 /* RedBoxOverlayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RedBoxOverlayController.m; sourceTree = "<group>"; };
+		B206324D17AAEA9500C6AB67 /* RedBoxOverlayController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RedBoxOverlayController.xib; sourceTree = "<group>"; };
 		B2087AFD179423DF0091EF6A /* VanStock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VanStock.h; sourceTree = "<group>"; };
 		B2087AFE179423DF0091EF6A /* VanStock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VanStock.m; sourceTree = "<group>"; };
 		B2087AFF179423DF0091EF6A /* VanStock.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VanStock.xib; sourceTree = "<group>"; };
@@ -259,7 +272,6 @@
 		B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-8.jpg"; sourceTree = "<group>"; };
 		B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libRedLaserSDK.a; sourceTree = "<group>"; };
 		B25ACDB717A9A756009EC40B /* RedLaserSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RedLaserSDK.h; sourceTree = "<group>"; };
-		B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RedLaser_License.xml; sourceTree = "<group>"; };
 		B25ACDBB17A9A948009EC40B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		B25ACDBD17A9A952009EC40B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -498,6 +510,7 @@
 		29B97315FDCFA39411CA2CEA /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				B206324217AA966100C6AB67 /* RedLaser_License.xml */,
 				B25ACDB717A9A756009EC40B /* RedLaserSDK.h */,
 				B25ACDB617A9A756009EC40B /* libRedLaserSDK.a */,
 				B25ACDC717A9A9AE009EC40B /* libiconv.dylib */,
@@ -507,7 +520,6 @@
 				B25ACDBF17A9A95F009EC40B /* AVFoundation.framework */,
 				B25ACDBD17A9A952009EC40B /* CoreVideo.framework */,
 				B25ACDBB17A9A948009EC40B /* CoreMedia.framework */,
-				B25ACDB917A9A8A4009EC40B /* RedLaser_License.xml */,
 				B24AB41016FD596B0017B00E /* ZipArchive.h */,
 				B24AB41116FD596B0017B00E /* ZipArchive.mm */,
 				B226C04916762BDC00EE3934 /* UICustomSwitch.h */,
@@ -529,6 +541,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B206324617AADD8A00C6AB67 /* camera-button.png */,
 				B24D2FCC178337A40018DBB9 /* duplicate.png */,
 				B24D2FC81781C9110018DBB9 /* box.jpg */,
 				B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */,
@@ -773,6 +786,12 @@
 				B2087AFD179423DF0091EF6A /* VanStock.h */,
 				B2087AFE179423DF0091EF6A /* VanStock.m */,
 				B2087AFF179423DF0091EF6A /* VanStock.xib */,
+				B206324B17AAEA9500C6AB67 /* RedBoxOverlayController.h */,
+				B206324C17AAEA9500C6AB67 /* RedBoxOverlayController.m */,
+				B206324D17AAEA9500C6AB67 /* RedBoxOverlayController.xib */,
+				B203488E17ABE9C6007CF50D /* scanHistory.h */,
+				B203488F17ABE9C6007CF50D /* scanHistory.m */,
+				B203489017ABE9C6007CF50D /* scanHistory.xib */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -972,7 +991,10 @@
 				B2087B0617943EB70091EF6A /* Installer.xib in Resources */,
 				B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */,
 				B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */,
-				B25ACDBA17A9A8A4009EC40B /* RedLaser_License.xml in Resources */,
+				B206324317AA966100C6AB67 /* RedLaser_License.xml in Resources */,
+				B206324717AADD8A00C6AB67 /* camera-button.png in Resources */,
+				B206324F17AAEA9500C6AB67 /* RedBoxOverlayController.xib in Resources */,
+				B203489217ABE9C6007CF50D /* scanHistory.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1034,6 +1056,8 @@
 				B2F8A76717159B9800EAA883 /* FileSystem.m in Sources */,
 				B2087B00179423DF0091EF6A /* VanStock.m in Sources */,
 				B2087B0517943EB70091EF6A /* Installer.m in Sources */,
+				B206324E17AAEA9500C6AB67 /* RedBoxOverlayController.m in Sources */,
+				B203489117ABE9C6007CF50D /* scanHistory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1107,8 +1131,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

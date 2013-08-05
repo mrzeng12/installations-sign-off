@@ -170,6 +170,7 @@
 
 @property (strong, nonatomic) NSString *customOnthefly;
 
+@property (strong, nonatomic) NSString *scanBarCode;
 
 
 @property (strong, nonatomic) NSString *current_activity_no;
