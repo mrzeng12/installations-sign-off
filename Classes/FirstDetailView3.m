@@ -39,8 +39,10 @@
 @synthesize customeragreement;
 @synthesize scrollView;
 @synthesize gestureRecognizer;
+@synthesize changeOrder;
+@synthesize changeApprovedByPrintName;
 
-@synthesize  appointmentList, activityIndicator;
+@synthesize appointmentList, activityIndicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -71,7 +73,9 @@
     gestureRecognizer.delegate = self;
     
     [scrollView setFrame:CGRectMake(0, 320, 703, 704)];
-    [scrollView setContentSize:CGSizeMake(703, 1356)];
+    [scrollView setContentSize:CGSizeMake(703, 1698)];
+    [self.view addSubview:scrollView];
+    
     activityIndicator.hidesWhenStopped = YES;    
     
     schoolNameOutlet.delegate = self;
@@ -89,14 +93,21 @@
     arrivalTimeOutlet.delegate = self;
     departureTimeOutlet.delegate = self;
     jobSummary.delegate = self;
+    changeApprovedByPrintName.delegate = self;
         
-    jobSummary.text = @"Please type job summary here...";
-    jobSummary.textColor = [UIColor lightGrayColor];
+    //jobSummary.text = @"Please type job summary here...";
+    jobSummary.textColor = [UIColor blackColor];
     jobSummary.layer.borderWidth = 1;
     jobSummary.layer.borderColor = [[UIColor grayColor] CGColor];
     jobSummary.layer.cornerRadius = 7.0f;
     jobSummary.delegate = self;
-                
+    
+    changeOrder.textColor = [UIColor blackColor];
+    changeOrder.layer.borderWidth = 1;
+    changeOrder.layer.borderColor = [[UIColor grayColor] CGColor];
+    changeOrder.layer.cornerRadius = 7.0f;
+    changeOrder.delegate = self;
+    
     [super viewDidLoad];
     
     // Do any additional setup after loading the view from its nib.
@@ -237,6 +248,9 @@
     if (sender == departureTimeOutlet) {
         database.current_departure_time = departureTimeOutlet.text;
     }
+    if (sender == changeApprovedByPrintName) {
+        database.current_change_approved_by_print_name = changeApprovedByPrintName.text;
+    }
 }
 
 - (void) clearFields
@@ -273,6 +287,8 @@
     database.current_departure_time = departureTimeOutlet.text = nil;
     
     database.current_job_summary = jobSummary.text = nil;
+    
+    database.current_change_order = changeOrder.text = nil;
     
     database.current_customer_signature_available = nil;
         
@@ -378,6 +394,9 @@
     isql *database = [isql initialize];
     address2Outlet.text = addressOutlet.text;
     database.current_address_2 = database.current_address;
+}
+
+- (IBAction)triggerPopover:(id)sender {
 }
 
 - (NSInteger) numberOfPreviewItemsInPreviewController: (QLPreviewController *) controller
@@ -525,7 +544,7 @@
         if (sqlite3_open(dbpath, &db) == SQLITE_OK)
         {       
             
-            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Reserved 7], [Date], [File1], [File2], [Type_of_work], [Arrival_time], [Departure_time], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes], [Reserved 2], [Reserved 3], [Reserved 6] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
+            NSString *selectSQL = [NSString stringWithFormat: @"select distinct [Bp_code], [Location], [District], [Primary_contact], [Pod], [Sales_Order], [Reserved 7], [Date], [File1], [File2], [Type_of_work], [Arrival_time], [Departure_time], [Agreement_1], [Agreement_2],  [Print_name_1], [Print_name_3], [Signature_file_directory_1], [Signature_file_directory_3], [Comlete_PDF_file_name], [Reserved 1], [Customer_notes], [Reserved 2], [Reserved 3], [Reserved 6], [Reserved 8], [Reserved 9], [Reserved 10] from local_dest where [Activity_no]='%@' AND [Teq_rep] like '%%%@%%' limit 0, 1;", database.current_activity_no, database.current_teq_rep ];
             
             const char *select_stmt = [selectSQL UTF8String];
             
@@ -607,20 +626,20 @@
                     database.current_job_summary = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     jobSummary.text = database.current_job_summary;
                     
-                    if (jobSummary.text.length == 0) {
-                        jobSummary.textColor = [UIColor lightGrayColor];
-                        jobSummary.text = @"Please type job summary here...";
-                    }
-                    else {
-                        jobSummary.textColor = [UIColor blackColor];
-                    }
-                    
                     database.current_customer_notes = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     addressOutlet.text = database.current_address;
                     database.current_address_2 = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     address2Outlet.text = database.current_address_2;
                     database.current_customer_signature_available = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    database.current_change_order = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    changeOrder.text = database.current_change_order;
+                    
+                    database.current_change_approved_by_print_name = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    changeApprovedByPrintName.text = database.current_change_approved_by_print_name;
+                    
+                    database.current_change_approved_by_signature = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    
                 } 
                 
                 sqlite3_finalize(statement);
@@ -720,9 +739,6 @@
                     
                     database.current_address = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
                     addressOutlet.text = database.current_address;
-                                        
-                    jobSummary.textColor = [UIColor lightGrayColor];
-                    jobSummary.text = @"Please type job summary here...";
                     
                     database.current_customer_signature_available = @"Yes"; //default to be yes
                 } 
@@ -787,12 +803,7 @@
 
 
 - (BOOL) textViewShouldBeginEditing: (UITextView *)textView
-{    
-    if ([textView.text isEqualToString: @"Please type job summary here..."]) {
-        textView.text = @"";
-    }    
-    textView.textColor = [UIColor blackColor];
-    
+{
     gestureRecognizer.cancelsTouchesInView = YES;
     const float movementDuration = 0.3f;
     [UIView beginAnimations: @"anim" context: nil];
@@ -811,10 +822,7 @@
 -(void) textViewDidEndEditing:(UITextView *)textView
 {    
     if (textView.tag == 2) {
-        if (textView.text.length == 0) {
-            textView.textColor = [UIColor lightGrayColor];
-            textView.text = @"Please type job summary here...";
-        }
+        
     }
 }
 
@@ -822,9 +830,10 @@
 {
     isql *database = [isql initialize];    
     if (textView.tag == 2) {
-        if (![textView.text isEqualToString: @"Please type job summary here..."]) {
-            database.current_job_summary = textView.text;
-        }
+        database.current_job_summary = textView.text;
+    }
+    if (textView.tag == 1) {
+        database.current_change_order = textView.text;
     }
 }
 

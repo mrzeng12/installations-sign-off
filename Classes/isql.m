@@ -1871,7 +1871,7 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Reserved 7]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@' or [Reserved 7] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Reserved 7]='%@', [Reserved 8]='%@', [Reserved 9]='%@', [Reserved 10]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@' or [Reserved 7] <>'%@'or [Reserved 8] <>'%@'or [Reserved 9] <>'%@'or [Reserved 10] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
@@ -1925,6 +1925,12 @@ static SqlClient *client = nil;
      (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_order==nil)?@"":[database.current_change_order stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_approved_by_print_name==nil)?@"":[database.current_change_approved_by_print_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_approved_by_signature==nil)?@"":[database.current_change_approved_by_signature stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      [formatter stringFromDate: today],
           
@@ -1985,7 +1991,13 @@ static SqlClient *client = nil;
      
      (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_order==nil)?@"":[database.current_change_order stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_approved_by_print_name==nil)?@"":[database.current_change_approved_by_print_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
+     
+     (database.current_change_approved_by_signature==nil)?@"":[database.current_change_approved_by_signature stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      ];
     
     

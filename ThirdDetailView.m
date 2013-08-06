@@ -123,6 +123,7 @@
     else {
         [self.scrollview setContentSize:CGSizeMake(703, 818)];
     }
+    [self.view addSubview:self.scrollview];
     UITapGestureRecognizer *tapGesture =
     [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addSerial:)];
     [self.addBtnDesc addGestureRecognizer:tapGesture];
@@ -192,6 +193,8 @@
 
 - (void) barcodePickerController:(BarcodePickerController*)picker returnResults:(NSSet *)results
 {
+    isql *database = [isql initialize];
+    
 	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 	
 	// Restore main screen (and restore title bar for 3.0)
@@ -205,9 +208,9 @@
 		[scanSession setObject:[NSDate date] forKey:@"Session End Time"];
 		[scanSession setObject:[results allObjects] forKey:@"Scanned Items"];
 		[scanHistoryArray insertObject:scanSession atIndex:0];
-        // if history has more than 10 records, only include the last 10
-        if ([scanHistoryArray count] > 10) {
-            scanHistoryArray = [[scanHistoryArray subarrayWithRange:NSMakeRange(0, 10)] mutableCopy];
+        // if history has more than 1 records, only include the last one
+        if ([scanHistoryArray count] > 1) {
+            scanHistoryArray = [[scanHistoryArray subarrayWithRange:NSMakeRange(0, 1)] mutableCopy];
         }		
 		// Save our new scans out to the archive file
 		NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
@@ -215,29 +218,53 @@
 		NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
 		[NSKeyedArchiver archiveRootObject:scanHistoryArray toFile:archivePath];
 		
-        
-		//[firstTimeView setHidden:TRUE];
-	}        
-    
-    scanHistory *scanHistoryViewController =[[scanHistory alloc] initWithNibName:@"scanHistory" bundle:[NSBundle mainBundle]];
-    scanHistoryViewController.thirdViewController = self;
-    
-    UIPopoverController *popover =
-    [[UIPopoverController alloc] initWithContentViewController:scanHistoryViewController];
-    
-    popover.delegate = self;
-    scanHistoryPopoverController = popover;
-    
-    //convert rect from self.scrollview's coordinate to self.view's coordinate
-    CGRect popoverRect = CGRectMake(168, 178 + self.scanTag * 65, 383, 30);
-    popoverRect = [self.scrollview convertRect:CGRectMake(168, 178 + self.scanTag * 65, 383, 30) toView:self.view];
-    
-    [scanHistoryPopoverController         presentPopoverFromRect:popoverRect
-                                                          inView:self.view
-                                        permittedArrowDirections:UIPopoverArrowDirectionRight
-                                                        animated:YES];
-    
-    [scanHistoryPopoverController setPopoverContentSize:CGSizeMake(300, 400) animated:NO];
+        if ([results count] == 1) {
+            
+            NSMutableDictionary *scanSession = [scanHistoryArray objectAtIndex:0];
+            BarcodeResult *barcode = [[scanSession objectForKey:@"Scanned Items"] objectAtIndex:0];
+            database.scanBarCode = barcode.barcodeString;
+            
+            if (self.scanTag == 0) {
+                self.SerialSB.text = database.scanBarCode;
+            }
+            else if (self.scanTag == 1) {
+                self.SerialPJ.text = database.scanBarCode;
+            }
+            else if (self.scanTag == 2) {
+                self.SerialSK.text = database.scanBarCode;
+            }
+            else {
+                NSMutableDictionary *dict = [self.addBtnArray objectAtIndex:(self.scanTag-3)];
+                UITextField *textField = [dict objectForKey:@"textFieldRounded"];
+                textField.text = database.scanBarCode;
+            }
+            [self saveSerialNumber];
+            [self checkComplete];
+        }
+        else {
+            // If it yields more than one result, open the history popover
+            scanHistory *scanHistoryViewController =[[scanHistory alloc] initWithNibName:@"scanHistory" bundle:[NSBundle mainBundle]];
+            scanHistoryViewController.thirdViewController = self;
+            
+            UIPopoverController *popover =
+            [[UIPopoverController alloc] initWithContentViewController:scanHistoryViewController];
+            
+            popover.delegate = self;
+            scanHistoryPopoverController = popover;
+            
+            //convert rect from self.scrollview's coordinate to self.view's coordinate
+            CGRect popoverRect = CGRectMake(168, 178 + self.scanTag * 65, 383, 30);
+            popoverRect = [self.scrollview convertRect:CGRectMake(168, 178 + self.scanTag * 65, 383, 30) toView:self.view];
+            
+            [scanHistoryPopoverController         presentPopoverFromRect:popoverRect
+                                                                  inView:self.view
+                                                permittedArrowDirections:UIPopoverArrowDirectionRight
+                                                                animated:YES];
+            
+            [scanHistoryPopoverController setPopoverContentSize:CGSizeMake(300, 200) animated:NO];
+            //[firstTimeView setHidden:TRUE];
+        }
+	}  
 }
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
@@ -563,7 +590,7 @@
     textFieldRounded.autocorrectionType = UITextAutocorrectionTypeNo;
     textFieldRounded.keyboardType = UIKeyboardTypeDefault;
     //textFieldRounded.returnKeyType = UIReturnKeyDone;
-    textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;
+    //textFieldRounded.clearButtonMode = UITextFieldViewModeWhileEditing;
     textFieldRounded.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
     textFieldRounded.text = serial;
     [textFieldRounded addTarget:self action:@selector(serialNoChanged:) forControlEvents:UIControlEventEditingChanged];

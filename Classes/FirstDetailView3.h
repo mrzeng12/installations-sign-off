@@ -59,8 +59,11 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *typeofworkOutlet;
 
+@property (strong, nonatomic) IBOutlet UITextField *changeApprovedByPrintName;
 
 @property (strong, nonatomic) IBOutlet UITextView *jobSummary;
+
+@property (strong, nonatomic) IBOutlet UITextView *changeOrder;
 
 @property (strong, nonatomic) IBOutlet UIButton *typeofworkBtn;
 
@@ -87,6 +90,9 @@
 - (IBAction)autoFill:(UIButton *)sender;
 
 - (IBAction)duplicateAddress:(id)sender;
+
+- (IBAction)triggerPopover:(id)sender;
+
 
 @property (strong, nonatomic) IBOutlet UILabel *address2Label;
 
