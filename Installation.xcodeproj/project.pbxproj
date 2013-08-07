@@ -36,6 +36,7 @@
 		B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20C25F71784BEB800766F6D /* installation-reports-5.jpg */; };
 		B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */; };
 		B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */; };
+		B214FD6D17B2DF9F003314D7 /* installation-reports-10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */; };
 		B217A561160A0D9E00207EAF /* black-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B217A560160A0D9E00207EAF /* black-line.png */; };
 		B226C04B16762BDC00EE3934 /* UICustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = B226C04A16762BDC00EE3934 /* UICustomSwitch.m */; };
 		B226C05016762C0400EE3934 /* switchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = B226C04D16762C0400EE3934 /* switchThumb.png */; };
@@ -242,6 +243,7 @@
 		B20C25F71784BEB800766F6D /* installation-reports-5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-5.jpg"; sourceTree = "<group>"; };
 		B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_unchecked.png; sourceTree = "<group>"; };
 		B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-10.jpg"; sourceTree = "<group>"; };
+		B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-10.jpg"; sourceTree = "<group>"; };
 		B217A560160A0D9E00207EAF /* black-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-line.png"; sourceTree = "<group>"; };
 		B226C04916762BDC00EE3934 /* UICustomSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICustomSwitch.h; sourceTree = "<group>"; };
 		B226C04A16762BDC00EE3934 /* UICustomSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICustomSwitch.m; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				B206324617AADD8A00C6AB67 /* camera-button.png */,
 				B24D2FCC178337A40018DBB9 /* duplicate.png */,
 				B24D2FC81781C9110018DBB9 /* box.jpg */,
+				B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */,
 				B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */,
 				B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */,
 				B20C25F71784BEB800766F6D /* installation-reports-5.jpg */,
@@ -995,6 +998,7 @@
 				B206324717AADD8A00C6AB67 /* camera-button.png in Resources */,
 				B206324F17AAEA9500C6AB67 /* RedBoxOverlayController.xib in Resources */,
 				B203489217ABE9C6007CF50D /* scanHistory.xib in Resources */,
+				B214FD6D17B2DF9F003314D7 /* installation-reports-10.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

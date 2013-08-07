@@ -14,7 +14,7 @@
 @class CustomerAgreement;
 
 
-@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, QLPreviewControllerDataSource,QLPreviewControllerDelegate> {
+@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, QLPreviewControllerDataSource,QLPreviewControllerDelegate, UIPopoverControllerDelegate> {
     int found_in_local_dest;
     NSString *customAlertActivity;
 }
@@ -73,6 +73,8 @@
 
 @property (strong, nonatomic) IBOutlet UIButton *departureBtn;
 
+@property (strong, nonatomic) IBOutlet UIPopoverController *popoverController;
+
 - (IBAction)GoToNextPage;
 
 - (IBAction)saveCurrentField:(id)sender;
@@ -93,6 +95,7 @@
 
 - (IBAction)triggerPopover:(id)sender;
 
+@property (strong, nonatomic) IBOutlet UIButton *signatureBtn;
 
 @property (strong, nonatomic) IBOutlet UILabel *address2Label;
 

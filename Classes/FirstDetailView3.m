@@ -16,6 +16,7 @@
 #import "LGViewHUD.h"
 #import "quickLookModal.h"
 #import <QuickLook/QuickLook.h>
+#import "Signature.h"
 
 @implementation FirstDetailView3
 
@@ -41,6 +42,8 @@
 @synthesize gestureRecognizer;
 @synthesize changeOrder;
 @synthesize changeApprovedByPrintName;
+@synthesize popoverController;
+@synthesize signatureBtn;
 
 @synthesize appointmentList, activityIndicator;
 
@@ -66,6 +69,14 @@
 
 - (void)viewDidLoad
 {
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(coverPageCancelPopover)
+     name:@"coverPageCancelPopover" object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(coverPageCustomizedDismissPopover)
+     name:@"coverPageCustomizedDismissPopover" object:nil];
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(restoreView) name:UIKeyboardWillHideNotification object:nil];
     gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecognizer.cancelsTouchesInView = NO;
@@ -297,6 +308,12 @@
     
     self.pdfBtn2.userInteractionEnabled = NO;
     self.pdfBtn2.alpha = 0.5;
+    
+    [signatureBtn setImage:nil forState:UIControlStateNormal];
+    [signatureBtn.layer setCornerRadius:10.0f];
+    [signatureBtn.layer setMasksToBounds:YES];
+    [signatureBtn.layer setBorderWidth:1.0f];
+    [signatureBtn.layer setBorderColor:[UIColor grayColor].CGColor];
 }
 
 - (IBAction)changeTime:(id)sender {
@@ -397,6 +414,67 @@
 }
 
 - (IBAction)triggerPopover:(id)sender {
+    
+    isql *database = [isql initialize];
+    database.signature_filename = @"Change_Approved_By";
+    Signature *movies = [[Signature alloc] initWithNibName:@"Signature" bundle:[NSBundle mainBundle]];
+    
+    popoverController = [[UIPopoverController alloc] initWithContentViewController:movies];
+    popoverController.delegate = self;
+    
+    UIButton *button = sender;
+    
+    [self.popoverController
+     presentPopoverFromRect:[self.scrollView convertRect:button.frame toView:self.view]
+     inView:self.view
+     permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown
+     animated:YES];
+    
+    [self.popoverController setPopoverContentSize:CGSizeMake(1000, 400) animated:YES];
+}
+
+//---called when the user clicks outside the popover view---
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    
+    NSLog(@"popover about to be dismissed");
+    return NO;
+}
+
+//---called when the popover view is dismissed---
+- (void)popoverControllerDidDismissPopover:
+(UIPopoverController *)popoverController {
+    
+    NSLog(@"popover dismissed");
+}
+
+- (void) coverPageCancelPopover
+{
+    [self.popoverController dismissPopoverAnimated:NO];
+}
+
+- (void) coverPageCustomizedDismissPopover
+{
+    [self.popoverController dismissPopoverAnimated:NO];
+    isql *database = [isql initialize];
+    
+    /************* set button background images, wrap it inside round rect box ************/
+    NSString *imageString = [database sanitizeFile:database.current_change_approved_by_signature];
+    UIImage *backgroundImage = [self loadImage: imageString ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
+    
+    [signatureBtn setImage:backgroundImage forState:UIControlStateNormal];
+    [signatureBtn.layer setCornerRadius:10.0f];
+    [signatureBtn.layer setMasksToBounds:YES];
+    [signatureBtn.layer setBorderWidth:1.0f];
+    [signatureBtn.layer setBorderColor:[UIColor grayColor].CGColor];
+    
+}
+
+-(UIImage *) loadImage:(NSString *)fileName ofType:(NSString *)extension inDirectory:(NSString *)directoryPath {
+    
+    UIImage * result = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.%@", directoryPath, fileName, extension]];
+    
+    //NSLog(@"%@",[NSString stringWithFormat:@"%@/%@.%@", directoryPath, fileName, extension]);
+    return result;
 }
 
 - (NSInteger) numberOfPreviewItemsInPreviewController: (QLPreviewController *) controller
@@ -639,7 +717,15 @@
                     changeApprovedByPrintName.text = database.current_change_approved_by_print_name;
                     
                     database.current_change_approved_by_signature = [NSString stringWithFormat:@"%@", [[NSString alloc] initWithUTF8String:(const char *) sqlite3_column_text(statement, i++)]];
+                    /************* set button background images, wrap it inside round rect box ************/
+                    NSString *imageString = [database sanitizeFile:database.current_change_approved_by_signature];
+                    UIImage *backgroundImage = [self loadImage: imageString ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
                     
+                    [signatureBtn setImage:backgroundImage forState:UIControlStateNormal];
+                    [signatureBtn.layer setCornerRadius:10.0f];
+                    [signatureBtn.layer setMasksToBounds:YES];
+                    [signatureBtn.layer setBorderWidth:1.0f];
+                    [signatureBtn.layer setBorderColor:[UIColor grayColor].CGColor];
                 } 
                 
                 sqlite3_finalize(statement);
