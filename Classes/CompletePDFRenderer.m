@@ -411,7 +411,7 @@
     
     // Drawing commands
     
-    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-10" ofType:@"jpg"];
+    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-11" ofType:@"jpg"];
     NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
     UIImage * logo = [UIImage imageWithData:imageData];
     [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
@@ -481,7 +481,7 @@
         //decide where the data form row ends
         int cutoff_rows;
         if (page == 0) {
-            cutoff_rows = 16;
+            cutoff_rows = 8;//16;
         }
         else {
             cutoff_rows = 30;
@@ -511,7 +511,7 @@
         }
         float base_height;
         if (page == 0) {
-            base_height = 882;
+            base_height = 1229;//882;
         }
         else {
             base_height = 234;
@@ -559,7 +559,7 @@
     }
     float base_height;
     if (page == 0) {
-        base_height = 882;
+        base_height = 1229; //882;
     }
     else {
         base_height = 234;
