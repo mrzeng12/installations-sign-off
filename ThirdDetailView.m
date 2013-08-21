@@ -381,6 +381,8 @@
     pickerController.modalPresentationStyle = UIModalPresentationFormSheet;
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self presentViewController:pickerController animated:YES completion:nil];
+    pickerController.view.superview.autoresizingMask = UIViewAutoresizingFlexibleTopMargin |  UIViewAutoresizingFlexibleBottomMargin;
+    pickerController.view.superview.bounds = CGRectMake(0, 0, 800, 600);
 }
 
 - (void)saveSerialNumber {
