@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-//#define testing
+#define testing
 
 @implementation isql
 
@@ -654,12 +654,12 @@ static SqlClient *client = nil;
     NSData *data = [serialNoString dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-      
+    
     NSDate *today = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
     NSString *todayString = [formatter stringFromDate: today];
-        
+    
     NSString *thisTeqRep = [[Rowofdict objectForKey:@"Teq_rep"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisActivityNumber = [[Rowofdict objectForKey:@"Activity_no"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisRoomNumber = [[Rowofdict objectForKey:@"Room_Number"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
@@ -688,9 +688,9 @@ static SqlClient *client = nil;
         serialnumberCol = [self escapeString:serialnumberCol];
         notesCol = [self escapeString:notesCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol,  todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol,  @"convert(varchar, getdate(), 120)"]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol, @"convert(varchar, getdate(), 120)"]];
 #endif
        
     }       
@@ -713,9 +713,9 @@ static SqlClient *client = nil;
         
         NSString *installerCol = [self escapeString:oneItem];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, @"convert(varchar, getdate(), 120)"]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, @"convert(varchar, getdate(), 120)"]];
 #endif
     }
     
@@ -747,9 +747,9 @@ static SqlClient *client = nil;
             installerCol = [self escapeString:installerCol];
             materialCol = [self escapeString:materialCol];
 #ifdef testing
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, materialCol, @"convert(varchar, getdate(), 120)"]];
 #else
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, materialCol, @"convert(varchar, getdate(), 120)"]];
 #endif
         }
     }
@@ -836,11 +836,6 @@ static SqlClient *client = nil;
     
     NSMutableDictionary *dict = [tempArrayDict objectAtIndex:index];
     
-    NSDate *today = [NSDate date];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
-    NSString *todayString = [formatter stringFromDate: today];
-    
     NSMutableString* queryString = [NSMutableString string];
     
     [queryString appendString:@"BEGIN TRANSACTION;"];
@@ -855,7 +850,7 @@ static SqlClient *client = nil;
     [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [PO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@',%@);",
                       [self escapeString: [dict objectForKey:@"Activity_no"]],
                       [self escapeString: [dict objectForKey:@"Teq_rep"]],
                       [self escapeString: [dict objectForKey:@"Bp_code"]],
@@ -880,7 +875,7 @@ static SqlClient *client = nil;
                       [self escapeString: [dict objectForKey:@"Customer_notes"]],
                       [self escapeString: [dict objectForKey:@"Print_name_3"]],
                       [self escapeString: [dict objectForKey:@"Comlete_PDF_file_name"]],
-                       todayString ];
+                       @"convert(varchar, getdate(), 120)" ];
     
     [queryString appendString:cols];
     [queryString appendString:@"COMMIT TRANSACTION;"];
