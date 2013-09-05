@@ -1390,13 +1390,14 @@ static SqlClient *client = nil;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    //detect slow internet. buttonIndex = 0 means continue to sync, buttonIndex = 1 means stop.
     if (alertView.tag == 0) {
+        //detect some fields missing, and click ok to continue uploading.
         if (buttonIndex == 0) {
             [self localDestToRemoteDest];
         }
     }
     if (alertView.tag == 1) {
+        //detect slow internet, choose continue or stop uploading.0  b      mm,../
         if (buttonIndex == 0) {
             [self checkSignature];
         }
