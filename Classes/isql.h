@@ -273,11 +273,11 @@
 
 @property (strong, nonatomic) NSString *current_po;     //reserved 7
 
-@property (strong, nonatomic) NSString *current_change_order; //reserved 8
+@property (strong, nonatomic) NSString *current_reserved_8;
 
-@property (strong, nonatomic) NSString *current_change_approved_by_print_name; //reserved 9
+@property (strong, nonatomic) NSString *current_reserved_9;
 
-@property (strong, nonatomic) NSString *current_change_approved_by_signature;    //reserved 10
+@property (strong, nonatomic) NSString *current_reserved_10;
 
 
 @end

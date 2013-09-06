@@ -22,7 +22,6 @@
 		B200712D16B98A2700A98A9B /* SPK-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712B16B98A2700A98A9B /* SPK-2.png */; };
 		B200713016B98A3900A98A9B /* CNO-1.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712E16B98A3900A98A9B /* CNO-1.png */; };
 		B200713116B98A3900A98A9B /* CNO-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B200712F16B98A3900A98A9B /* CNO-2.png */; };
-		B20093DC17B5421C000DDEA7 /* installation-reports-11.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20093DB17B5421C000DDEA7 /* installation-reports-11.jpg */; };
 		B201FD6917733E7D00EC2309 /* installation-reports-4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B201FD6817733E7D00EC2309 /* installation-reports-4.jpg */; };
 		B203489117ABE9C6007CF50D /* scanHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = B203488F17ABE9C6007CF50D /* scanHistory.m */; };
 		B203489217ABE9C6007CF50D /* scanHistory.xib in Resources */ = {isa = PBXBuildFile; fileRef = B203489017ABE9C6007CF50D /* scanHistory.xib */; };
@@ -37,8 +36,6 @@
 		B20C25F81784BEB800766F6D /* installation-reports-5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20C25F71784BEB800766F6D /* installation-reports-5.jpg */; };
 		B20D03AB179D73A6007C7686 /* checkbox_unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */; };
 		B20D03AF179D886F007C7686 /* installations-signoff-cover-page-10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */; };
-		B20ECD1B17C2694E0030DD3D /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20ECD1717C2694E0030DD3D /* libTestFlight.a */; };
-		B214FD6D17B2DF9F003314D7 /* installation-reports-10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */; };
 		B217A561160A0D9E00207EAF /* black-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B217A560160A0D9E00207EAF /* black-line.png */; };
 		B226C04B16762BDC00EE3934 /* UICustomSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = B226C04A16762BDC00EE3934 /* UICustomSwitch.m */; };
 		B226C05016762C0400EE3934 /* switchThumb.png in Resources */ = {isa = PBXBuildFile; fileRef = B226C04D16762C0400EE3934 /* switchThumb.png */; };
@@ -71,6 +68,7 @@
 		B2677D871709B9C200C4156C /* NewActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2677D861709B9C200C4156C /* NewActivityCell.xib */; };
 		B28F583C16DC0AF500FCF620 /* SavedActivityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */; };
 		B28F583E16DC0B2000FCF620 /* SavedActivityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */; };
+		B2B34FFB175E78B0004D5CE6 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */; };
 		B2B34FFD175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B2B34FFC175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png */; };
 		B2C22F2616E8F62900D73320 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = B2C22F2516E8F62900D73320 /* error.png */; };
 		B2DC705D16358C9B0040AA5F /* ButtonR.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DC705C16358C9B0040AA5F /* ButtonR.png */; };
@@ -222,7 +220,6 @@
 		B200712B16B98A2700A98A9B /* SPK-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SPK-2.png"; sourceTree = "<group>"; };
 		B200712E16B98A3900A98A9B /* CNO-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CNO-1.png"; sourceTree = "<group>"; };
 		B200712F16B98A3900A98A9B /* CNO-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CNO-2.png"; sourceTree = "<group>"; };
-		B20093DB17B5421C000DDEA7 /* installation-reports-11.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-11.jpg"; sourceTree = "<group>"; };
 		B201FD6817733E7D00EC2309 /* installation-reports-4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-4.jpg"; sourceTree = "<group>"; };
 		B202AA0E176A126D005ACF5D /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		B202AA10176A126F005ACF5D /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
@@ -245,11 +242,6 @@
 		B20C25F71784BEB800766F6D /* installation-reports-5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-5.jpg"; sourceTree = "<group>"; };
 		B20D03AA179D73A6007C7686 /* checkbox_unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_unchecked.png; sourceTree = "<group>"; };
 		B20D03AE179D886F007C7686 /* installations-signoff-cover-page-10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installations-signoff-cover-page-10.jpg"; sourceTree = "<group>"; };
-		B20ECD1717C2694E0030DD3D /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		B20ECD1817C2694E0030DD3D /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
-		B20ECD1917C2694E0030DD3D /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
-		B20ECD1A17C2694E0030DD3D /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
-		B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "installation-reports-10.jpg"; sourceTree = "<group>"; };
 		B217A560160A0D9E00207EAF /* black-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-line.png"; sourceTree = "<group>"; };
 		B226C04916762BDC00EE3934 /* UICustomSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICustomSwitch.h; sourceTree = "<group>"; };
 		B226C04A16762BDC00EE3934 /* UICustomSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICustomSwitch.m; sourceTree = "<group>"; };
@@ -293,6 +285,8 @@
 		B28F583A16DC0AF400FCF620 /* SavedActivityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedActivityCell.h; sourceTree = "<group>"; };
 		B28F583B16DC0AF500FCF620 /* SavedActivityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedActivityCell.m; sourceTree = "<group>"; };
 		B28F583D16DC0B2000FCF620 /* SavedActivityCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SavedActivityCell.xib; sourceTree = "<group>"; };
+		B2B34FF8175E77E7004D5CE6 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		B2B34FFC175E7DA9004D5CE6 /* Very-Basic-Clock-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Very-Basic-Clock-icon.png"; sourceTree = "<group>"; };
 		B2C22F2516E8F62900D73320 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
 		B2DC705C16358C9B0040AA5F /* ButtonR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonR.png; sourceTree = "<group>"; };
@@ -471,9 +465,9 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				C06DD66514FE81AC00C5D033 /* libiSqlClientLibrary.a in Frameworks */,
+				B2B34FFB175E78B0004D5CE6 /* libTestFlight.a in Frameworks */,
 				B2FF0EEF1770ABC30003D95E /* NewRelicAgent.framework in Frameworks */,
 				B25ACDB817A9A756009EC40B /* libRedLaserSDK.a in Frameworks */,
-				B20ECD1B17C2694E0030DD3D /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,10 +531,8 @@
 				C06DD66414FE81AB00C5D033 /* SqlClient.h */,
 				C0C32B6215A777FB008DAB82 /* LGViewHUD.h */,
 				C0C32B6315A777FB008DAB82 /* LGViewHUD.m */,
-				B20ECD1717C2694E0030DD3D /* libTestFlight.a */,
-				B20ECD1817C2694E0030DD3D /* TestFlight.h */,
-				B20ECD1917C2694E0030DD3D /* TestFlight+AsyncLogging.h */,
-				B20ECD1A17C2694E0030DD3D /* TestFlight+ManualSessions.h */,
+				B2B34FF9175E77F6004D5CE6 /* libTestFlight.a */,
+				B2B34FF8175E77E7004D5CE6 /* TestFlight.h */,
 				B24AB40616FD596B0017B00E /* minizip */,
 			);
 			name = Library;
@@ -552,8 +544,6 @@
 				B206324617AADD8A00C6AB67 /* camera-button.png */,
 				B24D2FCC178337A40018DBB9 /* duplicate.png */,
 				B24D2FC81781C9110018DBB9 /* box.jpg */,
-				B20093DB17B5421C000DDEA7 /* installation-reports-11.jpg */,
-				B214FD6C17B2DF9F003314D7 /* installation-reports-10.jpg */,
 				B256DCB3178A4ED9003F4941 /* installation-reports-8.jpg */,
 				B256DCB1178A45D3003F4941 /* installation-reports-6.jpg */,
 				B20C25F71784BEB800766F6D /* installation-reports-5.jpg */,
@@ -1005,8 +995,6 @@
 				B206324717AADD8A00C6AB67 /* camera-button.png in Resources */,
 				B206324F17AAEA9500C6AB67 /* RedBoxOverlayController.xib in Resources */,
 				B203489217ABE9C6007CF50D /* scanHistory.xib in Resources */,
-				B214FD6D17B2DF9F003314D7 /* installation-reports-10.jpg in Resources */,
-				B20093DC17B5421C000DDEA7 /* installation-reports-11.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1108,7 +1096,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1144,12 +1131,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
-<<<<<<< HEAD
-=======
-				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
->>>>>>> Add-change-order
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

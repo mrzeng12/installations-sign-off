@@ -14,7 +14,7 @@
 @class CustomerAgreement;
 
 
-@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, QLPreviewControllerDataSource,QLPreviewControllerDelegate, UIPopoverControllerDelegate> {
+@interface FirstDetailView3 : UIViewController <UITextFieldDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, QLPreviewControllerDataSource,QLPreviewControllerDelegate> {
     int found_in_local_dest;
     NSString *customAlertActivity;
 }
@@ -59,11 +59,8 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *typeofworkOutlet;
 
-@property (strong, nonatomic) IBOutlet UITextField *changeApprovedByPrintName;
 
 @property (strong, nonatomic) IBOutlet UITextView *jobSummary;
-
-@property (strong, nonatomic) IBOutlet UITextView *changeOrder;
 
 @property (strong, nonatomic) IBOutlet UIButton *typeofworkBtn;
 
@@ -72,8 +69,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *arrivalBtn;
 
 @property (strong, nonatomic) IBOutlet UIButton *departureBtn;
-
-@property (strong, nonatomic) IBOutlet UIPopoverController *popoverController;
 
 - (IBAction)GoToNextPage;
 
@@ -92,10 +87,6 @@
 - (IBAction)autoFill:(UIButton *)sender;
 
 - (IBAction)duplicateAddress:(id)sender;
-
-- (IBAction)triggerPopover:(id)sender;
-
-@property (strong, nonatomic) IBOutlet UIButton *signatureBtn;
 
 @property (strong, nonatomic) IBOutlet UILabel *address2Label;
 

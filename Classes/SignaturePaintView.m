@@ -37,7 +37,6 @@
 
 - (void) initContext:(CGSize)size {
 	
-    isql *database = [isql initialize];
 	int	bitmapBytesPerRow;
 	
 	// Declare the number of bytes per row. Each pixel in the bitmap in this
@@ -70,17 +69,11 @@
     [clearBtn setTitle:@"Clear" forState:UIControlStateNormal];
     [clearBtn addTarget:self action:@selector(clearButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:clearBtn];
-        
+    
     cancelBtn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
     cancelBtn.frame= CGRectMake(10, 15, 80, 40);
     [cancelBtn setTitle:@"Cancel" forState:UIControlStateNormal];
-    
-    if ([database.signature_filename isEqualToString:@"Change_Approved_By"]) {
-        [cancelBtn addTarget:self action:@selector(coverPageCancelButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    }else {
-        [cancelBtn addTarget:self action:@selector(cancelButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
+    [cancelBtn addTarget:self action:@selector(cancelButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:cancelBtn];
 
 }
@@ -88,10 +81,6 @@
 - (void) cancelButtonAction {
     [[NSNotificationCenter defaultCenter]
      postNotificationName:@"cancelPopover" object:self];
-}
-- (void) coverPageCancelButtonAction {
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"coverPageCancelPopover" object:self];
 }
 
 - (void) clearButtonAction {
@@ -138,13 +127,6 @@
         imageString = [database sanitizeFile:imageString];
         database.current_signature_file_directory_3 = imageString;
     }
-    
-    if ([database.signature_filename isEqualToString:@"Change_Approved_By"]) {
-        imageString = [NSString stringWithFormat:@"SS - %@ - Activity#%@ (%@) - change-signature", (database.current_teq_rep == nil)? @"":database.current_teq_rep, (database.current_activity_no  == nil)? @"": database.current_activity_no, (database.current_date == nil)? @"":database.current_date];
-        imageString = [database sanitizeFile:imageString];
-        database.current_change_approved_by_signature = imageString;
-    }
-    
     NSString* targetPath = [NSString stringWithFormat:@"%@/%@.%@", [self writablePath], imageString, @"jpg" ];
     
     [imgData writeToFile:targetPath atomically:YES]; 
@@ -154,15 +136,8 @@
     //renderer.callBackString = @"none";
     //[renderer loadVariablesForPDF];
     [self updateSaveTime];
-    
-    if ([database.signature_filename isEqualToString:@"Change_Approved_By"]) {
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"coverPageCustomizedDismissPopover" object:self];
-    }else {
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"customizedDismissPopover" object:self];
-    }
-    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"customizedDismissPopover" object:self];
 }
 
 - (void) updateSaveTime{

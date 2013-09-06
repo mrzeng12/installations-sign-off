@@ -17,7 +17,7 @@
 #import "objc/runtime.h"
 #import "TestFlight.h"
 
-#define testing
+//#define testing
 
 @implementation isql
 
@@ -654,12 +654,12 @@ static SqlClient *client = nil;
     NSData *data = [serialNoString dataUsingEncoding:NSUTF8StringEncoding];
     NSError *e = nil;
     NSMutableArray *dictArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&e];
-    
+      
     NSDate *today = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
     NSString *todayString = [formatter stringFromDate: today];
-    
+        
     NSString *thisTeqRep = [[Rowofdict objectForKey:@"Teq_rep"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisActivityNumber = [[Rowofdict objectForKey:@"Activity_no"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
     NSString *thisRoomNumber = [[Rowofdict objectForKey:@"Room_Number"] stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
@@ -688,9 +688,9 @@ static SqlClient *client = nil;
         serialnumberCol = [self escapeString:serialnumberCol];
         notesCol = [self escapeString:notesCol];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol,  @"convert(varchar, getdate(), 120)"]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol,  todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol, @"convert(varchar, getdate(), 120)"]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[InstallSummary] ([Activity] ,[RoomNumber], [Status], [ItemType], [SerialNumber], [Notes], [SyncTime]) VALUES ('%@','%@','%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, statusCol, itemtypeCol, serialnumberCol, notesCol, todayString]];
 #endif
        
     }       
@@ -713,9 +713,9 @@ static SqlClient *client = nil;
         
         NSString *installerCol = [self escapeString:oneItem];
 #ifdef testing
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, @"convert(varchar, getdate(), 120)"]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
 #else
-        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, @"convert(varchar, getdate(), 120)"]];
+        [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[Installer]([Activity],[RoomNumber],[Installer],[SyncTime]) VALUES ('%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, todayString]];
 #endif
     }
     
@@ -747,9 +747,9 @@ static SqlClient *client = nil;
             installerCol = [self escapeString:installerCol];
             materialCol = [self escapeString:materialCol];
 #ifdef testing
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, materialCol, @"convert(varchar, getdate(), 120)"]];
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [DevInstall].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
 #else
-            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@',%@);", thisActivityNumber, thisRoomNumber, installerCol, materialCol, @"convert(varchar, getdate(), 120)"]];
+            [queryString appendString:[NSString stringWithFormat:@"INSERT INTO [Install].[dbo].[VanStock]([Activity], [RoomNumber], [Installer], [Material], [SyncTime]) VALUES ('%@','%@','%@','%@','%@');", thisActivityNumber, thisRoomNumber, installerCol, materialCol, todayString]];
 #endif
         }
     }
@@ -836,6 +836,11 @@ static SqlClient *client = nil;
     
     NSMutableDictionary *dict = [tempArrayDict objectAtIndex:index];
     
+    NSDate *today = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+    NSString *todayString = [formatter stringFromDate: today];
+    
     NSMutableString* queryString = [NSMutableString string];
     
     [queryString appendString:@"BEGIN TRANSACTION;"];
@@ -850,7 +855,7 @@ static SqlClient *client = nil;
     [queryString appendString:@"INSERT INTO [Install].[dbo].[InstallCoverSheet] ([Activity], [Technician], [CardCode], [CardName], [Address], [Address2], [District], [Contact], [Pod], [SO], [PO], [Date], [Username], [File1], [File2], [TypeOfWork], [ArrivalTime], [DepartureTime], [JobSummary], [CustomerSignatureAvailable], [CustomerSignatureName], [CustomerNotes], [TechnicianSignatureName], [FileName], [SyncTime]) VALUES ("];
 #endif
     
-    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@',%@);",
+    NSString *cols = [NSString stringWithFormat:@"'%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@','%@');",
                       [self escapeString: [dict objectForKey:@"Activity_no"]],
                       [self escapeString: [dict objectForKey:@"Teq_rep"]],
                       [self escapeString: [dict objectForKey:@"Bp_code"]],
@@ -875,7 +880,7 @@ static SqlClient *client = nil;
                       [self escapeString: [dict objectForKey:@"Customer_notes"]],
                       [self escapeString: [dict objectForKey:@"Print_name_3"]],
                       [self escapeString: [dict objectForKey:@"Comlete_PDF_file_name"]],
-                       @"convert(varchar, getdate(), 120)" ];
+                       todayString ];
     
     [queryString appendString:cols];
     [queryString appendString:@"COMMIT TRANSACTION;"];
@@ -1390,14 +1395,13 @@ static SqlClient *client = nil;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    //detect slow internet. buttonIndex = 0 means continue to sync, buttonIndex = 1 means stop.
     if (alertView.tag == 0) {
-        //detect some fields missing, and click ok to continue uploading.
         if (buttonIndex == 0) {
             [self localDestToRemoteDest];
         }
     }
     if (alertView.tag == 1) {
-        //detect slow internet, choose continue or stop uploading.0  b      mm,../
         if (buttonIndex == 0) {
             [self checkSignature];
         }
@@ -1867,7 +1871,7 @@ static SqlClient *client = nil;
     //Reserved 1 and Reserved 2 are not subject to change by user
     
     NSString *queryString = 
-    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Reserved 7]='%@', [Reserved 8]='%@', [Reserved 9]='%@', [Reserved 10]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@' or [Reserved 7] <>'%@'or [Reserved 8] <>'%@'or [Reserved 9] <>'%@'or [Reserved 10] <>'%@');",
+    [NSString stringWithFormat: @"update local_dest set [Bp_code]='%@', [Location]='%@', [District]='%@', [Primary_contact]='%@', [Pod]='%@', [Sales_Order]='%@', [Date]='%@', [File1]='%@', [File2]='%@', [Type_of_work]='%@', [Job_status]='%@', [Arrival_time]='%@', [Departure_time]='%@', [Reason_for_visit]='%@', [Agreement_1]='%@', [Agreement_2]='%@',  [Print_name_1]='%@', [Print_name_3]='%@', [Signature_file_directory_1]='%@', [Signature_file_directory_3]='%@', [Comlete_PDF_file_name]='%@', [Reserved 1]='%@', [Customer_notes]='%@', [Reserved 2]='%@', [Reserved 3]='%@', [Reserved 6]='%@', [Reserved 7]='%@', [Save_time]='%@' where [Activity_no] = '%@' and [Teq_rep] like '%%%@%%' and ([Bp_code] <>'%@' or [Location] <>'%@' or [District] <>'%@' or [Primary_contact] <>'%@' or [Pod] <>'%@' or [Sales_Order] <>'%@' or [Date] <>'%@' or [File1] <>'%@' or [File2] <>'%@' or [Type_of_work] <>'%@' or [Job_status] <>'%@' or [Arrival_time] <>'%@' or [Departure_time] <>'%@' or [Reason_for_visit] <>'%@' or [Agreement_1] <>'%@' or [Agreement_2] <>'%@' or  [Print_name_1] <>'%@' or [Print_name_3] <>'%@' or [Signature_file_directory_1] <>'%@' or [Signature_file_directory_3] <>'%@' or [Comlete_PDF_file_name] <>'%@' or [Reserved 1] <>'%@' or [Customer_notes] <>'%@' or [Reserved 2] <>'%@' or [Reserved 3] <>'%@' or [Reserved 6] <>'%@' or [Reserved 7] <>'%@');",
      
      (database.current_bp_code==nil)?@"":[database.current_bp_code stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
@@ -1921,12 +1925,6 @@ static SqlClient *client = nil;
      (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_order==nil)?@"":[database.current_change_order stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_approved_by_print_name==nil)?@"":[database.current_change_approved_by_print_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_approved_by_signature==nil)?@"":[database.current_change_approved_by_signature stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
      [formatter stringFromDate: today],
           
@@ -1987,13 +1985,7 @@ static SqlClient *client = nil;
      
      (database.current_customer_signature_available==nil)?@"":[database.current_customer_signature_available stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
      
-     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_order==nil)?@"":[database.current_change_order stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_approved_by_print_name==nil)?@"":[database.current_change_approved_by_print_name stringByReplacingOccurrencesOfString:@"'" withString:@"''"],
-     
-     (database.current_change_approved_by_signature==nil)?@"":[database.current_change_approved_by_signature stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
+     (database.current_po==nil)?@"":[database.current_po stringByReplacingOccurrencesOfString:@"'" withString:@"''"]
      ];
     
     

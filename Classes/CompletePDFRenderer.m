@@ -411,7 +411,7 @@
     
     // Drawing commands
     
-    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-11" ofType:@"jpg"];
+    NSString *fileLocation = [[NSBundle mainBundle] pathForResource:@"installation-reports-6" ofType:@"jpg"];
     NSData *imageData = [NSData dataWithContentsOfFile:fileLocation];
     UIImage * logo = [UIImage imageWithData:imageData];
     [logo drawInRect:CGRectMake(0, 0, 1275, 1650)];
@@ -423,20 +423,13 @@
     [self drawText:database.current_district withX:134 withY:297 andWidth:472 andFont:font andFontSize:21];
     [self drawText:database.current_so withX:670 withY:297 andWidth:146 andFont:font andFontSize:21];
     [self drawText:database.current_primary_contact withX:907 withY:297 andWidth:291 andFont:font andFontSize:21];
+    [self drawText:PDF_job_status withX:160 withY:341 andWidth:1039 andFont:font andFontSize:21];
+    [self drawText:database.current_date withX:118 withY:407 andWidth:210 andFont:font andFontSize:21];
+    [self drawText:database.current_arrival_time withX:492 withY:407 andWidth:246 andFont:font andFontSize:21];
+    [self drawText:database.current_departure_time withX:774 withY:407 andWidth:246 andFont:font andFontSize:21];
+    [self drawText:PDF_van_stock withX:160 withY:451 andWidth:1048 andFont:font andFontSize:21];
     
-    [self drawText:database.current_date withX:118 withY:341 andWidth:210 andFont:font andFontSize:21];
-    [self drawText:database.current_arrival_time withX:492 withY:341 andWidth:246 andFont:font andFontSize:21];
-    [self drawText:database.current_departure_time withX:774 withY:341 andWidth:246 andFont:font andFontSize:21];
-    [self drawText:PDF_van_stock withX:160 withY:384 andWidth:1048 andFont:font andFontSize:21];
-    [[self conciseText:database.current_change_order] drawInRect:CGRectMake(189, 429, 1019, 87) withFont:font];
-    [[self conciseText:database.current_change_approved_by_print_name] drawInRect:CGRectMake(241, 518, 291, 87) withFont:font];
-    NSString *imageString = database.current_change_approved_by_signature;
-    if ([imageString length] > 0) {
-        UIImage *backgroundImage = [self loadImage: imageString ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-        [backgroundImage drawInRect:CGRectMake(540, 518, 175, 70)];
-    }
-    [self drawText:PDF_job_status withX:160 withY:604 andWidth:1039 andFont:font andFontSize:21];
-    [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(183, 648, 1015, 150) withFont:font];
+    [[self conciseText:database.current_job_summary] drawInRect:CGRectMake(68, 526, 1130, 299) withFont:font];   
 
     int row_number = 0; //for drawing table cells
     int row_number2 = 0;    //for drawing serials
@@ -481,7 +474,7 @@
         //decide where the data form row ends
         int cutoff_rows;
         if (page == 0) {
-            cutoff_rows = 8;//16;
+            cutoff_rows = 16;
         }
         else {
             cutoff_rows = 30;
@@ -511,7 +504,7 @@
         }
         float base_height;
         if (page == 0) {
-            base_height = 1229;//882;
+            base_height = 882;
         }
         else {
             base_height = 234;
@@ -559,7 +552,7 @@
     }
     float base_height;
     if (page == 0) {
-        base_height = 1229; //882;
+        base_height = 882;
     }
     else {
         base_height = 234;

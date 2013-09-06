@@ -137,17 +137,7 @@
     if ([database.current_customer_signature_available isEqualToString:@"Yes"]) {
         [self.primaryContactSign setTitle:@"Signature" forState:UIControlStateNormal];
         self.primaryContactSign.enabled = YES;
-        self.skipSwitch.on = YES;
-        /************* set button background images, wrap it inside round rect box ************/
-        NSString *imageString1 = database.current_signature_file_directory_1;
-        imageString1 = [database sanitizeFile:imageString1];
-        UIImage *backgroundImage1 = [self loadImage: imageString1 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
-        
-        [primaryContactSign setImage:backgroundImage1 forState:UIControlStateNormal];
-        [primaryContactSign.layer setCornerRadius:10.0f];
-        [primaryContactSign.layer setMasksToBounds:YES];
-        [primaryContactSign.layer setBorderWidth:1.0f];
-        [primaryContactSign.layer setBorderColor:[UIColor grayColor].CGColor];
+        self.skipSwitch.on = YES;        
     }
     else {
         [self.primaryContactSign setTitle:@"Signature not available" forState:UIControlStateNormal];
@@ -158,7 +148,16 @@
     }
     //}
     
+    /************* set button background images, wrap it inside round rect box ************/
+    NSString *imageString1 = database.current_signature_file_directory_1;
+    imageString1 = [database sanitizeFile:imageString1];
+    UIImage *backgroundImage1 = [self loadImage: imageString1 ofType:@"jpg" inDirectory:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
     
+    [primaryContactSign setImage:backgroundImage1 forState:UIControlStateNormal];
+    [primaryContactSign.layer setCornerRadius:10.0f];
+    [primaryContactSign.layer setMasksToBounds:YES];
+    [primaryContactSign.layer setBorderWidth:1.0f];
+    [primaryContactSign.layer setBorderColor:[UIColor grayColor].CGColor];
             
     NSString *imageString3 = database.current_signature_file_directory_3;
     imageString3 = [database sanitizeFile:imageString3];
@@ -289,6 +288,14 @@
 
 - (IBAction)triggerPopover:(id)sender {
     
+    Signature *movies = 
+    [[Signature alloc] 
+     initWithNibName:@"Signature" 
+     bundle:[NSBundle mainBundle]]; 
+    
+    popoverController = 
+    [[UIPopoverController alloc] initWithContentViewController:movies];     
+    popoverController.delegate = self;
     isql *database = [isql initialize];
     UIButton *button = sender;
     
@@ -305,11 +312,6 @@
         default:
             break;
     }
-    
-    Signature *movies = [[Signature alloc] initWithNibName:@"Signature" bundle:[NSBundle mainBundle]];
-    
-    popoverController = [[UIPopoverController alloc] initWithContentViewController:movies];
-    popoverController.delegate = self;
     
     CGRect popoverRect = CGRectMake(51, 60, 463, 144);
     
