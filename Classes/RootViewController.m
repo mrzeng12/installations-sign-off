@@ -891,6 +891,12 @@
                 database.current_reason_for_visit = nil;
                 
                 database.current_job_summary = nil;
+                
+                database.current_change_order = nil;
+                
+                database.current_change_approved_by_print_name = nil;
+                
+                database.current_change_approved_by_signature = nil;
                                 
                 database.current_primary_contact = nil;
                                 

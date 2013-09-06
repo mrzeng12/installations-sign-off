@@ -401,12 +401,14 @@
         if ([modifiedDate compare:oneWeekAgo] == NSOrderedAscending)
             
         {
-            if ([[file pathExtension] caseInsensitiveCompare: @"pdf"] == NSOrderedSame && [[file substringToIndex:9] isEqualToString:@"reference"]) {
-                
-                [[NSFileManager defaultManager] removeItemAtPath:[kDOCSFOLDER stringByAppendingPathComponent:file] error:&error];
+            if ([file length] > 9) {
+                if ([[file pathExtension] caseInsensitiveCompare: @"pdf"] == NSOrderedSame && [[file substringToIndex:9] isEqualToString:@"reference"]) {
                     
-                NSLog(@"File removed -- %@ -- modified by: %@", file, modifiedDateString);                                
-            };
+                    [[NSFileManager defaultManager] removeItemAtPath:[kDOCSFOLDER stringByAppendingPathComponent:file] error:&error];
+                    
+                    NSLog(@"File removed -- %@ -- modified by: %@", file, modifiedDateString);
+                };
+            }            
         }
     }
 }
